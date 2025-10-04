@@ -27,7 +27,7 @@ export default function Navbar() {
   const allMenuItems = [...leftMenuItems, ...rightMenuItems];
 
   return (
-    <header className="flex items-center justify-between py-4 mb-8">
+    <header className="flex items-center justify-between py-4 ">
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center justify-between w-full">
         {/* Left links */}
