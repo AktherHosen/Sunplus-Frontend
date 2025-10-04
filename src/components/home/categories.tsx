@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Link } from "react-router";
 import GangSwitch from "../../assets/img/gangswitchs.jpg";
+
 const categoryImages = {
   "gang-switches": GangSwitch,
 };
@@ -28,25 +24,29 @@ export default function Categories() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-8">
       {categories.map((category) => (
-        <Card key={category.id} className="hover:shadow-lg transition-shadow ">
-          <CardHeader>
+        <Card
+          key={category.id}
+          className="hover:shadow-lg transition-shadow rounded-none py-0 pt-4"
+        >
+          <CardHeader className="!p-2">
             <h3 className="text-lg font-bold text-center text-primary">
               {category.name}
             </h3>
           </CardHeader>
-          <CardContent className=" p-0">
+
+          <CardContent className="!p-0 !px-8">
             <img
-              src={
-                categoryImages[category.slug] || GangSwitch
-              }
+              src={categoryImages[category.slug] || GangSwitch}
               alt={category.name}
-              className="w-full h-fit max-h-[300px] object-cover rounded-md mb-2"
+              className="w-full max-h-[300px] object-cover"
             />
           </CardContent>
-          <CardFooter className="border-t p-0 flex items-center justify-center">
+
+          <CardFooter className="border-t !p-2.5 flex items-center justify-center">
             <Link
               to={`/category/${category.slug}`}
-              className="mx-auto uppercase font-bold">
+              className="capitalize font-bold"
+            >
               See More
             </Link>
           </CardFooter>
