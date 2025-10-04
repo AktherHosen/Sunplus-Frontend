@@ -1,0 +1,119 @@
+[
+  {
+    "id": 1,
+    "name": "GANG SWITCHES",
+    "slug": "gang-switches",
+    "subcategories": [
+      { "id": 101, "name": "Single Switch", "slug": "single-switch" },
+      { "id": 102, "name": "Double Switch", "slug": "double-switch" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "PIANO SWITCHES",
+    "slug": "piano-switches",
+    "subcategories": [
+      { "id": 201, "name": "Single Piano Switch", "slug": "single-piano-switch" },
+      { "id": 202, "name": "Double Piano Switch", "slug": "double-piano-switch" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "CIRCUIT BREAKER",
+    "slug": "circuit-breaker",
+    "subcategories": [
+      { "id": 301, "name": "MCB", "slug": "mcb" },
+      { "id": 302, "name": "RCCB", "slug": "rccb" }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "DB BOX",
+    "slug": "db-box",
+    "subcategories": [
+      { "id": 401, "name": "Plastic DB Box", "slug": "plastic-db-box" },
+      { "id": 402, "name": "Metal DB Box", "slug": "metal-db-box" }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "SMART SWITCH",
+    "slug": "smart-switch",
+    "subcategories": [
+      { "id": 501, "name": "WiFi Smart Switch", "slug": "wifi-smart-switch" },
+      { "id": 502, "name": "Bluetooth Smart Switch", "slug": "bluetooth-smart-switch" }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "EXTENSION SOCKET",
+    "slug": "extension-socket",
+    "subcategories": [
+      { "id": 601, "name": "2 Pin Socket", "slug": "2-pin-socket" },
+      { "id": 602, "name": "3 Pin Socket", "slug": "3-pin-socket" }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "FAN HOOK BOX",
+    "slug": "fan-hook-box",
+    "subcategories": [
+      { "id": 701, "name": "Plastic Fan Hook Box", "slug": "plastic-fan-hook-box" },
+      { "id": 702, "name": "Metal Fan Hook Box", "slug": "metal-fan-hook-box" }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "HOLDERS & CEILING ROSE",
+    "slug": "holders-ceiling-rose",
+    "subcategories": [
+      { "id": 801, "name": "Lamp Holders", "slug": "lamp-holders" },
+      { "id": 802, "name": "Ceiling Roses", "slug": "ceiling-roses" }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "UPVC ELECTRIC PIPE AND FITTINGS",
+    "slug": "upvc-electric-pipe-fittings",
+    "subcategories": [
+      { "id": 901, "name": "UPVC Pipes", "slug": "upvc-pipes" },
+      { "id": 902, "name": "Pipe Fittings", "slug": "pipe-fittings" }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "ACCESSORIES",
+    "slug": "accessories",
+    "subcategories": [
+      { "id": 1001, "name": "Switch Accessories", "slug": "switch-accessories" },
+      { "id": 1002, "name": "Socket Accessories", "slug": "socket-accessories" }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "HARDWARE & ACCESSORIES",
+    "slug": "hardware-accessories",
+    "subcategories": [
+      { "id": 1101, "name": "Screws & Bolts", "slug": "screws-bolts" },
+      { "id": 1102, "name": "Clips & Anchors", "slug": "clips-anchors" }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "CAPACITOR",
+    "slug": "capacitor",
+    "subcategories": [
+      { "id": 1201, "name": "Motor Capacitor", "slug": "motor-capacitor" },
+      { "id": 1202, "name": "AC Capacitor", "slug": "ac-capacitor" }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "MOTOR CAPACITOR",
+    "slug": "motor-capacitor",
+    "subcategories": [
+      { "id": 1301, "name": "Single Phase Motor Capacitor", "slug": "single-phase-motor-capacitor" },
+      { "id": 1302, "name": "Three Phase Motor Capacitor", "slug": "three-phase-motor-capacitor" }
+    ]
+  }
+]

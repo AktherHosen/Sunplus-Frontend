@@ -1,7 +1,8 @@
 import Banner from "@/components/home/banner";
+import Categories from "@/components/home/categories";
 
 const Home = () => {
-  return <div><Banner/></div>;
+  return <div><Banner/> <Categories/></div>;
 };
 
 export default Home;
