@@ -16,6 +16,7 @@ export default function Navbar() {
   const leftMenuItems = [
     { title: "Product", href: "/books" },
     { title: "About Us", href: "/about" },
+    { title: "About Us", href: "/about" },
   ];
 
   const rightMenuItems = [
@@ -28,21 +29,18 @@ export default function Navbar() {
 
   return (
     <header className="flex items-center justify-between py-4">
-      {/* Desktop Navigation */}
       <div className="hidden md:flex items-center justify-between w-full">
-        {/* Left links */}
         <NavigationMenu>
-          <NavigationMenuList>
+          <NavigationMenuList className="flex gap-x-6">
             {leftMenuItems.map((item) => (
               <NavigationMenuItem
                 key={item.title}
                 className="uppercase font-bold"
               >
-                <NavigationMenuLink
-                  asChild
-                  className="px-3 py-2 hover:underline"
-                >
-                  <Link to={item.href}>{item.title}</Link>
+                <NavigationMenuLink asChild className="hover:underline">
+                  <Link to={item.href} className="!p-0">
+                    {item.title}
+                  </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
@@ -50,23 +48,26 @@ export default function Navbar() {
         </NavigationMenu>
 
         {/* Center logo */}
-        <div className="text-3xl font-bold text-center tracking-wide text-primary">
-          <Link to="/">SUNPLUS</Link>
+        <div className="flex-1 flex justify-center items-center">
+          <Link to="/">
+            <span className="text-3xl font-extrabold tracking-wide text-primary transition-transform duration-300 group-hover:scale-105 title-font">
+              SunPluS
+            </span>
+          </Link>
         </div>
 
         {/* Right links */}
         <NavigationMenu>
-          <NavigationMenuList>
+          <NavigationMenuList className="flex gap-x-6">
             {rightMenuItems.map((item) => (
               <NavigationMenuItem
                 key={item.title}
                 className="uppercase font-bold"
               >
-                <NavigationMenuLink
-                  asChild
-                  className="px-3 py-2 hover:underline"
-                >
-                  <Link to={item.href}>{item.title}</Link>
+                <NavigationMenuLink asChild className="hover:underline">
+                  <Link to={item.href} className="!p-0">
+                    {item.title}
+                  </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
@@ -77,9 +78,12 @@ export default function Navbar() {
       {/* Mobile Navigation */}
       <div className="md:hidden flex items-center justify-between w-full">
         {/* Logo */}
-        <div className="text-xl font-bold tracking-wide text-primary">
-          <Link to="/">SUNPLUS</Link>
-        </div>
+
+        <Link to="/">
+          <span className="text-2xl font-extrabold tracking-wide text-primary transition-transform duration-300 group-hover:scale-105 title-font">
+            SunPluS
+          </span>
+        </Link>
 
         {/* Mobile menu button */}
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
