@@ -6,8 +6,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import Socket from "../../assets/img/socket.png";
 import Circuit from "../../assets/img/circuit-breaker-3.jpg";
+import Socket from "../../assets/img/socket.png";
 
 const banners = [Socket, Circuit, "/images/banner3.jpg"];
 
@@ -36,8 +36,8 @@ export default function Banner() {
         ))}
       </CarouselContent>
 
-      <CarouselPrevious />
-      <CarouselNext />
+      <CarouselPrevious className="bg-transparent border-none text-muted" />
+      <CarouselNext className="bg-transparent border-none text-muted" />
     </Carousel>
   );
 }
