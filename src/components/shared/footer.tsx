@@ -1,4 +1,3 @@
-import CompanyLogo from "../../assets/img/footer.png"; // Replace with your logo path
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
@@ -10,10 +9,11 @@ const Footer = () => {
           className="relative block w-full h-12"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1200 120"
-          preserveAspectRatio="none">
+          preserveAspectRatio="none"
+        >
           <path
             d="M0,0 V60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 V0 H0 Z"
-            fill="white" // Match the footer bg color
+            fill="accent"
           />
         </svg>
       </div>

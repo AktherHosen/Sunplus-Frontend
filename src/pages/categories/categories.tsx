@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CategoryForm from "@/components/categories/CategoryForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,15 +16,29 @@ export default function Categories() {
   const categories = data?.data || [];
   const BASE_URL = "http://localhost:5000"; // serve images correctly
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this category?")) return;
-    try {
-      await deleteCategory(id).unwrap();
-      toast.success("Category deleted successfully!");
-      refetch();
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to delete category");
-    }
+  const handleDelete = (id: string) => {
+    toast.warning("Are you sure you want to delete this category?", {
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          try {
+            await deleteCategory(id).unwrap();
+            toast.success("Category deleted successfully!");
+            refetch(); // refresh categories
+          } catch (error: any) {
+            toast.error(error?.data?.message || "Failed to delete category");
+            console.error(error);
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {
+          toast.dismiss(); // close the warning toast
+          console.log("Deletion cancelled");
+        },
+      },
+    });
   };
 
   return (

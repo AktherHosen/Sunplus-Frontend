@@ -7,7 +7,6 @@ export const baseApi = createApi({
   }),
   tagTypes: ["categories"],
   endpoints: (builder) => ({
-    // Add category
     addCategory: builder.mutation({
       query: (formData: FormData) => ({
         url: "/create-category",
@@ -17,7 +16,6 @@ export const baseApi = createApi({
       invalidatesTags: ["categories"],
     }),
 
-    // Get all categories
     getAllCategories: builder.query({
       query: () => ({
         url: "/",
@@ -25,17 +23,22 @@ export const baseApi = createApi({
       providesTags: ["categories"],
     }),
 
-    // Update category
+    getCategoryBySlug: builder.query({
+      query: (slug: string) => ({
+        url: `/${slug}`,
+      }),
+      providesTags: ["categories"],
+    }),
+
     updateCategory: builder.mutation({
-      query: ({ id, formData }: { id: string; formData: FormData }) => ({
-        url: `/update-category/${id}`,
+      query: ({ slug, formData }: { slug: string; formData: FormData }) => ({
+        url: `/update-category/${slug}`,
         method: "PUT",
         body: formData,
       }),
       invalidatesTags: ["categories"],
     }),
 
-    // Delete category
     deleteCategory: builder.mutation({
       query: (id: string) => ({
         url: `/delete-category/${id}`,
@@ -49,6 +52,7 @@ export const baseApi = createApi({
 export const {
   useAddCategoryMutation,
   useGetAllCategoriesQuery,
+  useGetCategoryBySlugQuery,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
 } = baseApi;

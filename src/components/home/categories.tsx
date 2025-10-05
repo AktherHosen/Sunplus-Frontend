@@ -1,31 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { useGetAllCategoriesQuery } from "@/redux/api/baseApi";
 import { Link } from "react-router";
-import GangSwitch from "../../assets/img/gangswitchs.jpg";
-
-const categoryImages = {
-  "gang-switches": GangSwitch,
-};
 
 export default function Categories() {
-  const [categories, setCategories] = useState([]);
+  const { data, isLoading, isError } = useGetAllCategoriesQuery(undefined);
+  const categories = data?.data || []; // your API returns { success, message, data }
 
-  useEffect(() => {
-    fetch("/categories.json")
-      .then((res) => res.json())
-      .then((data) => setCategories(data))
-      .catch((err) => console.error("Error fetching categories:", err));
-  }, []);
+  const BASE_URL = "http://localhost:5000"; // prepend to uploaded images
 
-  if (!categories.length) {
+  if (isLoading)
     return <div className="text-center py-10">Loading categories...</div>;
-  }
+  if (isError)
+    return (
+      <div className="text-center py-10 text-red-500">
+        Failed to load categories.
+      </div>
+    );
+  if (!categories.length)
+    return <div className="text-center py-10">No categories found.</div>;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-8">
-      {categories.map((category) => (
+      {categories.map((category: any) => (
         <Card
-          key={category.id}
+          key={category._id}
           className="hover:shadow-lg transition-shadow rounded-none py-0 pt-4"
         >
           <CardHeader className="!p-2">
@@ -36,7 +39,7 @@ export default function Categories() {
 
           <CardContent className="!p-0 !px-8">
             <img
-              src={categoryImages[category.slug] || GangSwitch}
+              src={category.image && `${BASE_URL}${category.image}`}
               alt={category.name}
               className="w-full max-h-[300px] object-cover"
             />
@@ -44,7 +47,7 @@ export default function Categories() {
 
           <CardFooter className="border-t !p-2.5 flex items-center justify-center">
             <Link
-              to={`/category/${category.slug}`}
+              to={`/category/${category?.slug}`}
               className="capitalize font-bold"
             >
               See More

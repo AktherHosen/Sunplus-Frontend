@@ -76,11 +76,11 @@ export default function CategoryForm({
     try {
       const formData = new FormData();
       formData.append("name", name);
-      if (parent) formData.append("parent", parent);
+      formData.append("parent", parent || ""); // allow removing parent
       if (imageFile) formData.append("image", imageFile);
 
-      if (isEditMode && category._id) {
-        await updateCategory({ id: category._id, formData }).unwrap();
+      if (isEditMode && category.slug) {
+        await updateCategory({ slug: category.slug, formData }).unwrap();
         toast.success("Category updated successfully!");
       } else {
         await addCategory(formData).unwrap();
