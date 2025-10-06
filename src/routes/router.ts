@@ -1,7 +1,9 @@
 import Main from "@/layout/main";
-import About from "@/pages/about/about";
+import AboutUsPage from "@/pages/about-page";
+import About from "@/pages/about-page";
 import Categories from "@/pages/categories/categories";
 import Subcategories from "@/pages/categories/subcategories";
+import ContactPage from "@/pages/contact-page";
 import Home from "@/pages/home/home";
 import NotFound from "@/pages/notFound/not-found";
 import { createBrowserRouter } from "react-router";
@@ -13,9 +15,10 @@ export const router = createBrowserRouter([
     ErrorBoundary: NotFound,
     children: [
       { index: true, Component: Home },
-      { path: "about", Component: About },
+      { path: "about-us", Component: AboutUsPage },
       { path: "categories", Component: Categories },
       { path: "category/:slug", Component: Subcategories },
+      { path: "contact-us", Component: ContactPage}
     ],
   },
 ]);

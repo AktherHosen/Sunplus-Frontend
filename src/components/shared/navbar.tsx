@@ -15,13 +15,13 @@ export default function Navbar() {
 
   const leftMenuItems = [
     { title: "Product", href: "/books" },
-    { title: "About Us", href: "/about" },
+    { title: "About Us", href: "/about-us" },
     { title: "About Us", href: "/about" },
   ];
 
   const rightMenuItems = [
     { title: "Support", href: "/support" },
-    { title: "Contact Us", href: "/contact" },
+    { title: "Contact Us", href: "/contact-us" },
     { title: "Categories", href: "/categories" },
   ];
 
