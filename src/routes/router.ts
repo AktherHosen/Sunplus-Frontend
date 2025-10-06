@@ -1,6 +1,5 @@
 import Main from "@/layout/main";
 import AboutUsPage from "@/pages/about-page";
-import About from "@/pages/about-page";
 import Categories from "@/pages/categories/categories";
 import Subcategories from "@/pages/categories/subcategories";
 import ContactPage from "@/pages/contact-page";
@@ -18,7 +17,7 @@ export const router = createBrowserRouter([
       { path: "about-us", Component: AboutUsPage },
       { path: "categories", Component: Categories },
       { path: "category/:slug", Component: Subcategories },
-      { path: "contact-us", Component: ContactPage}
+      { path: "contact-us", Component: ContactPage },
     ],
   },
 ]);
