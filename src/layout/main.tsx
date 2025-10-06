@@ -17,8 +17,8 @@ const Main = () => {
     <div className="container mx-auto px-4 w-full flex flex-col min-h-screen">
       <Navbar />
       <div className="">
-        {paths.length > 0 && (
-          <div className="mt-4">
+        {/* {paths.length > 0 && ( */}
+          <div >
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -52,7 +52,7 @@ const Main = () => {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-        )}
+        {/* )} */}
       </div>
 
       <main className="flex-1 my-6">
