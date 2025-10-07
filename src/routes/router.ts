@@ -14,10 +14,10 @@ export const router = createBrowserRouter([
     ErrorBoundary: NotFound,
     children: [
       { index: true, Component: Home },
-      { path: "about-us", Component: AboutUsPage },
+      { path: "about", Component: AboutUsPage },
       { path: "categories", Component: Categories },
       { path: "category/:slug", Component: Subcategories },
-      { path: "contact-us", Component: ContactPage },
+      { path: "contact", Component: ContactPage },
     ],
   },
 ]);

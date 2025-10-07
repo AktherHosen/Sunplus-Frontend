@@ -3,7 +3,7 @@ import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="relative bg-muted text-accent-foreground">
+    <footer className="relative bg-muted text-accent-foreground container mx-auto px-4 lg:px-0">
       {/* Clipped Top Edge */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] bg-muted">
         <svg

@@ -14,9 +14,9 @@ const Main = () => {
   const paths = location.pathname.split("/").filter(Boolean);
 
   return (
-    <div className="container mx-auto px-4 w-full flex flex-col min-h-screen">
+    <div className="w-full flex flex-col min-h-screen">
       <Navbar />
-      <div className="">
+      <div className="container mx-auto px-4 lg:px-0 mt-6">
         {/* {paths.length > 0 && ( */}
           <div >
             <Breadcrumb>
@@ -55,7 +55,7 @@ const Main = () => {
         {/* )} */}
       </div>
 
-      <main className="flex-1 my-6">
+      <main className="flex-1 my-6 container mx-auto px-4 lg:px-0">
         <Outlet />
       </main>
       <Footer />
