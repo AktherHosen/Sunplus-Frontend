@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -6,9 +8,12 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Menu, X, Phone, MessageSquare, Headphones, Mail } from "lucide-react";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,7 +24,7 @@ export default function Navbar() {
   ];
 
   const rightMenuItems = [
-    { title: "Support", href: "/support" },
+    { title: "Support", href: "/support", popover: true },
     { title: "Contact", href: "/contact" },
     { title: "Categories", href: "/categories" },
   ];
@@ -59,16 +64,62 @@ export default function Navbar() {
           {/* Right Menu */}
           <NavigationMenu>
             <NavigationMenuList className="flex gap-x-6">
-              {rightMenuItems.map((item) => (
-                <NavigationMenuItem key={item.title}>
-                  <NavigationMenuLink
-                    asChild
-                    className="uppercase font-semibold hover:text-primary hover:bg-transparent transition-colors"
-                  >
-                    <Link to={item.href}>{item.title}</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ))}
+              {rightMenuItems.map((item) =>
+                item.popover ? (
+                  <NavigationMenuItem key={item.title} className="relative">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="uppercase font-semibold hover:text-primary hover:bg-transparent transition-colors focus:outline-none">
+                          {item.title}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        align="end"
+                        className="w-64 p-4 rounded-xs shadow-sm border border-border bg-background mt-2.5"
+                      >
+                        <h4 className="font-semibold text-lg mb-3 text-foreground">
+                          Customer Support
+                        </h4>
+                        <div className="space-y-3 text-sm">
+                          <a
+                            href="tel:+880123456789"
+                            className="flex items-center gap-2 hover:text-primary transition"
+                          >
+                            <Phone size={16} /> +880 123 456 789
+                          </a>
+                          <a
+                            href="tel:+880987654321"
+                            className="flex items-center gap-2 hover:text-primary transition"
+                          >
+                            <Phone size={16} /> +880 987 654 321
+                          </a>
+                          <a
+                            href="mailto:support@sunplus.com"
+                            className="flex items-center gap-2 hover:text-primary transition"
+                          >
+                            <Mail size={16} /> support@sunplus.com
+                          </a>
+                          <a
+                            href="/service-centers"
+                            className="flex items-center gap-2 hover:text-primary transition"
+                          >
+                            <Headphones size={16} /> Service Centers
+                          </a>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </NavigationMenuItem>
+                ) : (
+                  <NavigationMenuItem key={item.title}>
+                    <NavigationMenuLink
+                      asChild
+                      className="uppercase font-semibold hover:text-primary hover:bg-transparent transition-colors"
+                    >
+                      <Link to={item.href}>{item.title}</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )
+              )}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -82,7 +133,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
@@ -95,22 +146,47 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
 
-            {/* Mobile Menu Content */}
             <SheetContent
               side="right"
               className="py-10 px-6 w-72 sm:w-80 bg-background"
             >
               <nav className="flex flex-col gap-6">
-                {allMenuItems.map((item) => (
-                  <Link
-                    key={item.title}
-                    to={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-lg font-medium text-foreground hover:text-primary transition-colors"
-                  >
-                    {item.title}
-                  </Link>
-                ))}
+                {allMenuItems.map((item) =>
+                  item.popover ? (
+                    <div key={item.title} className="space-y-2">
+                      <p className="text-lg font-semibold text-foreground">
+                        {item.title}
+                      </p>
+                      <div className="flex flex-col pl-3 space-y-2 text-sm text-muted-foreground">
+                        <a href="tel:+880123456789" className="hover:text-primary">
+                          +880 123 456 789
+                        </a>
+                        <a href="tel:+880987654321" className="hover:text-primary">
+                          +880 987 654 321
+                        </a>
+                        <a href="mailto:support@sunplus.com" className="hover:text-primary">
+                          support@sunplus.com
+                        </a>
+                        <Link
+                          to="/service-centers"
+                          className="hover:text-primary"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Service Centers
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      key={item.title}
+                      to={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-lg font-medium text-foreground hover:text-primary transition-colors"
+                    >
+                      {item.title}
+                    </Link>
+                  )
+                )}
               </nav>
             </SheetContent>
           </Sheet>
