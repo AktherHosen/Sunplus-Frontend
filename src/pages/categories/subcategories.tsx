@@ -3,7 +3,7 @@ import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
 import { useNavigate, useParams } from "react-router";
 
 export default function Subcategories() {
-  const { slug } = useParams(); // slug of parent category
+  const { slug } = useParams(); // parent category slug (e.g. "gang-switches")
   const navigate = useNavigate();
   const BASE_URL = "http://localhost:5000";
 
@@ -28,7 +28,7 @@ export default function Subcategories() {
           <Card
             key={sub._id}
             className="overflow-hidden hover:shadow-lg transition cursor-pointer"
-            onClick={() => navigate(`/subcategory/${sub.slug}`)} // navigate to product page
+            onClick={() => navigate(`/category/${slug}/${sub.slug}`)} // ✅ FIXED
           >
             <CardHeader className="p-0 relative">
               <img

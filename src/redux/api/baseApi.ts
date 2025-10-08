@@ -82,6 +82,15 @@ export const baseApi = createApi({
       invalidatesTags: ["products"],
     }),
 
+    getProductsByCategoryAndSubcategory: builder.query<
+      IProduct[],
+      { categorySlug: string; subSlug: string }
+    >({
+      query: ({ categorySlug, subSlug }) =>
+        `/product/${categorySlug}/${subSlug}`,
+      providesTags: ["products"],
+    }),
+
     deleteProduct: builder.mutation<void, string>({
       query: (id) => ({
         url: `/product/delete/${id}`,
@@ -100,6 +109,7 @@ export const {
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
   // Products
+  useGetProductsByCategoryAndSubcategoryQuery,
   useGetProductsBySubcategorySlugQuery,
   useGetAllProductsQuery,
   useGetProductBySlugQuery,
