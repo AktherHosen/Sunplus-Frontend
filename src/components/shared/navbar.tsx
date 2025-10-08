@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -7,13 +5,15 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
-import { Menu, X, Phone, MessageSquare, Headphones, Mail } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Headphones, Mail, Menu, Phone, X } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,7 +27,6 @@ export default function Navbar() {
     { title: "Support", href: "/support", popover: true },
     { title: "Contact", href: "/contact" },
     { title: "Categories", href: "/categories" },
-    { title: "Dashboard", href: "/dashboard" },
   ];
 
   const allMenuItems = [...leftMenuItems, ...rightMenuItems];
@@ -159,13 +158,22 @@ export default function Navbar() {
                         {item.title}
                       </p>
                       <div className="flex flex-col pl-3 space-y-2 text-sm text-muted-foreground">
-                        <a href="tel:+880123456789" className="hover:text-primary">
+                        <a
+                          href="tel:+880123456789"
+                          className="hover:text-primary"
+                        >
                           +880 123 456 789
                         </a>
-                        <a href="tel:+880987654321" className="hover:text-primary">
+                        <a
+                          href="tel:+880987654321"
+                          className="hover:text-primary"
+                        >
                           +880 987 654 321
                         </a>
-                        <a href="mailto:support@sunplus.com" className="hover:text-primary">
+                        <a
+                          href="mailto:support@sunplus.com"
+                          className="hover:text-primary"
+                        >
                           support@sunplus.com
                         </a>
                         <Link

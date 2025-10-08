@@ -1,11 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 export default function Subcategories() {
-  const { slug } = useParams();
-  console.log(slug);
+  const { slug } = useParams(); // slug of parent category
+  const navigate = useNavigate();
   const BASE_URL = "http://localhost:5000";
+
   const { data, isLoading, isError } = useGetCategoryBySlugQuery(slug!);
 
   const category = data?.data;
@@ -26,7 +27,8 @@ export default function Subcategories() {
         {subcategories.map((sub: any) => (
           <Card
             key={sub._id}
-            className="overflow-hidden hover:shadow-lg transition"
+            className="overflow-hidden hover:shadow-lg transition cursor-pointer"
+            onClick={() => navigate(`/subcategory/${sub.slug}`)} // navigate to product page
           >
             <CardHeader className="p-0 relative">
               <img
@@ -36,7 +38,7 @@ export default function Subcategories() {
                     : "https://via.placeholder.com/300x200"
                 }
                 alt={sub.name}
-                className="w-full h-40 object-cover"
+                className="w-full h-60 object-cover"
               />
             </CardHeader>
             <CardContent className="p-3">
