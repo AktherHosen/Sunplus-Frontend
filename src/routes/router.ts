@@ -1,14 +1,19 @@
+import { createBrowserRouter } from "react-router";
 import Main from "@/layout/main";
+import Home from "@/pages/home/home";
 import AboutUsPage from "@/pages/about-page";
 import Categories from "@/pages/categories/categories";
 import Subcategories from "@/pages/categories/subcategories";
 import CertificatesPage from "@/pages/certificates-page";
 import ChairmanMessagePage from "@/pages/chairmenmessage-page";
 import ContactPage from "@/pages/contact-page";
-import Home from "@/pages/home/home";
-import MediaEventsPage from "@/pages/mediaevents-page";
+import SidebarLayout from "@/pages/dashboard/sidebarLayout";
 import NotFound from "@/pages/notFound/not-found";
-import { createBrowserRouter } from "react-router";
+import MediaEventsPage from "@/pages/mediaevents-page";
+// import DashboardHome from "@/pages/dashboard/dashboardHome"; // example dashboard page
+// import InboxPage from "@/pages/dashboard/inboxPage"; // add other dashboard pages
+// import CalendarPage from "@/pages/dashboard/calendarPage";
+// import SettingsPage from "@/pages/dashboard/settingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -21,18 +26,19 @@ export const router = createBrowserRouter([
       { path: "categories", Component: Categories },
       { path: "category/:slug", Component: Subcategories },
       { path: "contact", Component: ContactPage },
+      { path: "chairman-message", Component: ChairmanMessagePage },
+      { path: "certificates", Component: CertificatesPage },
+      { path: "media-events", Component: MediaEventsPage },
       {
-        path: "chairman-message",
-        Component: ChairmanMessagePage,
+        path: "dashboard",
+        Component: SidebarLayout,
+        children: [
+          // { index: true, Component: DashboardHome },
+          // { path: "inbox", Component: InboxPage },
+          // { path: "calendar", Component: CalendarPage },
+          // { path: "settings", Component: SettingsPage },
+        ],
       },
-      {
-        path: "certificates",
-        Component: CertificatesPage,
-      },
-      {
-        path: "media-events",
-        Component: MediaEventsPage
-      }
     ],
   },
 ]);
