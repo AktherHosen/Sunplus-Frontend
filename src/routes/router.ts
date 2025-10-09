@@ -34,7 +34,7 @@ export const router = createBrowserRouter([
       { path: "chairman-message", Component: ChairmanMessagePage },
       { path: "certificates", Component: CertificatesPage },
       { path: "media-events", Component: MediaEventsPage },
-      { path: "products", Component: ProductPage },
+      { path: "products", Component: ProductPage},
       {
         path: "category/:categorySlug/:subSlug",
         Component: SubcategoryProductPage,

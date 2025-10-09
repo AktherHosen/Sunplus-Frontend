@@ -7,6 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Home } from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router";
 
 const Main = () => {
@@ -23,7 +24,7 @@ const Main = () => {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/">Home</Link>
+                    <Link to="/" className="flex items-center gap-2"> <Home size={15}/> Home</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
 
