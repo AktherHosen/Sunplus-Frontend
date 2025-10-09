@@ -11,7 +11,7 @@ export default function ProductDetailsPage() {
   if (isError)
     return <p className="p-4 text-red-500">Failed to load product details.</p>;
 
-  const product = data?.data || data; // support both shapes
+  const product = data?.data; // support both shapes
 
   if (!product) {
     return <p className="p-4 text-gray-500">Product not found.</p>;
