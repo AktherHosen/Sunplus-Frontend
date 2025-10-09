@@ -1,8 +1,11 @@
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+
+const BASE_URL = "http://localhost:5000"; // Backend URL
 
 const AllSubcategoryProductPage = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useGetProductsBySubcategorySlugQuery(
     slug!
   );
@@ -10,27 +13,48 @@ const AllSubcategoryProductPage = () => {
   if (isLoading) return <div>Loading products...</div>;
   if (isError) return <div>Failed to load products.</div>;
 
-  // API wraps products inside `data`
   const products = data?.data || [];
 
   return (
-    <div>
-      <h1>Products for Subcategory "{slug}"</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">
+        Products for Subcategory "{slug}"
+      </h1>
+
       {products.length === 0 ? (
         <p>No products found in this subcategory.</p>
       ) : (
-        <ul>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
-            <li key={product._id} style={{ marginBottom: "1rem" }}>
-              <h2>{product.name}</h2>
-              <p>Price: ${product.price}</p>
-              <p>
-                Category: {product.category_id?.name || "Unknown"} <br />
-                Subcategory: {product.subcategories?.name || "Unknown"}
-              </p>
-            </li>
+            <div
+              key={product._id}
+              className="border rounded-lg overflow-hidden shadow hover:shadow-lg transition cursor-pointer"
+              onClick={() =>
+                navigate(
+                  `/product/${product.category_id?.slug}/${product.subcategories?.slug}/${product.slug}`
+                )
+              }
+            >
+              <img
+                src={
+                  product.image
+                    ? `${BASE_URL}${product.image}`
+                    : "https://via.placeholder.com/300x200"
+                }
+                alt={product.name}
+                className="w-full h-40 object-cover"
+              />
+              <div className="p-4 text-center">
+                <h2 className="text-lg font-semibold">{product.name}</h2>
+                <p className="text-gray-600 font-medium">${product.price}</p>
+                <p className="text-sm text-gray-500">
+                  Category: {product.category_id?.name || "Unknown"} <br />
+                  Subcategory: {product.subcategories?.name || "Unknown"}
+                </p>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

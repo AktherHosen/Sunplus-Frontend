@@ -16,6 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
 import {
   useAddProductMutation,
   useDeleteProductMutation,
@@ -23,11 +26,12 @@ import {
   useGetAllProductsQuery,
   useUpdateProductMutation,
 } from "@/redux/api/baseApi";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+
+const BASE_URL = "http://localhost:5000";
 
 const ProductPage = () => {
   const { data: productsData, refetch } = useGetAllProductsQuery();
+  console.log(productsData);
   const { data: categoriesData } = useGetAllCategoriesQuery();
   const [deleteProduct] = useDeleteProductMutation();
   const [addProduct] = useAddProductMutation();
@@ -40,8 +44,8 @@ const ProductPage = () => {
   const [price, setPrice] = useState<number | "">("");
   const [category, setCategory] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const BASE_URL = "http://localhost:5000";
   const products = productsData?.data || [];
   const categories = categoriesData?.data || [];
 
@@ -51,11 +55,13 @@ const ProductPage = () => {
       setPrice(editingProduct.price);
       setCategory(editingProduct.category_id?._id || null);
       setSubcategory(editingProduct.subcategories?.[0]?._id || null);
+      setImageFile(null); // cannot preload File object
     } else {
       setName("");
       setPrice("");
       setCategory(null);
       setSubcategory(null);
+      setImageFile(null);
     }
   }, [editingProduct]);
 
@@ -70,6 +76,7 @@ const ProductPage = () => {
     formData.append("price", price.toString());
     formData.append("category_id", category);
     if (subcategory) formData.append("subcategories", subcategory);
+    if (imageFile) formData.append("image", imageFile);
 
     try {
       if (editingProduct) {
@@ -81,6 +88,7 @@ const ProductPage = () => {
       }
       setDialogOpen(false);
       setEditingProduct(null);
+      setImageFile(null);
       refetch();
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to save product");
@@ -105,6 +113,7 @@ const ProductPage = () => {
     });
   };
 
+  console.log(products, "from products page");
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center mb-4">
@@ -119,6 +128,7 @@ const ProductPage = () => {
         </Button>
       </div>
 
+      {/* Product Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((product: any) => (
           <Card
@@ -180,6 +190,7 @@ const ProductPage = () => {
           </DialogHeader>
 
           <div className="space-y-4 mt-4">
+            {/* Name */}
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input
@@ -189,6 +200,7 @@ const ProductPage = () => {
               />
             </div>
 
+            {/* Price */}
             <div className="space-y-2">
               <Label htmlFor="price">Price</Label>
               <Input
@@ -199,6 +211,7 @@ const ProductPage = () => {
               />
             </div>
 
+            {/* Category */}
             <div className="space-y-2">
               <Label>Category</Label>
               <Select onValueChange={setCategory} value={category || ""}>
@@ -215,6 +228,7 @@ const ProductPage = () => {
               </Select>
             </div>
 
+            {/* Subcategory */}
             <div className="space-y-2">
               <Label>Subcategory</Label>
               <Select onValueChange={setSubcategory} value={subcategory || ""}>
@@ -233,6 +247,33 @@ const ProductPage = () => {
               </Select>
             </div>
 
+            {/* Image Upload */}
+            <div className="space-y-2">
+              <Label htmlFor="image">Product Image</Label>
+              <Input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setImageFile(e.target.files[0]);
+                  }
+                }}
+              />
+            </div>
+
+            {/* Preview Image */}
+            {imageFile && (
+              <div className="mt-2">
+                <img
+                  src={URL.createObjectURL(imageFile)}
+                  alt="Preview"
+                  className="w-full h-40 object-cover rounded"
+                />
+              </div>
+            )}
+
+            {/* Save Button */}
             <div className="flex justify-end pt-2">
               <Button onClick={handleSave}>
                 {editingProduct ? "Update" : "Save"}

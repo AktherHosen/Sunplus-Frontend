@@ -11,8 +11,8 @@ import SidebarLayout from "@/pages/dashboard/sidebarLayout";
 import Home from "@/pages/home/home";
 import MediaEventsPage from "@/pages/mediaevents-page";
 import NotFound from "@/pages/notFound/not-found";
-import ProductDetailsPage from "@/pages/products/product-details";
 import ProductPage from "@/pages/products/product-page";
+import SubcatProductDetailsPage from "@/pages/subcat-product-details-page";
 import { createBrowserRouter } from "react-router";
 // import DashboardHome from "@/pages/dashboard/dashboardHome"; // example dashboard page
 // import InboxPage from "@/pages/dashboard/inboxPage"; // add other dashboard pages
@@ -34,14 +34,18 @@ export const router = createBrowserRouter([
       { path: "chairman-message", Component: ChairmanMessagePage },
       { path: "certificates", Component: CertificatesPage },
       { path: "media-events", Component: MediaEventsPage },
-      { path: "products", Component: ProductPage},
+      { path: "products", Component: ProductPage },
       {
         path: "category/:categorySlug/:subSlug",
         Component: SubcategoryProductPage,
       },
+      // {
+      //   path: "/:categorySlug/:subSlug/:productSlug",
+      //   Component: ProductDetailsPage,
+      // },
       {
-        path: "/:categorySlug/:subSlug/:productSlug",
-        Component: ProductDetailsPage,
+        path: "product/:catSlug/:subCatSlug/:productSlug",
+        Component: SubcatProductDetailsPage,
       },
       {
         path: "dashboard",

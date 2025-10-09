@@ -49,8 +49,8 @@ export const baseApi = createApi({
       providesTags: ["products"],
     }),
 
-    getProductBySlug: builder.query<IProduct, string>({
-      query: (slug) => `/product/slug/${slug}`, // GET /product/slug/:slug
+    getProductById: builder.query<IProduct, string>({
+      query: (id) => `/product/${id}`,
       providesTags: ["products"],
     }),
 
@@ -61,10 +61,10 @@ export const baseApi = createApi({
 
     getProductsByCategoryAndSubcategory: builder.query<
       IProduct[],
-      { categorySlug: string; subSlug: string }
+      { categorySlug: string; subSlug: string; productSlug: string }
     >({
-      query: ({ categorySlug, subSlug }) =>
-        `/product/${categorySlug}/${subSlug}`, // GET /product/:categorySlug/:subSlug
+      query: ({ categorySlug, subSlug, productSlug }) =>
+        `/product/${categorySlug}/${subSlug}/${productSlug}`, // GET /product/:categorySlug/:subSlug
       providesTags: ["products"],
     }),
 
@@ -108,7 +108,7 @@ export const {
   useDeleteCategoryMutation,
   // Products
   useGetAllProductsQuery,
-  useGetProductBySlugQuery,
+  useGetProductByIdQuery,
   useGetProductsBySubcategorySlugQuery,
   useGetProductsByCategoryAndSubcategoryQuery,
   useAddProductMutation,
