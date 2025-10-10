@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,13 +23,11 @@ import {
   useGetAllCategoriesQuery,
   useUpdateCategoryMutation,
 } from "@/redux/api/baseApi";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 interface CategoryFormProps {
-  category?: any; // if passed, component works as edit
-  triggerText?: string; // optional trigger button text
-  onSuccess?: () => void; // optional callback after save
+  category?: any; // Edit mode
+  triggerText?: string;
+  onSuccess?: () => void;
 }
 
 export default function CategoryForm({
@@ -39,6 +39,8 @@ export default function CategoryForm({
   const [name, setName] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [bannerFiles, setBannerFiles] = useState<File[]>([]);
+  const [bannerPreviews, setBannerPreviews] = useState<string[]>([]);
   const [parent, setParent] = useState<string | null>(null);
 
   const isEditMode = Boolean(category);
@@ -54,21 +56,29 @@ export default function CategoryForm({
       setName(category.name || "");
       setParent(category.parent || null);
       setImagePreview(category.image ? `${BASE_URL}${category.image}` : null);
-      setImageFile(null); // reset file input
+      setImageFile(null);
+      setBannerPreviews(category.banners?.map((b: string) => `${BASE_URL}${b}`) || []);
+      setBannerFiles([]);
     } else {
       setName("");
       setParent(null);
       setImageFile(null);
       setImagePreview(null);
+      setBannerFiles([]);
+      setBannerPreviews([]);
     }
   }, [category]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setImageFile(file);
-    if (file) {
-      setImagePreview(URL.createObjectURL(file));
-    }
+    if (file) setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    setBannerFiles(files);
+    setBannerPreviews(files.map((file) => URL.createObjectURL(file)));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,8 +86,10 @@ export default function CategoryForm({
     try {
       const formData = new FormData();
       formData.append("name", name);
-      formData.append("parent", parent || ""); // allow removing parent
+      formData.append("parent", parent || "");
+
       if (imageFile) formData.append("image", imageFile);
+      bannerFiles.forEach((file) => formData.append("banners", file));
 
       if (isEditMode && category.slug) {
         await updateCategory({ slug: category.slug, formData }).unwrap();
@@ -109,8 +121,8 @@ export default function CategoryForm({
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Edit category details and optionally upload a new image."
-              : "Upload an image and create a new category or subcategory."}
+              ? "Edit category details and optionally upload new images or banners."
+              : "Upload an image, banners, and create a new category or subcategory."}
           </DialogDescription>
         </DialogHeader>
 
@@ -127,10 +139,9 @@ export default function CategoryForm({
             />
           </div>
 
-          {/* Image Upload */}
+          {/* Main Image */}
           <div className="space-y-2">
-            <Label htmlFor="image">Upload Image</Label>
-
+            <Label htmlFor="image">Upload Main Image</Label>
             <Input
               id="image"
               type="file"
@@ -141,9 +152,31 @@ export default function CategoryForm({
               <img
                 src={imagePreview}
                 alt="Preview"
-                className="w-10 h-10 object-cover mb-2 rounded border"
+                className="w-16 h-16 object-cover rounded border"
               />
             )}
+          </div>
+
+          {/* Banner Images */}
+          <div className="space-y-2">
+            <Label htmlFor="banners">Upload Banners (multiple)</Label>
+            <Input
+              id="banners"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleBannerChange}
+            />
+            <div className="flex space-x-2 mt-2 flex-wrap">
+              {bannerPreviews.map((src, idx) => (
+                <img
+                  key={idx}
+                  src={src}
+                  alt={`Banner ${idx + 1}`}
+                  className="w-16 h-16 object-cover rounded border"
+                />
+              ))}
+            </div>
           </div>
 
           {/* Parent Category */}

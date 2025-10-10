@@ -10,23 +10,50 @@ const AllSubcategoriesPage = () => {
   const { data, isLoading, isError } = useGetCategoryBySlugQuery(slug!);
 
   if (isLoading) return <Loader />;
-  if (isError) return <div>Failed to load subcategories.</div>;
+  if (isError) return <div>Failed to load category data.</div>;
 
-  const subcategories = data?.data || [];
+  const category = data?.data || {};
+  const subcategories = category.subcategories || [];
+  const banners = category.banners || [];
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Subcategories for "{slug}"</h1>
+    <div className="">
 
+      {banners.length > 0 && (
+        <div className="w-full">
+          {banners.length === 1 ? (
+            <img
+              src={`${BASE_URL}${banners[0]}`}
+              alt={`${category.name} banner`}
+              className="w-full h-full object-cover rounded-xl shadow-lg"
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {banners.map((banner: string, idx: number) => (
+                <img
+                  key={idx}
+                  src={`${BASE_URL}${banner}`}
+                  alt={`Banner ${idx + 1}`}
+                  className="w-full h-60 object-cover rounded-lg shadow-md hover:shadow-lg transition"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 🧩 Subcategories Section */}
       {subcategories.length === 0 ? (
-        <p>No subcategories found.</p>
+        <p className="text-gray-500 text-center">
+          No subcategories found under this category.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {subcategories.map((sub) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6 mt-10">
+          {subcategories.map((sub: any) => (
             <div
               key={sub._id}
-              className="border rounded-lg overflow-hidden shadow hover:shadow-lg transition cursor-pointer"
               onClick={() => navigate(`/product/${sub.slug}`)}
+              className="border rounded-lg overflow-hidden shadow hover:shadow-lg transition cursor-pointer bg-white"
             >
               <img
                 src={
@@ -38,7 +65,9 @@ const AllSubcategoriesPage = () => {
                 className="w-full h-40 object-cover"
               />
               <div className="p-4 text-center">
-                <h2 className="text-lg font-semibold">{sub.name}</h2>
+                <h2 className="text-lg font-semibold text-gray-800">
+                  {sub.name}
+                </h2>
               </div>
             </div>
           ))}
