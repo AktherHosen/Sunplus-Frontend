@@ -42,7 +42,7 @@ export default function CategoryForm({
   const [parent, setParent] = useState<string | null>(null);
 
   const isEditMode = Boolean(category);
-  const BASE_URL = "http://localhost:5000";
+  const BASE_URL = "http://localhost:5001";
 
   const { data: categories } = useGetAllCategoriesQuery(undefined);
   const [addCategory, { isLoading: isAdding }] = useAddCategoryMutation();

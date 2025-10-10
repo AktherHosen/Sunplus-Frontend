@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router";
 export default function Subcategories() {
   const { slug } = useParams(); // parent category slug (e.g. "gang-switches")
   const navigate = useNavigate();
-  const BASE_URL = "http://localhost:5000";
+  const BASE_URL = "http://localhost:5001";
 
   const { data, isLoading, isError } = useGetCategoryBySlugQuery(slug!);
 

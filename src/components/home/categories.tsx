@@ -12,7 +12,7 @@ export default function Categories() {
   const { data, isLoading, isError } = useGetAllCategoriesQuery(undefined);
   const categories = data?.data || [];
 
-  const BASE_URL = "http://localhost:5000";
+  const BASE_URL = "http://localhost:5001";
 
   if (isLoading) return <Loader />;
   if (isError)

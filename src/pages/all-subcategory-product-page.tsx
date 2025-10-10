@@ -2,7 +2,7 @@ import Loader from "@/components/loader";
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
 import { useNavigate, useParams } from "react-router";
 
-const BASE_URL = "http://localhost:5000"; // Backend URL
+const BASE_URL = "http://localhost:5001"; // Backend URL
 
 const AllSubcategoryProductPage = () => {
   const { slug } = useParams();

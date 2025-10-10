@@ -1,6 +1,6 @@
 // import { useParams } from "react-router";
 
-// const BASE_URL = "http://localhost:5000";
+// const BASE_URL = "http://localhost:5001";
 
 // export default function ProductDetailsPage() {
 //   const { slug } = useParams();
