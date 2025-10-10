@@ -6,15 +6,15 @@ import {
 } from "@/components/ui/card";
 import { useGetAllCategoriesQuery } from "@/redux/api/baseApi";
 import { Link } from "react-router";
+import Loader from "../loader";
 
 export default function Categories() {
   const { data, isLoading, isError } = useGetAllCategoriesQuery(undefined);
-  const categories = data?.data || []; // your API returns { success, message, data }
+  const categories = data?.data || [];
 
-  const BASE_URL = "http://localhost:5000"; // prepend to uploaded images
+  const BASE_URL = "http://localhost:5000";
 
-  if (isLoading)
-    return <div className="text-center py-10">Loading categories...</div>;
+  if (isLoading) return <Loader />;
   if (isError)
     return (
       <div className="text-center py-10 text-red-500">

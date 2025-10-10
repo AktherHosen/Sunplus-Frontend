@@ -1,3 +1,4 @@
+import Loader from "@/components/loader";
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
 import { useNavigate, useParams } from "react-router";
 
@@ -10,7 +11,7 @@ const AllSubcategoryProductPage = () => {
     slug!
   );
 
-  if (isLoading) return <div>Loading products...</div>;
+  if (isLoading) return <Loader />;
   if (isError) return <div>Failed to load products.</div>;
 
   const products = data?.data || [];

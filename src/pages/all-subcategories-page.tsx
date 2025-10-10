@@ -1,14 +1,15 @@
+import Loader from "@/components/loader";
 import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
 import { useNavigate, useParams } from "react-router";
 
-const BASE_URL = "http://localhost:5000"; // Your backend URL
+const BASE_URL = "http://localhost:5000";
 
 const AllSubcategoriesPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError } = useGetCategoryBySlugQuery(slug!);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loader />;
   if (isError) return <div>Failed to load subcategories.</div>;
 
   const subcategories = data?.data || [];
