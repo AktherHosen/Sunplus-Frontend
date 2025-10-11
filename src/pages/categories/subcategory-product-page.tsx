@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
+import { BASE_URL } from "@/utils/utils";
 import { useNavigate, useParams } from "react-router";
 
 export default function SubcategoryProductPage() {
   const { categorySlug, subSlug } = useParams();
-
   const navigate = useNavigate();
   const { data, isLoading, isError } =
     useGetProductsByCategoryAndSubcategoryQuery({

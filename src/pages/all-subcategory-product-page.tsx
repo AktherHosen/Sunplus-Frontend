@@ -1,6 +1,7 @@
 import Loader from "@/components/loader";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
+import { BASE_URL } from "@/utils/utils";
 import { useNavigate, useParams } from "react-router";
 
 const AllSubcategoryProductPage = () => {
