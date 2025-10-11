@@ -12,7 +12,8 @@ export default function Categories() {
   const { data, isLoading, isError } = useGetAllCategoriesQuery(undefined);
   const categories = data?.data || [];
 
-  const BASE_URL = "http://localhost:5001";
+  console.log()
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   if (isLoading) return <Loader />;
   if (isError)

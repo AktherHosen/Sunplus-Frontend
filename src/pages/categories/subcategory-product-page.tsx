@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 
 export default function SubcategoryProductPage() {
   const { categorySlug, subSlug } = useParams();
-  const BASE_URL = "http://localhost:5001";
+  const BASE_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const { data, isLoading, isError } =
     useGetProductsByCategoryAndSubcategoryQuery({

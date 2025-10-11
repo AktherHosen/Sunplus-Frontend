@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const BASE_URL = "http://localhost:5001";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const SubcatProductDetailsPage = () => {
   const { categorySlug, subCategorySlug, productSlug } = useParams();

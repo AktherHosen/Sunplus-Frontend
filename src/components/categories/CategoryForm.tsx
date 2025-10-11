@@ -44,7 +44,7 @@ export default function CategoryForm({
   const [parent, setParent] = useState<string | null>(null);
 
   const isEditMode = Boolean(category);
-  const BASE_URL = "http://localhost:5001";
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   const { data: categories } = useGetAllCategoriesQuery(undefined);
   const [addCategory, { isLoading: isAdding }] = useAddCategoryMutation();

@@ -14,7 +14,7 @@ export default function Categories() {
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const categories = data?.data || [];
-  const BASE_URL = "http://localhost:5001"; // serve images correctly
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   const handleDelete = (id: string) => {
     toast.warning("Are you sure you want to delete this category?", {
