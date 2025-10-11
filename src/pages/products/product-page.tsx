@@ -26,7 +26,6 @@ import {
   useGetAllProductsQuery,
   useUpdateProductMutation,
 } from "@/redux/api/baseApi";
-import { BASE_URL } from "@/utils/utils";
 
 const ProductPage = () => {
   const { data: productsData, refetch } = useGetAllProductsQuery();
@@ -138,7 +137,7 @@ const ProductPage = () => {
               <img
                 src={
                   product.image
-                    ? `${BASE_URL}${product.image}`
+                    ? `${import.meta.env.VITE_API_URL}${product.image}`
                     : "https://via.placeholder.com/300x200"
                 }
                 alt={product.name}

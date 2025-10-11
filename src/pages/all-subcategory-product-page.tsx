@@ -1,7 +1,6 @@
 import Loader from "@/components/loader";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
-import { BASE_URL } from "@/utils/utils";
 import { useNavigate, useParams } from "react-router";
 
 const AllSubcategoryProductPage = () => {
@@ -41,7 +40,7 @@ const AllSubcategoryProductPage = () => {
                 <img
                   src={
                     product.image
-                      ? `${BASE_URL}${product.image}`
+                      ? `${import.meta.env.VITE_API_URL}${product.image}`
                       : "https://via.placeholder.com/300x400"
                   }
                   alt={product.name}

@@ -24,8 +24,8 @@
 //           <img
 //             src={
 //               product.image
-//                 ? `${BASE_URL}${product.image}`
 //                 : "https://via.placeholder.com/600x400"
+//                 ? `${BASE_URL}${product.image}`
 //             }
 //             alt={product.name}
 //             className="w-full rounded-xl shadow-md"

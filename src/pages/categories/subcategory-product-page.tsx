@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
-import { BASE_URL } from "@/utils/utils";
 import { useNavigate, useParams } from "react-router";
 
 export default function SubcategoryProductPage() {
@@ -33,7 +32,7 @@ export default function SubcategoryProductPage() {
               <img
                 src={
                   product.image
-                    ? `${BASE_URL}${product.image}`
+                    ? `${import.meta.env.VITE_API_URL}${product.image}`
                     : "https://via.placeholder.com/300x200"
                 }
                 alt={product.name}

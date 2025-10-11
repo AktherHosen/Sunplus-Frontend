@@ -2,11 +2,11 @@
 import CategoryForm from "@/components/categories/CategoryForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   useDeleteCategoryMutation,
   useGetAllCategoriesQuery,
 } from "@/redux/api/baseApi";
-import { BASE_URL } from "@/utils/utils";
 import { toast } from "sonner";
 
 export default function Categories() {
@@ -73,7 +73,7 @@ export default function Categories() {
                 <img
                   src={
                     cat.image
-                      ? `${BASE_URL}${cat.image}`
+                      ? `${import.meta.env.VITE_API_URL}${cat.image}`
                       : "https://via.placeholder.com/300x200"
                   }
                   alt={cat.name}

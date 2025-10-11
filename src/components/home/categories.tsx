@@ -5,7 +5,6 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { useGetAllCategoriesQuery } from "@/redux/api/baseApi";
-import { BASE_URL } from "@/utils/utils";
 import { Link } from "react-router";
 import Loader from "../loader";
 
@@ -38,7 +37,10 @@ export default function Categories() {
 
           <CardContent className="!p-0 !px-8">
             <img
-              src={category.image && `${BASE_URL}${category.image}`}
+              src={
+                category.image &&
+                `${import.meta.env.VITE_API_URL}${category.image}`
+              }
               alt={category.name}
               className="w-full max-h-[300px] object-cover"
             />

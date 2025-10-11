@@ -27,7 +27,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { BASE_URL } from "@/utils/utils";
 
 // API
 
@@ -65,7 +64,9 @@ const SubcatProductDetailsPage = () => {
                   <img
                     src={
                       galleryImages[selectedImage]
-                        ? `${BASE_URL}${galleryImages[selectedImage]}`
+                        ? `${import.meta.env.VITE_API_URL}${
+                            galleryImages[selectedImage]
+                          }`
                         : "/api/placeholder/600/600"
                     }
                     alt={product.name}
@@ -95,7 +96,7 @@ const SubcatProductDetailsPage = () => {
                     }`}
                   >
                     <img
-                      src={`${BASE_URL}${img}`}
+                      src={`${import.meta.env.VITE_API_URL}${img}`}
                       alt={`${product.name} view ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -229,7 +230,7 @@ const SubcatProductDetailsPage = () => {
                     <Zoom key={idx}>
                       <Card className="overflow-hidden border-0 shadow-md hover:shadow-lg transition-shadow rounded-lg p-0">
                         <img
-                          src={`${BASE_URL}${img}`}
+                          src={`${import.meta.env.VITE_API_URL}${img}`}
                           alt={`View ${idx + 1}`}
                           className="w-full h-fit object-cover cursor-zoom-in rounded-lg"
                         />

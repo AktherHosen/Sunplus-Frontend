@@ -6,7 +6,6 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
-import { BASE_URL } from "@/utils/utils";
 import { Link, useNavigate, useParams } from "react-router";
 
 const AllSubcategoriesPage = () => {
@@ -27,7 +26,7 @@ const AllSubcategoriesPage = () => {
         <div className="w-full">
           {banners.length === 1 ? (
             <img
-              src={`${BASE_URL}${banners[0]}`}
+              src={`${import.meta.env.VITE_API_URL}${banners[0]}`}
               alt={`${category.name} banner`}
               className="w-full h-full object-cover rounded-xl shadow-lg"
             />
@@ -36,7 +35,7 @@ const AllSubcategoriesPage = () => {
               {banners.map((banner: string, idx: number) => (
                 <img
                   key={idx}
-                  src={`${BASE_URL}${banner}`}
+                  src={`${import.meta.env.VITE_API_URL}${banner}`}
                   alt={`Banner ${idx + 1}`}
                   className="w-full h-60 object-cover rounded-lg shadow-md hover:shadow-lg transition"
                 />
@@ -66,7 +65,9 @@ const AllSubcategoriesPage = () => {
 
               <CardContent className="!p-0 !px-8">
                 <img
-                  src={sub.image && `${BASE_URL}${sub.image}`}
+                  src={
+                    sub.image && `${import.meta.env.VITE_API_URL}${sub.image}`
+                  }
                   alt={sub.name}
                   className="w-full max-h-[300px] object-cover"
                 />

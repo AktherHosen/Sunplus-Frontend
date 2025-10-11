@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
-import { BASE_URL } from "@/utils/utils";
 import { useNavigate, useParams } from "react-router";
 
 export default function Subcategories() {
@@ -34,7 +33,7 @@ export default function Subcategories() {
               <img
                 src={
                   sub.image
-                    ? `${BASE_URL}${sub.image}`
+                    ? `${import.meta.env.VITE_API_URL}${sub.image}`
                     : "https://via.placeholder.com/300x200"
                 }
                 alt={sub.name}

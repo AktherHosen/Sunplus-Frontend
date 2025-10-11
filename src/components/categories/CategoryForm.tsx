@@ -21,7 +21,6 @@ import {
   useGetAllCategoriesQuery,
   useUpdateCategoryMutation,
 } from "@/redux/api/baseApi";
-import { BASE_URL } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -55,10 +54,10 @@ export default function CategoryForm({
     if (category) {
       setName(category.name || "");
       setParent(category.parent || null);
-      setImagePreview(category.image ? `${BASE_URL}${category.image}` : null);
+      setImagePreview(category.image ? `${import.meta.env.VITE_API_URL}${category.image}` : null);
       setImageFile(null);
       setBannerPreviews(
-        category.banners?.map((b: string) => `${BASE_URL}${b}`) || []
+        category.banners?.map((b: string) => `${import.meta.env.VITE_API_URL}${b}`) || []
       );
       setBannerFiles([]);
     } else {
