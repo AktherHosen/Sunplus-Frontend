@@ -17,10 +17,6 @@ const AllSubcategoryProductPage = () => {
 
   return (
     <div className="mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">
-        Products for Subcategory "{slug}"
-      </h1>
-
       {products.length === 0 ? (
         <p className="text-gray-500">No products found in this subcategory.</p>
       ) : (
@@ -28,7 +24,7 @@ const AllSubcategoryProductPage = () => {
           {products.map((product) => (
             <Card
               key={product._id}
-              className="cursor-pointer "
+              className="cursor-pointer rounded-none pt-0"
               onClick={() =>
                 navigate(
                   `/product/${product.category_id?.slug}/${product.subcategories?.slug}/${product.slug}`
@@ -36,7 +32,7 @@ const AllSubcategoryProductPage = () => {
               }
             >
               {/* Image */}
-              <CardHeader className="p-0 relative overflow-hidden rounded-t-xl flex-shrink-0">
+              <CardHeader className="p-0 relative overflow-hidden pt-0 flex-shrink-0">
                 <img
                   src={
                     product.image

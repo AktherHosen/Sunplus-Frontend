@@ -58,8 +58,8 @@ const SubcatProductDetailsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left: Image Gallery */}
           <div className="space-y-4">
-            <Card className="overflow-hidden h-fit">
-              <div className="relative bg-white">
+            <Card className="overflow-hidden shadow-none border-border h-fit">
+              <div className="relative ">
                 <Zoom>
                   <img
                     src={
@@ -74,8 +74,8 @@ const SubcatProductDetailsPage = () => {
                   />
                 </Zoom>
 
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  <Badge variant="default">In Stock</Badge>
+                <div className="absolute top-4 left-4 flex flex-col justify-self-end gap-2">
+                  <Badge variant="default">Available</Badge>
                   {product.isNew && (
                     <Badge variant="secondary">New Arrival</Badge>
                   )}

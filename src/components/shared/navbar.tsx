@@ -69,7 +69,7 @@ export default function Navbar() {
                   <NavigationMenuItem key={item.title} className="relative">
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button className="uppercase font-semibold hover:text-primary hover:bg-transparent transition-colors focus:outline-none">
+                        <button className="uppercase text-sm font-semibold hover:text-primary hover:bg-transparent transition-colors focus:outline-none">
                           {item.title}
                         </button>
                       </PopoverTrigger>
