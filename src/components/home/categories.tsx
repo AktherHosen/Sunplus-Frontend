@@ -5,14 +5,13 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { useGetAllCategoriesQuery } from "@/redux/api/baseApi";
+import { BASE_URL } from "@/utils/utils";
 import { Link } from "react-router";
 import Loader from "../loader";
 
 export default function Categories() {
   const { data, isLoading, isError } = useGetAllCategoriesQuery(undefined);
   const categories = data?.data || [];
-
-  const BASE_URL = "http://localhost:5001";
 
   if (isLoading) return <Loader />;
   if (isError)

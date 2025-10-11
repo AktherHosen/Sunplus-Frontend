@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
+import { BASE_URL } from "@/utils/utils";
 import { useNavigate, useParams } from "react-router";
 
 export default function Subcategories() {
   const { slug } = useParams(); // parent category slug (e.g. "gang-switches")
   const navigate = useNavigate();
-  const BASE_URL = "http://localhost:5001";
 
   const { data, isLoading, isError } = useGetCategoryBySlugQuery(slug!);
 

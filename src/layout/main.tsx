@@ -19,40 +19,43 @@ const Main = () => {
       <Navbar />
       <div className="container mx-auto px-4 lg:px-0 mt-6">
         {/* {paths.length > 0 && ( */}
-          <div >
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link to="/" className="flex items-center gap-2"> <Home size={15}/> Home</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
+        <div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/" className="flex items-center gap-2">
+                    {" "}
+                    <Home size={15} /> Home
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
 
-                {paths.map((segment, index) => {
-                  const routeTo = "/" + paths.slice(0, index + 1).join("/");
-                  const isLast = index === paths.length - 1;
-                  return (
-                    <div key={routeTo} className="flex items-center">
-                      <BreadcrumbSeparator />
-                      <BreadcrumbItem>
-                        {isLast ? (
-                          <span className="capitalize text-muted-foreground">
+              {paths.map((segment, index) => {
+                // const routeTo = "/" + paths.slice(0, index + 1).join("/");
+                const isLast = index === paths.length - 1;
+                return (
+                  <div className="flex items-center">
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      {isLast ? (
+                        <span className="capitalize text-muted-foreground">
+                          {segment.replace("-", " ")}
+                        </span>
+                      ) : (
+                        <BreadcrumbLink asChild>
+                          <p className="capitalize">
                             {segment.replace("-", " ")}
-                          </span>
-                        ) : (
-                          <BreadcrumbLink asChild>
-                            <Link to={routeTo} className="capitalize">
-                              {segment.replace("-", " ")}
-                            </Link>
-                          </BreadcrumbLink>
-                        )}
-                      </BreadcrumbItem>
-                    </div>
-                  );
-                })}
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
+                          </p>
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                  </div>
+                );
+              })}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
         {/* )} */}
       </div>
 

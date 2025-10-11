@@ -26,8 +26,7 @@ import {
   useGetAllProductsQuery,
   useUpdateProductMutation,
 } from "@/redux/api/baseApi";
-
-const BASE_URL = "http://localhost:5001";
+import { BASE_URL } from "@/utils/utils";
 
 const ProductPage = () => {
   const { data: productsData, refetch } = useGetAllProductsQuery();

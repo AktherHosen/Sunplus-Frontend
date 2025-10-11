@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 
 export default function SubcategoryProductPage() {
   const { categorySlug, subSlug } = useParams();
-  const BASE_URL = "http://localhost:5001";
+
   const navigate = useNavigate();
   const { data, isLoading, isError } =
     useGetProductsByCategoryAndSubcategoryQuery({

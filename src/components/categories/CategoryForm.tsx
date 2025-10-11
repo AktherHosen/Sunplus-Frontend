@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,6 +21,9 @@ import {
   useGetAllCategoriesQuery,
   useUpdateCategoryMutation,
 } from "@/redux/api/baseApi";
+import { BASE_URL } from "@/utils/utils";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface CategoryFormProps {
   category?: any; // Edit mode
@@ -44,7 +45,6 @@ export default function CategoryForm({
   const [parent, setParent] = useState<string | null>(null);
 
   const isEditMode = Boolean(category);
-  const BASE_URL = "http://localhost:5001";
 
   const { data: categories } = useGetAllCategoriesQuery(undefined);
   const [addCategory, { isLoading: isAdding }] = useAddCategoryMutation();
@@ -57,7 +57,9 @@ export default function CategoryForm({
       setParent(category.parent || null);
       setImagePreview(category.image ? `${BASE_URL}${category.image}` : null);
       setImageFile(null);
-      setBannerPreviews(category.banners?.map((b: string) => `${BASE_URL}${b}`) || []);
+      setBannerPreviews(
+        category.banners?.map((b: string) => `${BASE_URL}${b}`) || []
+      );
       setBannerFiles([]);
     } else {
       setName("");

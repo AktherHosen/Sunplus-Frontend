@@ -1,8 +1,13 @@
 import Loader from "@/components/loader";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
-import { useNavigate, useParams } from "react-router";
-
-const BASE_URL = "http://localhost:5001";
+import { BASE_URL } from "@/utils/utils";
+import { Link, useNavigate, useParams } from "react-router";
 
 const AllSubcategoriesPage = () => {
   const { slug } = useParams();
@@ -18,7 +23,6 @@ const AllSubcategoriesPage = () => {
 
   return (
     <div className="">
-
       {banners.length > 0 && (
         <div className="w-full">
           {banners.length === 1 ? (
@@ -50,26 +54,33 @@ const AllSubcategoriesPage = () => {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6 mt-10">
           {subcategories.map((sub: any) => (
-            <div
+            <Card
               key={sub._id}
-              onClick={() => navigate(`/product/${sub.slug}`)}
-              className="border rounded-lg overflow-hidden shadow hover:shadow-lg transition cursor-pointer bg-white"
+              className="hover:shadow-lg transition-shadow rounded-none py-0 pt-4"
             >
-              <img
-                src={
-                  sub.image
-                    ? `${BASE_URL}${sub.image}`
-                    : "https://via.placeholder.com/300x200"
-                }
-                alt={sub.name}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4 text-center">
-                <h2 className="text-lg font-semibold text-gray-800">
+              <CardHeader className="!p-2">
+                <h3 className="text-lg font-bold text-center text-primary">
                   {sub.name}
-                </h2>
-              </div>
-            </div>
+                </h3>
+              </CardHeader>
+
+              <CardContent className="!p-0 !px-8">
+                <img
+                  src={sub.image && `${BASE_URL}${sub.image}`}
+                  alt={sub.name}
+                  className="w-full max-h-[300px] object-cover"
+                />
+              </CardContent>
+
+              <CardFooter className="border-t !p-2.5 flex items-center justify-center">
+                <Link
+                  to={`/product/${sub.slug}`}
+                  className="capitalize font-bold"
+                >
+                  See More
+                </Link>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       )}
