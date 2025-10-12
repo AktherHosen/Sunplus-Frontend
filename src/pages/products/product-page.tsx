@@ -44,7 +44,7 @@ const ProductPage = () => {
   const [subcategory, setSubcategory] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // ✅ Dynamic meta fields
+  // Dynamic meta fields
   const [metaFields, setMetaFields] = useState<
     { key: string; value: string }[]
   >([{ key: "", value: "" }]);
@@ -52,7 +52,7 @@ const ProductPage = () => {
   const products = productsData?.data || [];
   const categories = categoriesData?.data || [];
 
-  // ✅ Reset / Load form data
+  // Load form when editing
   useEffect(() => {
     if (editingProduct) {
       setName(editingProduct.name || "");
@@ -73,7 +73,7 @@ const ProductPage = () => {
         setMetaFields([{ key: "", value: "" }]);
       }
     } else {
-      // Reset fields when adding new product
+      // Reset form
       setName("");
       setPrice(0);
       setCategory(null);
@@ -83,7 +83,7 @@ const ProductPage = () => {
     }
   }, [editingProduct, dialogOpen]);
 
-  // ✅ Meta field handlers
+  // Meta handlers
   const handleAddMetaField = () =>
     setMetaFields([...metaFields, { key: "", value: "" }]);
   const handleRemoveMetaField = (index: number) =>
@@ -99,7 +99,7 @@ const ProductPage = () => {
     setMetaFields(updated);
   };
 
-  // ✅ Save product
+  // Save product
   const handleSave = async () => {
     if (!name.trim() || !price || !category) {
       toast.error("Name, price, and category are required");
@@ -136,7 +136,7 @@ const ProductPage = () => {
     }
   };
 
-  // ✅ Delete product
+  // Delete product
   const handleDelete = (id: string) => {
     toast.warning("Are you sure you want to delete this product?", {
       action: {
@@ -168,7 +168,7 @@ const ProductPage = () => {
         </Button>
       </div>
 
-      {/* ✅ Product Grid */}
+      {/* Product Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((product: any) => (
           <Card
@@ -232,7 +232,12 @@ const ProductPage = () => {
             {/* Name */}
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" value={name} placeholder="Enter product name" />
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter product name"
+              />
             </div>
 
             {/* Price */}
@@ -242,11 +247,12 @@ const ProductPage = () => {
                 id="price"
                 type="number"
                 value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
                 placeholder="Enter price"
               />
             </div>
 
-            {/* Category & Subcategory */}
+            {/* Category */}
             <div className="flex flex-col gap-4 md:col-span-1">
               <div className="flex flex-col gap-2 w-full">
                 <Label>Category</Label>
@@ -295,12 +301,18 @@ const ProductPage = () => {
                     <Input
                       placeholder="Key (e.g., brand)"
                       value={field.key}
+                      onChange={(e) =>
+                        handleMetaChange(index, "key", e.target.value)
+                      }
                       className="focus:outline-none"
                     />
                     <Input
                       placeholder="Value (e.g., Apple)"
                       value={field.value}
-                      className=" focus:outline-none"
+                      onChange={(e) =>
+                        handleMetaChange(index, "value", e.target.value)
+                      }
+                      className="focus:outline-none"
                     />
                     {metaFields.length > 1 && (
                       <Button
@@ -333,6 +345,9 @@ const ProductPage = () => {
                 type="file"
                 accept="image/*"
                 className="w-full"
+                onChange={(e) =>
+                  e.target.files && setImageFile(e.target.files[0])
+                }
               />
               {imageFile && (
                 <img

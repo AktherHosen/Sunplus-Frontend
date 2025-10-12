@@ -51,10 +51,8 @@ export const router = createBrowserRouter([
         path: "dashboard",
         Component: SidebarLayout,
         children: [
-          // { index: true, Component: DashboardHome },
-          // { path: "inbox", Component: InboxPage },
-          // { path: "calendar", Component: CalendarPage },
-          // { path: "settings", Component: SettingsPage },
+          { path: "/dashboard/products", Component: ProductPage },
+          { path: "/dashboard/categories", Component: Categories },
         ],
       },
     ],
