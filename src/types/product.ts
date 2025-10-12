@@ -9,4 +9,5 @@ export interface IProduct {
   subcategories?: string[]; // array of category _id strings
   createdAt?: string; // ISO string
   updatedAt?: string;
+  meta?: string;
 }
