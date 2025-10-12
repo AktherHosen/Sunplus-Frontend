@@ -27,6 +27,7 @@ export default function Navbar() {
     { title: "Support", href: "/support", popover: true },
     { title: "Contact", href: "/contact" },
     { title: "Categories", href: "/categories" },
+    { title: "Dashboar", href: "/dashboard" },
   ];
 
   const allMenuItems = [...leftMenuItems, ...rightMenuItems];

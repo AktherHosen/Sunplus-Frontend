@@ -1,23 +1,15 @@
 import Footer from "@/components/shared/footer";
 import Navbar from "@/components/shared/navbar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Home } from "lucide-react";
-import { Link, Outlet, useLocation } from "react-router";
+import { Outlet, useLocation } from "react-router";
 
 const Main = () => {
   const location = useLocation();
   const paths = location.pathname.split("/").filter(Boolean);
-
+  const withoutHeaderFooter = location.pathname.includes("dashboard");
   return (
     <div className="w-full flex flex-col min-h-screen">
-      <Navbar />
-      <div className="container mx-auto px-4 lg:px-0 mt-4">
+      {withoutHeaderFooter || <Navbar />}
+      {/* <div className="container mx-auto px-4 lg:px-0 mt-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -52,12 +44,12 @@ const Main = () => {
             })}
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
+      </div> */}
 
-      <main className="flex-1 m-6 container mx-auto px-4 lg:px-0">
+      <main className="">
         <Outlet />
       </main>
-      <Footer />
+      {withoutHeaderFooter || <Footer />}
     </div>
   );
 };
