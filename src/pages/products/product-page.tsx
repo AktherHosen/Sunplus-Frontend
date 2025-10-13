@@ -26,14 +26,12 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
-  useGetAllCategoriesQuery,
-} from "@/redux/api/categoriesApi";
-import {
   useAddProductMutation,
   useDeleteProductMutation,
+  useGetAllCategoriesQuery,
   useGetAllProductsQuery,
   useUpdateProductMutation,
-} from "@/redux/api/productsApi";
+} from "@/redux/api/baseApi";
 import { Edit, Loader2, Trash, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Loader from "@/components/loader";

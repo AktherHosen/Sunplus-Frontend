@@ -5,11 +5,12 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { useGetCategoryBySlugQuery } from "@/redux/api/categoriesApi"; 
+import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
 import { Link, useNavigate, useParams } from "react-router";
 
 const AllSubcategoriesPage = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useGetCategoryBySlugQuery(slug!);
 
   if (isLoading) return <Loader />;
@@ -20,7 +21,7 @@ const AllSubcategoriesPage = () => {
   const banners = category.banners || [];
 
   return (
-    <div className="container mx-auto px-4 lg:px-0 py-2.5">
+    <div className="">
       {banners.length > 0 && (
         <div className="w-full">
           {banners.length === 1 ? (

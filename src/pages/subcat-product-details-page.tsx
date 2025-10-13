@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // API
 import Loader from "@/components/loader";
-import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/productsApi";
+import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
 
 import "react-medium-image-zoom/dist/styles.css";
 

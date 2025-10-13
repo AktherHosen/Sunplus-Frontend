@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/productsApi";
+import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
 import { useNavigate, useParams } from "react-router";
 
 export default function SubcategoryProductPage() {
@@ -17,7 +17,7 @@ export default function SubcategoryProductPage() {
 
   console.log(data, "check");
   return (
-    <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 py-2.5">
+    <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold mb-4">{subSlug}</h1>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {data.data?.map((product) => (

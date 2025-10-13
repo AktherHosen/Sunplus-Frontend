@@ -1,6 +1,6 @@
 import Loader from "@/components/loader";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
-import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/productsApi"; 
+import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
 import { useNavigate, useParams } from "react-router";
 
 const AllSubcategoryProductPage = () => {
@@ -16,7 +16,7 @@ const AllSubcategoryProductPage = () => {
   const products = data?.data || [];
 
   return (
-    <div className="container mx-auto px-4 lg:px-0 py-2.5">
+    <div className="mx-auto">
       {products.length === 0 ? (
         <p className="text-gray-500">No products found in this subcategory.</p>
       ) : (
