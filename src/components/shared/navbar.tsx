@@ -19,13 +19,12 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const leftMenuItems = [
-    { title: "Products", href: "/products" },
+    { title: "Contact", href: "/contact" },
     { title: "About Us", href: "/about" },
   ];
 
   const rightMenuItems = [
     { title: "Support", href: "/support", popover: true },
-    { title: "Contact", href: "/contact" },
     { title: "Categories", href: "/categories" },
     { title: "Dashboar", href: "/dashboard" },
   ];

@@ -19,8 +19,8 @@ import {
 import {
   useAddCategoryMutation,
   useGetAllCategoriesQuery,
-  useUpdateCategoryMutation,
-} from "@/redux/api/baseApi";
+  useUpdateCategoryMutation
+} from "@/redux/api/categoriesApi"
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 

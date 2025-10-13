@@ -18,7 +18,7 @@ export default function Subcategories() {
     return <p className="p-4 text-gray-500">No subcategories found.</p>;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 py-2.5">
       <h1 className="text-2xl font-bold mb-4">
         {category.name} - Subcategories
       </h1>

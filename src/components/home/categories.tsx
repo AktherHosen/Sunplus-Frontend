@@ -4,7 +4,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { useGetAllCategoriesQuery } from "@/redux/api/baseApi";
+import { useGetAllCategoriesQuery } from "@/redux/api/categoriesApi";
 import { Link } from "react-router";
 import Loader from "../loader";
 

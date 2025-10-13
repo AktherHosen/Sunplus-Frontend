@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -16,17 +15,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
+import {
+  useGetAllCategoriesQuery,
+} from "@/redux/api/categoriesApi";
 import {
   useAddProductMutation,
   useDeleteProductMutation,
-  useGetAllCategoriesQuery,
   useGetAllProductsQuery,
   useUpdateProductMutation,
-} from "@/redux/api/baseApi";
-import { X } from "lucide-react";
+} from "@/redux/api/productsApi";
+import { Edit, Loader2, Trash, X } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Loader from "@/components/loader";
+import { Spinner } from "@/components/ui/spinner";
 
 const ProductPage = () => {
   const { data: productsData, refetch } = useGetAllProductsQuery();
@@ -44,7 +55,6 @@ const ProductPage = () => {
   const [subcategory, setSubcategory] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // Dynamic meta fields
   const [metaFields, setMetaFields] = useState<
     { key: string; value: string }[]
   >([{ key: "", value: "" }]);
@@ -73,7 +83,6 @@ const ProductPage = () => {
         setMetaFields([{ key: "", value: "" }]);
       }
     } else {
-      // Reset form
       setName("");
       setPrice(0);
       setCategory(null);
@@ -88,7 +97,6 @@ const ProductPage = () => {
     setMetaFields([...metaFields, { key: "", value: "" }]);
   const handleRemoveMetaField = (index: number) =>
     setMetaFields(metaFields.filter((_, i) => i !== index));
-
   const handleMetaChange = (
     index: number,
     field: "key" | "value",
@@ -131,8 +139,7 @@ const ProductPage = () => {
       setEditingProduct(null);
       refetch();
     } catch (err: any) {
-      console.log(err);
-      toast.error(err?.data?.message);
+      toast.error(err?.data?.message || "Failed to save product");
     }
   };
 
@@ -155,68 +162,93 @@ const ProductPage = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Products</h1>
         <Button
           onClick={() => {
             setEditingProduct(null);
             setDialogOpen(true);
-          }}
-        >
+          }}>
           + Add Product
         </Button>
       </div>
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product: any) => (
-          <Card
-            key={product._id}
-            className="overflow-hidden hover:shadow-lg transition"
-          >
-            <CardHeader className="p-0">
-              <img
-                src={
-                  product.image
-                    ? `${import.meta.env.VITE_API_URL}${product.image}`
-                    : "https://via.placeholder.com/300x200"
-                }
-                alt={product.name}
-                className="w-full h-40 object-cover"
-              />
-            </CardHeader>
-            <CardContent className="p-3 space-y-2">
-              <CardTitle className="text-center text-lg">
-                {product.name}
-              </CardTitle>
-              <p className="text-center font-semibold">${product.price}</p>
-              <p className="text-center text-sm text-gray-500">
-                Category: {product.category_id?.name || "N/A"} <br />
-                Subcategory: {product.subcategories?.[0]?.name || "N/A"}
-              </p>
-              <div className="flex justify-between mt-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setEditingProduct(product);
-                    setDialogOpen(true);
-                  }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDelete(product._id)}
-                >
-                  Delete
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {/* Product Table */}
+      <div className="rounded-md border bg-card shadow-sm overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-16 text-center">Image</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Subcategory</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {products.length > 0 ? (
+              products.map((product: any) => (
+                <TableRow key={product._id}>
+                  <TableCell className="text-center">
+                    <Avatar className="h-10 w-10 rounded-sm">
+                      <AvatarImage
+                        src={
+                          product.image
+                            ? `${import.meta.env.VITE_API_URL}${product.image}`
+                            : "https://via.placeholder.com/150"
+                        }
+                        alt={product.name}
+                      />
+                      <AvatarFallback>
+                        {product.name?.[0]?.toUpperCase() || "P"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.category_id?.name || "N/A"}</TableCell>
+                  <TableCell>
+                    {product.subcategories?.[0]?.name || "N/A"}
+                  </TableCell>
+                  <TableCell>${product.price}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button
+                      variant="outline"
+                      size="xs"
+                      onClick={() => {
+                        setEditingProduct(product);
+                        setDialogOpen(true);
+                      }}>
+                      <Edit />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="xs"
+                      onClick={() => handleDelete(product._id)}>
+                      <Trash />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center py-6 text-gray-500 ">
+                  <div className="flex items-center gap-1">
+                    <Loader2 className="w-4 h-4 mx-auto text-primary animate-spin" />
+                    <p className="text-primary">Loading...</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
 
+      {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-3xl w-full">
           <DialogHeader>
@@ -252,15 +284,15 @@ const ProductPage = () => {
               />
             </div>
 
-            {/* Category */}
-            <div className="flex flex-col gap-4 md:col-span-1">
-              <div className="flex flex-col gap-2 w-full">
+            {/* Category / Subcategory */}
+            <div className="flex flex-col gap-4 md:col-span-2">
+              <div className="flex flex-col gap-2">
                 <Label>Category</Label>
                 <Select onValueChange={setCategory} value={category || ""}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
-                  <SelectContent className="w-full">
+                  <SelectContent>
                     {categories.map((cat: any) => (
                       <SelectItem key={cat._id} value={cat._id}>
                         {cat.name}
@@ -270,16 +302,15 @@ const ProductPage = () => {
                 </Select>
               </div>
 
-              <div className="flex flex-col gap-2 w-full">
+              <div className="flex flex-col gap-2">
                 <Label>Subcategory</Label>
                 <Select
                   onValueChange={setSubcategory}
-                  value={subcategory || ""}
-                >
-                  <SelectTrigger className="w-full">
+                  value={subcategory || ""}>
+                  <SelectTrigger>
                     <SelectValue placeholder="Select subcategory (optional)" />
                   </SelectTrigger>
-                  <SelectContent className="w-full">
+                  <SelectContent>
                     {categories
                       ?.find((c: any) => c._id === category)
                       ?.subcategories?.map((sub: any) => (
@@ -293,58 +324,51 @@ const ProductPage = () => {
             </div>
 
             {/* Meta Fields */}
-            <div className="flex flex-col space-y-2 row-span-2">
+            <div className="flex flex-col space-y-2 md:col-span-2">
               <Label>Meta Fields</Label>
-              <div className="flex flex-col gap-2 overflow-y-auto">
-                {metaFields.map((field, index) => (
-                  <div key={index} className="flex gap-4">
-                    <Input
-                      placeholder="Key (e.g., brand)"
-                      value={field.key}
-                      onChange={(e) =>
-                        handleMetaChange(index, "key", e.target.value)
-                      }
-                      className="focus:outline-none"
-                    />
-                    <Input
-                      placeholder="Value (e.g., Apple)"
-                      value={field.value}
-                      onChange={(e) =>
-                        handleMetaChange(index, "value", e.target.value)
-                      }
-                      className="focus:outline-none"
-                    />
-                    {metaFields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleRemoveMetaField(index)}
-                      >
-                        <X />
-                      </Button>
-                    )}
-                  </div>
-                ))}
-              </div>
+              {metaFields.map((field, index) => (
+                <div key={index} className="flex gap-4">
+                  <Input
+                    placeholder="Key (e.g., brand)"
+                    value={field.key}
+                    onChange={(e) =>
+                      handleMetaChange(index, "key", e.target.value)
+                    }
+                  />
+                  <Input
+                    placeholder="Value (e.g., Apple)"
+                    value={field.value}
+                    onChange={(e) =>
+                      handleMetaChange(index, "value", e.target.value)
+                    }
+                  />
+                  {metaFields.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleRemoveMetaField(index)}>
+                      <X />
+                    </Button>
+                  )}
+                </div>
+              ))}
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={handleAddMetaField}
-              >
+                onClick={handleAddMetaField}>
                 + Add Meta Field
               </Button>
             </div>
 
             {/* Image Upload */}
-            <div className="flex flex-col gap-2 md:col-span-1">
+            <div className="flex flex-col gap-2 md:col-span-2">
               <Label htmlFor="image">Product Image</Label>
               <Input
                 id="image"
                 type="file"
                 accept="image/*"
-                className="w-full"
                 onChange={(e) =>
                   e.target.files && setImageFile(e.target.files[0])
                 }

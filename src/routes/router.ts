@@ -14,10 +14,7 @@ import NotFound from "@/pages/notFound/not-found";
 import ProductPage from "@/pages/products/product-page";
 import SubcatProductDetailsPage from "@/pages/subcat-product-details-page";
 import { createBrowserRouter } from "react-router";
-// import DashboardHome from "@/pages/dashboard/dashboardHome"; // example dashboard page
-// import InboxPage from "@/pages/dashboard/inboxPage"; // add other dashboard pages
-// import CalendarPage from "@/pages/dashboard/calendarPage";
-// import SettingsPage from "@/pages/dashboard/settingsPage";
+
 
 export const router = createBrowserRouter([
   {

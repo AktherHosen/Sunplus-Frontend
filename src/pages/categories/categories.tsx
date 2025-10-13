@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   useDeleteCategoryMutation,
   useGetAllCategoriesQuery,
-} from "@/redux/api/baseApi";
+} from "@/redux/api/categoriesApi";
 import { toast } from "sonner";
 
 export default function Categories() {
@@ -42,7 +42,7 @@ export default function Categories() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 py-2.5">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Categories</h1>
