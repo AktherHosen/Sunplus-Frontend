@@ -178,6 +178,7 @@ const ProductPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[60px] text-center">#</TableHead>
               <TableHead className="w-16 text-center">Image</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
@@ -188,10 +189,11 @@ const ProductPage = () => {
           </TableHeader>
           <TableBody>
             {products.length > 0 ? (
-              products.map((product: any) => (
+              products.map((product: any, index: number) => (
                 <TableRow key={product._id}>
+                  <TableCell className="text-center">{index + 1}</TableCell>
                   <TableCell className="text-center">
-                    <Avatar className="h-10 w-10 rounded-sm">
+                    <Avatar>
                       <AvatarImage
                         src={
                           product.image
@@ -200,9 +202,7 @@ const ProductPage = () => {
                         }
                         alt={product.name}
                       />
-                      <AvatarFallback>
-                        {product.name?.[0]?.toUpperCase() || "P"}
-                      </AvatarFallback>
+                      <AvatarFallback>{product.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                   </TableCell>
                   <TableCell>{product.name}</TableCell>

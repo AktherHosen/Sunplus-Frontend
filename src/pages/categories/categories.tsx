@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CategoryForm from "@/components/categories/CategoryForm";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import {
-  useDeleteCategoryMutation,
-  useGetAllCategoriesQuery,
-} from "@/redux/api/categoriesApi";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useDeleteCategoryMutation, useGetAllCategoriesQuery } from "@/redux/api/categoriesApi";
 import { toast } from "sonner";
+import { Trash } from "lucide-react";
 
 export default function Categories() {
-  const { data, isLoading, isError, refetch } =
-    useGetAllCategoriesQuery(undefined);
+  const { data, isLoading, isError, refetch } = useGetAllCategoriesQuery(undefined);
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const categories = data?.data || [];
@@ -24,7 +28,7 @@ export default function Categories() {
           try {
             await deleteCategory(id).unwrap();
             toast.success("Category deleted successfully!");
-            refetch(); // refresh categories
+            refetch();
           } catch (error: any) {
             toast.error(error?.data?.message || "Failed to delete category");
             console.error(error);
@@ -33,10 +37,7 @@ export default function Categories() {
       },
       cancel: {
         label: "Cancel",
-        onClick: () => {
-          toast.dismiss(); // close the warning toast
-          console.log("Deletion cancelled");
-        },
+        onClick: () => toast.dismiss(),
       },
     });
   };
@@ -49,59 +50,66 @@ export default function Categories() {
         <CategoryForm triggerText="+ Add Category" onSuccess={refetch} />
       </div>
 
-      {/* Loading State */}
-      {isLoading && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          Loading...........
-        </div>
-      )}
+      {/* Loading */}
+      {isLoading && <p className="text-center">Loading categories...</p>}
 
-      {/* Error State */}
+      {/* Error */}
       {isError && (
         <p className="text-red-500 text-center">Failed to load categories.</p>
       )}
 
-      {/* Categories Grid */}
+      {/* Table View */}
       {!isLoading && categories.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {categories.map((cat: any) => (
-            <Card
-              key={cat._id}
-              className="overflow-hidden hover:shadow-lg transition"
-            >
-              <CardHeader className="p-0 relative">
-                <img
-                  src={
-                    cat.image
-                      ? `${import.meta.env.VITE_API_URL}${cat.image}`
-                      : "https://via.placeholder.com/300x200"
-                  }
-                  alt={cat.name}
-                  className="w-full h-40 object-cover"
-                />
-              </CardHeader>
-              <CardContent className="p-3 space-y-2">
-                <CardTitle className="text-center text-lg">
-                  {cat.name}
-                </CardTitle>
-                <div className="flex justify-between">
-                  {/* Edit button opens the same dialog */}
-                  <CategoryForm
-                    category={cat}
-                    triggerText="Edit"
-                    onSuccess={refetch}
-                  />
-                  {/* Delete button */}
-                  <Button
-                    variant="destructive"
-                    onClick={() => handleDelete(cat._id)}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="overflow-x-auto border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[60px] text-center">#</TableHead>
+                <TableHead>Image</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead className="text-center w-[150px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {categories.map((cat: any, index: number) => (
+                <TableRow key={cat._id}>
+                  <TableCell className="text-center">{index + 1}</TableCell>
+                  <TableCell>
+                    <Avatar>
+                      <AvatarImage
+                        src={
+                          cat.image
+                            ? `${import.meta.env.VITE_API_URL}${cat.image}`
+                            : undefined
+                        }
+                        alt={cat.name}
+                      />
+                      <AvatarFallback>{cat.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell className="font-medium">{cat.name}</TableCell>
+                  <TableCell className="max-w-[300px] truncate text-gray-600">
+                    {cat.description || "—"}
+                  </TableCell>
+                  <TableCell className="text-center space-x-2">
+                    <CategoryForm
+                      category={cat}
+                      triggerText="Edit"
+                      onSuccess={refetch}
+                    />
+                    <Button
+                      variant="destructive"
+                      size="xs"
+                      onClick={() => handleDelete(cat._id)}
+                    >
+                      <Trash/>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       )}
 

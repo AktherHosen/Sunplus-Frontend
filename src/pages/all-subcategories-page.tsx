@@ -21,7 +21,7 @@ const AllSubcategoriesPage = () => {
   const banners = category.banners || [];
 
   return (
-    <div className="">
+    <div className="container mx-auto ">
       {banners.length > 0 && (
         <div className="w-full">
           {banners.length === 1 ? (

@@ -21,6 +21,7 @@ import {
   useGetAllCategoriesQuery,
   useUpdateCategoryMutation
 } from "@/redux/api/categoriesApi"
+import { Edit } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -110,8 +111,8 @@ export default function CategoryForm({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={isEditMode ? "outline" : "default"}>
-          {triggerText || (isEditMode ? "Edit" : "+ Add Category")}
+        <Button variant={isEditMode ? "outline" : "default"} size={isEditMode ? "xs" : "sm"}>
+        {isEditMode ? <Edit className="w-6 h-6" /> : (triggerText || "+ Add Category")}
         </Button>
       </DialogTrigger>
 
