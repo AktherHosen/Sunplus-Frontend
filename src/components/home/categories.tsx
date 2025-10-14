@@ -23,7 +23,7 @@ export default function Categories() {
     return <div className="text-center py-10">No categories found.</div>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-8">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  gap-6 my-8">
       {categories.map((category: any) => (
         <Card
           key={category._id}

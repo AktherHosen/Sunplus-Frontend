@@ -32,7 +32,9 @@ export default function ContactPage() {
               title: "Head Office",
               text: (
                 <>
-                  123 Walton Street <br /> Suite 400 <br /> Dhaka, Bangladesh
+                  Kader tower electric market, <br />
+                  Jubliee road, <br />
+                  Chittagong, Bangladesh
                 </>
               ),
             },
@@ -41,7 +43,7 @@ export default function ContactPage() {
               title: "Phone",
               text: (
                 <>
-                  +880 123 456 789 <br /> +880 987 654 321
+                  +8801835-926605 <br /> +88001835-926605
                 </>
               ),
             },
@@ -50,15 +52,14 @@ export default function ContactPage() {
               title: "Email",
               text: (
                 <>
-                  support@walton.com <br /> info@walton.com
+                  support@sunplus.com <br /> info@sunplus.com
                 </>
               ),
             },
           ].map(({ icon: Icon, title, text }) => (
             <div
               key={title}
-              className="bg-white shadow-sm hover:shadow-md transition-all rounded-2xl p-6 flex flex-col items-start border border-gray-100"
-            >
+              className="bg-white shadow-sm hover:shadow-md transition-all rounded-2xl p-6 flex flex-col items-start border border-gray-100">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <Icon className="text-primary" size={24} />
@@ -100,26 +101,22 @@ export default function ContactPage() {
             <div className="flex flex-wrap gap-4 mt-3">
               <a
                 href="#"
-                className="flex items-center gap-2 text-gray-600 hover:text-primary transition"
-              >
+                className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
                 <Facebook size={20} /> <span>Facebook</span>
               </a>
               <a
                 href="#"
-                className="flex items-center gap-2 text-gray-600 hover:text-primary transition"
-              >
+                className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
                 <Twitter size={20} /> <span>Twitter</span>
               </a>
               <a
                 href="#"
-                className="flex items-center gap-2 text-gray-600 hover:text-primary transition"
-              >
+                className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
                 <Instagram size={20} /> <span>Instagram</span>
               </a>
               <a
                 href="#"
-                className="flex items-center gap-2 text-gray-600 hover:text-primary transition"
-              >
+                className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
                 <Linkedin size={20} /> <span>LinkedIn</span>
               </a>
             </div>
@@ -128,14 +125,15 @@ export default function ContactPage() {
 
         {/* Map Section */}
         <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100">
+
+          
           <iframe
             title="Sunplus HQ Map"
-           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d247.69433834689818!2d91.82756885052824!3d22.340867138985857!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd8a7a263e963%3A0x729c28500158ae10!2sJubilee%20Rd%2C%20Chittagong!5e0!3m2!1sen!2sbd!4v1759814542708!5m2!1sen!2sbd"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d922.6060376199395!2d91.83025222852348!3d22.337607998723456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd8a797445159%3A0xbbf5f064c4fc5a99!2sKader%20Tower%20Building%20Complex!5e0!3m2!1sen!2sbd!4v1760429567692!5m2!1sen!2sbd"
             width="100%"
             height="450"
             loading="lazy"
-            className="border-0 w-full"
-          ></iframe>
+            className="border-0 w-full"></iframe>
         </div>
       </div>
     </div>
