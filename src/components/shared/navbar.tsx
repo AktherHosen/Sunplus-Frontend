@@ -21,6 +21,7 @@ export default function Navbar() {
   const leftMenuItems = [
     { title: "Contact", href: "/contact" },
     { title: "About Us", href: "/about" },
+    { title: "Login", href: "/login" },
   ];
 
   const rightMenuItems = [

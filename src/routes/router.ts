@@ -2,6 +2,7 @@ import Main from "@/layout/main";
 import AboutUsPage from "@/pages/about-page";
 import AllSubcategoriesPage from "@/pages/all-subcategories-page";
 import AllSubcategoryProductPage from "@/pages/all-subcategory-product-page";
+import LoginForm from "@/pages/auth/login";
 import Categories from "@/pages/categories/categories";
 import Subcategories from "@/pages/categories/subcategories";
 import SubcategoryProductPage from "@/pages/categories/subcategory-product-page";
@@ -44,6 +45,9 @@ export const router = createBrowserRouter([
       {
         path: "product/:catSlug/:subCatSlug/:productSlug",
         Component: SubcatProductDetailsPage,
+      },
+      {
+        path: "login", Component: LoginForm
       },
       {
         path: "dashboard",
