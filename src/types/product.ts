@@ -10,4 +10,5 @@ export interface IProduct {
   createdAt?: string; // ISO string
   updatedAt?: string;
   meta?: Record<string, any>;
+  quantity: number
 }

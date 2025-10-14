@@ -1,4 +1,4 @@
-import { ShoppingCart } from "lucide-react";
+import { Check, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
@@ -75,7 +75,23 @@ const SubcatProductDetailsPage = () => {
                 </Zoom>
 
                 <div className="absolute top-4 left-4 flex flex-col justify-self-end gap-2">
-                  <Badge variant="default">Available</Badge>
+                
+                    <div
+                className={`flex items-center gap-1 py-2 text-sm ${
+                  Number(product.quantity.length) > 0
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}>
+                {Number(product.quantity.length) > 0 ? (
+                  <>
+                     <Badge variant="default">Available</Badge>
+                  </>
+                ) : (
+                  <>
+                      <Badge variant="destructive" className="text-accent">Available</Badge>
+                  </>
+                )}
+              </div>
                   {product.isNew && (
                     <Badge variant="secondary">New Arrival</Badge>
                   )}
@@ -93,8 +109,7 @@ const SubcatProductDetailsPage = () => {
                       selectedImage === index
                         ? "border-blue-600 ring-2 ring-blue-600/20"
                         : "border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
+                    }`}>
                     <img
                       src={`${import.meta.env.VITE_API_URL}${img}`}
                       alt={`${product.name} view ${index + 1}`}
@@ -126,6 +141,24 @@ const SubcatProductDetailsPage = () => {
                 {product.shortDescription ||
                   "Premium product with exceptional quality."}
               </p>
+              <div
+                className={`flex items-center gap-1 py-2 text-sm ${
+                  Number(product.quantity.length) > 0
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}>
+                {Number(product.quantity.length) > 0 ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    <span>In Stock</span>
+                  </>
+                ) : (
+                  <>
+                    <X className="w-4 h-4" />
+                    <span>Out of Stock</span>
+                  </>
+                )}
+              </div>
             </div>
 
             <Separator />
@@ -188,8 +221,7 @@ const SubcatProductDetailsPage = () => {
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className="flex-1 text-center p-4 rounded text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow transition-all hover:bg-secondary hover:text-primary"
-                >
+                  className="flex-1 text-center p-4 rounded text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow transition-all hover:bg-secondary hover:text-primary">
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </TabsTrigger>
               ))}
