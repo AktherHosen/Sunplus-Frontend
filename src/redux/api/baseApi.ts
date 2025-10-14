@@ -73,7 +73,7 @@ export const baseApi = createApi({
       { categorySlug: string; subSlug: string; productSlug: string }
     >({
       query: ({ categorySlug, subSlug, productSlug }) =>
-        `/product/${categorySlug}/${subSlug}/${productSlug}`, // GET /product/:categorySlug/:subSlug
+        `/product/${categorySlug}/${subSlug}/${productSlug}`, 
       providesTags: ["products"],
     }),
 

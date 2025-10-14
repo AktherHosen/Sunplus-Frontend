@@ -21,14 +21,14 @@ const AllSubcategoriesPage = () => {
   const banners = category.banners || [];
 
   return (
-    <div className="container mx-auto ">
+    <div className="container mx-auto px-4 lg:px-0 pt-10">
       {banners.length > 0 && (
         <div className="w-full">
           {banners.length === 1 ? (
             <img
               src={`${import.meta.env.VITE_API_URL}${banners[0]}`}
               alt={`${category.name} banner`}
-              className="w-full h-full object-cover rounded-xl shadow-lg"
+              className="w-full h-full object-cover rounded"
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -37,7 +37,7 @@ const AllSubcategoriesPage = () => {
                   key={idx}
                   src={`${import.meta.env.VITE_API_URL}${banner}`}
                   alt={`Banner ${idx + 1}`}
-                  className="w-full h-60 object-cover rounded-lg shadow-md hover:shadow-lg transition"
+                  className="w-full h-60 object-cover rounded transition"
                 />
               ))}
             </div>
@@ -51,7 +51,7 @@ const AllSubcategoriesPage = () => {
           No subcategories found under this category.
         </p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6 mt-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6 my-10">
           {subcategories.map((sub: any) => (
             <Card
               key={sub._id}
@@ -69,7 +69,7 @@ const AllSubcategoriesPage = () => {
                     sub.image && `${import.meta.env.VITE_API_URL}${sub.image}`
                   }
                   alt={sub.name}
-                  className="w-full max-h-[300px] object-cover"
+                  className="w-full h-full object-cover"
                 />
               </CardContent>
 
