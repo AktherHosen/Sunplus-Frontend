@@ -46,6 +46,12 @@ export const baseApi = createApi({
       invalidatesTags: ["categories"],
     }),
 
+    getAllSubCategories: builder.query({
+      query: () => "/category/sub-categories", 
+      providesTags: ["categories"],
+    }),
+
+
     // -------------------- Products --------------------
     getAllProducts: builder.query<IProduct[], void>({
       query: () => "/product", // matches GET /product
@@ -109,6 +115,7 @@ export const {
   useAddCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useGetAllSubCategoriesQuery,
   // Products
   useGetAllProductsQuery,
   useGetProductByIdQuery,

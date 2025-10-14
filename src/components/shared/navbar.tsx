@@ -26,7 +26,7 @@ export default function Navbar() {
   const rightMenuItems = [
     { title: "Support", href: "/support", popover: true },
     { title: "Categories", href: "/categories" },
-    { title: "Dashboar", href: "/dashboard" },
+    { title: "Admin", href: "/dashboard" },
   ];
 
   const allMenuItems = [...leftMenuItems, ...rightMenuItems];

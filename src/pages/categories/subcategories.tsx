@@ -1,51 +1,111 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
-import { useNavigate, useParams } from "react-router";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import CategoryForm from "@/components/categories/CategoryForm";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetAllSubCategoriesQuery, useDeleteCategoryMutation } from "@/redux/api/baseApi";
+import { toast } from "sonner";
+import { Trash } from "lucide-react";
 
 export default function Subcategories() {
-  const { slug } = useParams(); // parent category slug (e.g. "gang-switches")
-  const navigate = useNavigate();
+  const { data, isLoading, isError, refetch } = useGetAllSubCategoriesQuery();
+  const [deleteCategory] = useDeleteCategoryMutation();
 
-  const { data, isLoading, isError } = useGetCategoryBySlugQuery(slug!);
+  const subcategories = data?.data || [];
 
-  const category = data?.data;
-  const subcategories = category?.subcategories || [];
+  // ✅ Delete subcategory with toast confirmation
+  const handleDelete = (sub: any) => {
+    toast.warning(`Delete "${sub.name}"?`, {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          try {
+            await deleteCategory(sub._id).unwrap();
+            toast.success(`"${sub.name}" deleted successfully 🗑️`);
+            refetch();
+          } catch (error: any) {
+            toast.error(error?.data?.message || "Failed to delete subcategory");
+          }
+        },
+      },
+      cancel: { label: "Cancel", onClick: () => toast.dismiss() },
+    });
+  };
 
-  if (isLoading) return <p className="p-4">Loading subcategories...</p>;
-  if (isError)
-    return <p className="p-4 text-red-500">Failed to load subcategories.</p>;
-  if (!subcategories.length)
-    return <p className="p-4 text-gray-500">No subcategories found.</p>;
+  if (isLoading) return <p className="text-center p-4">Loading subcategories...</p>;
+  if (isError) return <p className="text-center text-red-500">Failed to load subcategories.</p>;
 
   return (
     <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 py-2.5">
-      <h1 className="text-2xl font-bold mb-4">
-        {category.name} - Subcategories
-      </h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {subcategories.map((sub: any) => (
-          <Card
-            key={sub._id}
-            className="overflow-hidden hover:shadow-lg transition cursor-pointer"
-            onClick={() => navigate(`/category/${slug}/${sub.slug}`)} // ✅ FIXED
-          >
-            <CardHeader className="p-0 relative">
-              <img
-                src={
-                  sub.image
-                    ? `${import.meta.env.VITE_API_URL}${sub.image}`
-                    : "https://via.placeholder.com/300x200"
-                }
-                alt={sub.name}
-                className="w-full h-60 object-cover"
-              />
-            </CardHeader>
-            <CardContent className="p-3">
-              <CardTitle className="text-center text-lg">{sub.name}</CardTitle>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Subcategories</h1>
+        {/* Add Subcategory Button */}
+        <CategoryForm triggerText="+ Add Subcategory" onSuccess={refetch} />
       </div>
+
+      {subcategories.length > 0 ? (
+        <div className="overflow-x-auto border rounded-lg shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[60px] text-center">#</TableHead>
+                <TableHead>Image</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Parent</TableHead>
+                <TableHead className="text-center w-[150px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {subcategories.map((sub: any, index: number) => (
+                <TableRow key={sub._id}>
+                  <TableCell className="text-center">{index + 1}</TableCell>
+                  <TableCell>
+                    <Avatar>
+                      <AvatarImage
+                        src={
+                          sub.image
+                            ? `${import.meta.env.VITE_API_URL}${sub.image}`
+                            : undefined
+                        }
+                        alt={sub.name}
+                      />
+                      <AvatarFallback>{sub.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell className="font-medium">{sub.name}</TableCell>
+                  <TableCell className="text-gray-600">{sub.slug}</TableCell>
+                  <TableCell>{sub.parent?.name || "—"}</TableCell>
+                  <TableCell className="text-center space-x-2">
+                    {/* Edit using CategoryForm */}
+                    <CategoryForm
+                      category={sub}
+                      triggerText="Edit"
+                      onSuccess={refetch}
+                    />
+                    <Button
+                      variant="destructive"
+                      size="xs"
+                      onClick={() => handleDelete(sub)}>
+                      <Trash className="w-4 h-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <p className="text-center text-gray-500">No subcategories found.</p>
+      )}
     </div>
   );
 }

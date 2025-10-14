@@ -61,34 +61,66 @@ const ProductPage = () => {
   const categories = categoriesData?.data || [];
 
   // Load form when editing
-  useEffect(() => {
-    if (editingProduct) {
-      setName(editingProduct.name || "");
-      setPrice(editingProduct.price || 0);
-      setCategory(editingProduct.category_id?._id || null);
-      setSubcategory(editingProduct.subcategories?.[0]?._id || null);
-      setImageFile(null);
+  // useEffect(() => {
+  //   if (editingProduct) {
+  //     setName(editingProduct.name || "");
+  //     setPrice(editingProduct.price || 0);
+  //     setCategory(editingProduct.category_id?._id || null);
+  //     setSubcategory(editingProduct.subcategories?.[0]?._id || null);
+  //     setImageFile(null);
 
-      if (editingProduct.meta && typeof editingProduct.meta === "object") {
-        const metaArray = Object.entries(editingProduct.meta).map(
-          ([key, value]) => ({
-            key,
-            value: String(value),
-          })
-        );
-        setMetaFields(metaArray.length ? metaArray : [{ key: "", value: "" }]);
-      } else {
-        setMetaFields([{ key: "", value: "" }]);
-      }
+  //     if (editingProduct.meta && typeof editingProduct.meta === "object") {
+  //       const metaArray = Object.entries(editingProduct.meta).map(
+  //         ([key, value]) => ({
+  //           key,
+  //           value: String(value),
+  //         })
+  //       );
+  //       setMetaFields(metaArray.length ? metaArray : [{ key: "", value: "" }]);
+  //     } else {
+  //       setMetaFields([{ key: "", value: "" }]);
+  //     }
+  //   } else {
+  //     setName("");
+  //     setPrice(0);
+  //     setCategory(null);
+  //     setSubcategory(null);
+  //     setImageFile(null);
+  //     setMetaFields([{ key: "", value: "" }]);
+  //   }
+  // }, [editingProduct, dialogOpen]);
+useEffect(() => {
+  if (editingProduct) {
+    setName(editingProduct.name || "");
+    setPrice(editingProduct.price || 0);
+    setCategory(editingProduct.category_id?._id || null);
+
+    // Correctly handle subcategory
+    if (editingProduct.subcategories) {
+      setSubcategory(editingProduct.subcategories._id); // <- just use _id
     } else {
-      setName("");
-      setPrice(0);
-      setCategory(null);
       setSubcategory(null);
-      setImageFile(null);
+    }
+
+    setImageFile(null);
+
+    if (editingProduct.meta && typeof editingProduct.meta === "object") {
+      const metaArray = Object.entries(editingProduct.meta).map(
+        ([key, value]) => ({ key, value: String(value) })
+      );
+      setMetaFields(metaArray.length ? metaArray : [{ key: "", value: "" }]);
+    } else {
       setMetaFields([{ key: "", value: "" }]);
     }
-  }, [editingProduct, dialogOpen]);
+  } else {
+    setName("");
+    setPrice(0);
+    setCategory(null);
+    setSubcategory(null);
+    setImageFile(null);
+    setMetaFields([{ key: "", value: "" }]);
+  }
+}, [editingProduct, categories, dialogOpen]);
 
   // Meta handlers
   const handleAddMetaField = () =>

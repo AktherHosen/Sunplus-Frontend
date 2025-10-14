@@ -3,6 +3,7 @@ import AboutUsPage from "@/pages/about-page";
 import AllSubcategoriesPage from "@/pages/all-subcategories-page";
 import AllSubcategoryProductPage from "@/pages/all-subcategory-product-page";
 import Categories from "@/pages/categories/categories";
+import Subcategories from "@/pages/categories/subcategories";
 import SubcategoryProductPage from "@/pages/categories/subcategory-product-page";
 import CertificatesPage from "@/pages/certificates-page";
 import ChairmanMessagePage from "@/pages/chairmenmessage-page";
@@ -50,6 +51,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "/dashboard/products", Component: ProductPage },
           { path: "/dashboard/categories", Component: Categories },
+          { path: "/dashboard/sub-categories", Component: Subcategories },
         ],
       },
     ],

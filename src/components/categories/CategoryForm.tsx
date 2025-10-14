@@ -19,8 +19,8 @@ import {
 import {
   useAddCategoryMutation,
   useGetAllCategoriesQuery,
-  useUpdateCategoryMutation
-} from "@/redux/api/categoriesApi"
+  useUpdateCategoryMutation,
+} from "@/redux/api/categoriesApi";
 import { Edit } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -54,11 +54,20 @@ export default function CategoryForm({
   useEffect(() => {
     if (category) {
       setName(category.name || "");
-      setParent(category.parent || null);
-      setImagePreview(category.image ? `${import.meta.env.VITE_API_URL}${category.image}` : null);
+
+      // FIX: parent._id if parent exists
+      setParent(category.parent?._id || null);
+
+      setImagePreview(
+        category.image
+          ? `${import.meta.env.VITE_API_URL}${category.image}`
+          : null
+      );
       setImageFile(null);
       setBannerPreviews(
-        category.banners?.map((b: string) => `${import.meta.env.VITE_API_URL}${b}`) || []
+        category.banners?.map(
+          (b: string) => `${import.meta.env.VITE_API_URL}${b}`
+        ) || []
       );
       setBannerFiles([]);
     } else {
@@ -111,8 +120,14 @@ export default function CategoryForm({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={isEditMode ? "outline" : "default"} size={isEditMode ? "xs" : "sm"}>
-        {isEditMode ? <Edit className="w-6 h-6" /> : (triggerText || "+ Add Category")}
+        <Button
+          variant={isEditMode ? "outline" : "default"}
+          size={isEditMode ? "xs" : "sm"}>
+          {isEditMode ? (
+            <Edit className="w-6 h-6" />
+          ) : (
+            triggerText || "+ Add Category"
+          )}
         </Button>
       </DialogTrigger>
 

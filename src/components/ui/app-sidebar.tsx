@@ -56,7 +56,7 @@ const data = {
         },
         {
           title: "Subcategory",
-          url: "#",
+          url: "/dashboard/sub-categories",
         },
       ],
     },
