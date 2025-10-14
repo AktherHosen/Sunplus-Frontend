@@ -65,18 +65,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
   const loadUser = async () => {
     try {
       const res = await axios.get("/api/v1/auth/me", { withCredentials: true });
-      setUser(res.data.data);
+      setUser(res.data.data); // sets authenticated user
     } catch (err) {
-      setUser(null);
+      setUser(null); // no logged-in user
     }
   };
 
   loadUser();
 }, []);
+
 
 
   return (
