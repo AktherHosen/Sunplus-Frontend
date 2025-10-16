@@ -8,6 +8,13 @@ import {
   Instagram,
   Linkedin,
 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 export default function ContactPage() {
   return (
@@ -57,84 +64,82 @@ export default function ContactPage() {
               ),
             },
           ].map(({ icon: Icon, title, text }) => (
-            <div
+            <Card
               key={title}
-              className="bg-white shadow-sm hover:shadow-md transition-all rounded-2xl p-6 flex flex-col items-start border border-gray-100">
-              <div className="flex items-center gap-3 mb-3">
+              className="border border-border shadow-none  transition-all rounded-lg p-6 flex flex-col items-start"
+            >
+              <CardHeader className="flex items-center gap-3 mb-3 p-0">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <Icon className="text-primary" size={24} />
                 </div>
-                <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-              </div>
-              <p className="text-gray-600 leading-relaxed text-base">{text}</p>
-            </div>
+                <CardTitle className="text-xl font-semibold text-gray-800">
+                  {title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 text-muted-foreground leading-relaxed text-base">
+                {text}
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* Support & Social */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-all border border-gray-100">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          <Card className="border border-border shadow-none  transition-all rounded-lg-2xl p-8">
+            <CardHeader className="flex items-center gap-3 mb-3 p-0">
+              <div className="p-2 bg-primary/10 rounded-lg-lg">
                 <Headphones className="text-primary" size={24} />
               </div>
-              <h2 className="text-xl font-semibold text-gray-800">
+              <CardTitle className="text-xl font-semibold text-gray-800">
                 Customer Support
-              </h2>
-            </div>
-            <p className="text-gray-600 leading-relaxed">
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 text-gray-600 leading-relaxed">
               For product inquiries, warranty support, or service requests,
               please contact our dedicated support team. We’re committed to
               ensuring your satisfaction and solving your issues promptly.
-            </p>
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-all border border-gray-100">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+         <Card className="border border-border shadow-none  transition-all rounded-lg-2xl p-8">
+            <CardHeader className="flex items-center gap-3 mb-3 p-0">
+              <div className="p-2 bg-primary/10 rounded-lg-lg">
                 <Facebook className="text-primary" size={24} />
               </div>
-              <h2 className="text-xl font-semibold text-gray-800">
+              <CardTitle className="text-xl font-semibold text-gray-800">
                 Connect With Us
-              </h2>
-            </div>
-            <div className="flex flex-wrap gap-4 mt-3">
-              <a
-                href="#"
-                className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
-                <Facebook size={20} /> <span>Facebook</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
-                <Twitter size={20} /> <span>Twitter</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
-                <Instagram size={20} /> <span>Instagram</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
-                <Linkedin size={20} /> <span>LinkedIn</span>
-              </a>
-            </div>
-          </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 mt-3 flex flex-wrap gap-4">
+              {[
+                { icon: Facebook, label: "Facebook", href: "#" },
+                { icon: Twitter, label: "Twitter", href: "#" },
+                { icon: Instagram, label: "Instagram", href: "#" },
+                { icon: Linkedin, label: "LinkedIn", href: "#" },
+              ].map(({ icon: Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  className="flex items-center gap-2 text-gray-600 hover:text-primary transition"
+                >
+                  <Icon size={20} /> <span>{label}</span>
+                </a>
+              ))}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Map Section */}
-        <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100">
-
-          
+       <Card className="border border-border shadow-none  transition-all rounded-lg py-0">
           <iframe
             title="Sunplus HQ Map"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d922.6060376199395!2d91.83025222852348!3d22.337607998723456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd8a797445159%3A0xbbf5f064c4fc5a99!2sKader%20Tower%20Building%20Complex!5e0!3m2!1sen!2sbd!4v1760429567692!5m2!1sen!2sbd"
             width="100%"
             height="450"
             loading="lazy"
-            className="border-0 w-full"></iframe>
-        </div>
+            className="border-0 w-full rounded-lg"
+          />
+        </Card>
       </div>
     </div>
   );
