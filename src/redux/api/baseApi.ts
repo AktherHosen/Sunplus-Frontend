@@ -7,8 +7,12 @@ console.log(BASE_URL, "from env");
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}/api/v1` }),
-  tagTypes: ["products", "categories", "orders"], // ✅ added "orders"
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${BASE_URL}/api/v1`,
+    credentials: "include",
+  }),
+
+  tagTypes: ["products", "categories", "orders", "auth"],
   endpoints: (builder) => ({
     // -------------------- Categories --------------------
     getAllCategories: builder.query({

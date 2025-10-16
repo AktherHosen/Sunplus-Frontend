@@ -1,8 +1,19 @@
 // src/context/AuthContext.tsx
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { loginUser, logoutUser, refreshAccessToken, resetPassword } from "@/lib/api";
-import { toast } from "sonner";
+import {
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  resetPassword,
+} from "@/lib/api";
 import axios from "axios";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { toast } from "sonner";
 
 interface IUser {
   _id: string;
@@ -28,6 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await loginUser({ email, password });
       setUser(res.data.data.user);
+
       toast.success("Logged in successfully!");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Login failed");
@@ -55,7 +67,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const resetPasswordHandler = async (oldPassword: string, newPassword: string) => {
+  const resetPasswordHandler = async (
+    oldPassword: string,
+    newPassword: string
+  ) => {
     try {
       await resetPassword({ oldPassword, newPassword });
       toast.success("Password updated successfully!");
@@ -65,24 +80,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-useEffect(() => {
-  const loadUser = async () => {
-    try {
-      const res = await axios.get("/api/v1/auth/me", { withCredentials: true });
-      setUser(res.data.data); // sets authenticated user
-    } catch (err) {
-      setUser(null); // no logged-in user
-    }
-  };
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/v1/auth/me`,
+          {
+            withCredentials: true,
+          }
+        );
 
-  loadUser();
-}, []);
+        setUser(res.data.data); // sets authenticated user
+      } catch (err) {
+        setUser(null); // no logged-in user
+      }
+    };
 
-
+    loadUser();
+  }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, refreshToken, resetPassword: resetPasswordHandler }}
+      value={{
+        user,
+        login,
+        logout,
+        refreshToken,
+        resetPassword: resetPasswordHandler,
+      }}
     >
       {children}
     </AuthContext.Provider>
