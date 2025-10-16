@@ -37,7 +37,7 @@ export default function AboutUsPage() {
         </Card>
 
         {/* Mission & Vision */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-6 sm:gap-8">
           <Card className="shadow-none  transition-all rounded-lg border-border p-6">
             <CardHeader className="p-0 mb-3 flex items-center gap-2">
               <Lightbulb className="text-primary flex-shrink-0" size={22} />
@@ -72,7 +72,7 @@ export default function AboutUsPage() {
               Our Core Values
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <CardContent className="p-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6">
             {[
               { icon: ShieldCheck, title: "Quality & Safety", text: "Every product is built to the highest safety and performance standards." },
               { icon: Lightbulb, title: "Innovation", text: "We continuously develop smart, energy-efficient solutions for modern living." },
