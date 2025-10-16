@@ -55,15 +55,15 @@ const AllSubcategoriesPage = () => {
           {subcategories.map((sub: any) => (
             <Card
               key={sub._id}
-              className="hover:shadow-lg transition-shadow rounded-none py-0 pt-4"
+              className="hover:shadow-lg transition-shadow rounded-none py-0 pt-0"
             >
-              <CardHeader className="!p-2">
-                <h3 className="text-lg font-bold text-center text-primary">
+              <CardHeader className="flex items-center flex-col justify-center">
+                <h3 className="text-lg font-bold text-center text-primary py-2">
                   {sub.name}
                 </h3>
               </CardHeader>
 
-              <CardContent className="!p-0 !px-8">
+              <CardContent className="mt-0 pt-0">
                 <img
                   src={
                     sub.image && `${import.meta.env.VITE_API_URL}${sub.image}`

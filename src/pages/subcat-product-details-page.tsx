@@ -5,7 +5,6 @@ import "react-medium-image-zoom/dist/styles.css";
 import { useParams } from "react-router";
 
 // Shadcn/ui components
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -18,6 +17,7 @@ import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi
 import "react-medium-image-zoom/dist/styles.css";
 
 // Shadcn/ui components
+import OrderForm from "@/components/orders/order-form";
 import {
   Dialog,
   DialogClose,
@@ -55,48 +55,23 @@ const SubcatProductDetailsPage = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         {/* --- Product Section --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-8 lg:gap-12">
           {/* Left: Image Gallery */}
           <div className="space-y-4">
-            <Card className="overflow-hidden shadow-none border-border h-fit">
-              <div className="relative ">
-                <Zoom>
-                  <img
-                    src={
-                      galleryImages[selectedImage]
-                        ? `${import.meta.env.VITE_API_URL}${
-                            galleryImages[selectedImage]
-                          }`
-                        : "/api/placeholder/600/600"
-                    }
-                    alt={product.name}
-                    className="w-full max-h-[320px] object-contain p-4"
-                  />
-                </Zoom>
-
-                <div className="absolute top-4 left-4 flex flex-col justify-self-end gap-2">
-                
-                    <div
-                className={`flex items-center gap-1 py-2 text-sm ${
-                  Number(product.quantity.length) > 0
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}>
-                {Number(product.quantity.length) > 0 ? (
-                  <>
-                     <Badge variant="default">Available</Badge>
-                  </>
-                ) : (
-                  <>
-                      <Badge variant="destructive" className="text-accent">Available</Badge>
-                  </>
-                )}
-              </div>
-                  {product.isNew && (
-                    <Badge variant="secondary">New Arrival</Badge>
-                  )}
-                </div>
-              </div>
+            <Card className="overflow-hidden shadow-none border-border h-fit py-0">
+              <Zoom>
+                <img
+                  src={
+                    galleryImages[selectedImage]
+                      ? `${import.meta.env.VITE_API_URL}${
+                          galleryImages[selectedImage]
+                        }`
+                      : "/api/placeholder/600/600"
+                  }
+                  alt={product.name}
+                  className="w-full max-h-[320px] object-contain p-4"
+                />
+              </Zoom>
             </Card>
 
             {galleryImages.length > 1 && (
@@ -109,7 +84,8 @@ const SubcatProductDetailsPage = () => {
                       selectedImage === index
                         ? "border-blue-600 ring-2 ring-blue-600/20"
                         : "border-gray-200 hover:border-gray-300"
-                    }`}>
+                    }`}
+                  >
                     <img
                       src={`${import.meta.env.VITE_API_URL}${img}`}
                       alt={`${product.name} view ${index + 1}`}
@@ -143,11 +119,12 @@ const SubcatProductDetailsPage = () => {
               </p>
               <div
                 className={`flex items-center gap-1 py-2 text-sm ${
-                  Number(product.quantity.length) > 0
+                  Number(product.quantity) > 0
                     ? "text-green-600"
                     : "text-red-600"
-                }`}>
-                {Number(product.quantity.length) > 0 ? (
+                }`}
+              >
+                {Number(product.quantity) > 0 ? (
                   <>
                     <Check className="w-4 h-4" />
                     <span>In Stock</span>
@@ -165,9 +142,35 @@ const SubcatProductDetailsPage = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="h-12">
-                <ShoppingCart className="w-5 h-5 mr-2" /> Add to Cart
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    size="lg"
+                    className="h-12"
+                    disabled={Number(product.quantity) <= 0}
+                  >
+                    <ShoppingCart className="w-5 h-5 mr-2" /> Place Order
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>Place Your Order</DialogTitle>
+                    <DialogDescription>
+                      Please fill in your details to place an order for{" "}
+                      <strong>{product.name}</strong>.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  {/* Replace inline form with OrderForm */}
+                  <OrderForm
+                    productId={product._id}
+                    productName={product.name}
+                    maxQuantity={product.quantity}
+                    onSuccess={() => setIsDialogOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
 
               {/* Buy Now triggers Dialog */}
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -221,7 +224,8 @@ const SubcatProductDetailsPage = () => {
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className="flex-1 text-center p-4 rounded text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow transition-all hover:bg-secondary hover:text-primary">
+                  className="flex-1 text-center p-4 rounded text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow transition-all hover:bg-secondary hover:text-primary"
+                >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </TabsTrigger>
               ))}

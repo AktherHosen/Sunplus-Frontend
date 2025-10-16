@@ -10,9 +10,9 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { CompanyHeader } from "./company-header";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
-import { CompanyHeader } from "./company-header";
 
 // This is sample data.
 const data = {
@@ -67,7 +67,7 @@ const data = {
       items: [
         {
           title: "Orders",
-          url: "#",
+          url: "/dashboard/orders",
         },
       ],
     },

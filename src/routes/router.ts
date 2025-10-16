@@ -1,3 +1,4 @@
+import { OrdersTable } from "@/components/orders/orders-table";
 import Main from "@/layout/main";
 import AboutUsPage from "@/pages/about-page";
 import AllSubcategoriesPage from "@/pages/all-subcategories-page";
@@ -16,7 +17,6 @@ import NotFound from "@/pages/notFound/not-found";
 import ProductPage from "@/pages/products/product-page";
 import SubcatProductDetailsPage from "@/pages/subcat-product-details-page";
 import { createBrowserRouter } from "react-router";
-
 
 export const router = createBrowserRouter([
   {
@@ -47,7 +47,8 @@ export const router = createBrowserRouter([
         Component: SubcatProductDetailsPage,
       },
       {
-        path: "login", Component: LoginForm
+        path: "login",
+        Component: LoginForm,
       },
       {
         path: "dashboard",
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
           { path: "/dashboard/products", Component: ProductPage },
           { path: "/dashboard/categories", Component: Categories },
           { path: "/dashboard/sub-categories", Component: Subcategories },
+          {
+            path: "/dashboard/orders",
+            Component: OrdersTable,
+          },
         ],
       },
     ],
