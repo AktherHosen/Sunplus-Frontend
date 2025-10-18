@@ -16,6 +16,7 @@ import MediaEventsPage from "@/pages/mediaevents-page";
 import NotFound from "@/pages/notFound/not-found";
 import ProductPage from "@/pages/products/product-page";
 import SubcatProductDetailsPage from "@/pages/subcat-product-details-page";
+import AllUsersPage from "@/pages/users/all-users-page";
 import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
           {
             path: "/dashboard/orders",
             Component: OrdersTable,
+          },
+           {
+            path: "/dashboard/users",
+            Component: AllUsersPage,
           },
         ],
       },

@@ -1,5 +1,6 @@
 import type { IOrder } from "@/types/order";
 import type { IProduct } from "@/types/product";
+import type { IUser } from "@/types/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -12,7 +13,7 @@ export const baseApi = createApi({
     credentials: "include",
   }),
 
-  tagTypes: ["products", "categories", "orders", "auth"],
+  tagTypes: ["products", "categories", "orders", "auth", "users"],
   endpoints: (builder) => ({
     // -------------------- Categories --------------------
     getAllCategories: builder.query({
@@ -153,6 +154,27 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["orders"],
     }),
+
+    // ✅ Get all Orders
+    getAllUsers: builder.query<IUser[], void>({
+      query: () => "/user/all-users",
+      providesTags: ["users"],
+    }),
+    addUser: builder.mutation<IUser, Partial<IUser>>({
+      query: (userData) => ({
+        url: "/user/register",
+        method: "POST",
+        body: userData,
+      }),
+      invalidatesTags: ["users"],
+    }),
+    deleteUser: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/user/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["users"],
+    }),
   }),
 });
 
@@ -180,4 +202,9 @@ export const {
   useGetOrderByIdQuery,
   useUpdateOrderStatusMutation,
   useDeleteOrderMutation,
+
+  // Users
+  useGetAllUsersQuery,
+  useAddUserMutation,
+  useDeleteUserMutation
 } = baseApi;

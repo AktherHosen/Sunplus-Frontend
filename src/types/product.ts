@@ -12,3 +12,4 @@ export interface IProduct {
   meta?: Record<string, any>;
   quantity: number
 }
+
