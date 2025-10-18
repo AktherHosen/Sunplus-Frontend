@@ -44,7 +44,7 @@ export default function Categories() {
   };
 
   return (
-    <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 py-2.5">
+    <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 lg:py-2.5">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Categories</h1>

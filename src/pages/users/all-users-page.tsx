@@ -97,14 +97,14 @@ const handleDelete = async (userId: string, userRole: string) => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="container mx-auto px-4 py-6  lg:px-0 lg:py-2.5 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">All Users</h1>
         <div className="flex gap-2">
           {currentUser?.role === "SUPER_ADMIN" && (
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="primary" size="sm">
+                <Button variant="default" size="sm">
                   <Plus className="w-4 h-4 mr-1" />
                   Add User
                 </Button>
