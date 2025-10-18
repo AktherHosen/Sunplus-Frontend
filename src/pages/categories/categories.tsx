@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CategoryForm from "@/components/categories/CategoryForm";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,14 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useDeleteCategoryMutation, useGetAllCategoriesQuery } from "@/redux/api/categoriesApi";
-import { toast } from "sonner";
+import {
+  useDeleteCategoryMutation,
+  useGetAllCategoriesQuery,
+} from "@/redux/api/categoriesApi";
 import { Image, Trash } from "lucide-react";
-import Placeholder from "@/assets/img/placeholder.png"
+import { toast } from "sonner";
 
 export default function Categories() {
-  const { data, isLoading, isError, refetch } = useGetAllCategoriesQuery(undefined);
+  const { data, isLoading, isError, refetch } =
+    useGetAllCategoriesQuery(undefined);
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const categories = data?.data || [];
@@ -68,7 +71,6 @@ export default function Categories() {
                 <TableHead className="w-[60px] text-center">#</TableHead>
                 <TableHead>Image</TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
                 <TableHead className="text-center w-[150px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -77,12 +79,13 @@ export default function Categories() {
                 <TableRow key={cat._id}>
                   <TableCell className="text-center">{index + 1}</TableCell>
                   <TableCell>
-                     <Avatar className="rounded size-8">
+                    <Avatar className="rounded size-8">
                       <AvatarImage
+                        className="rounded"
                         src={
                           cat.image
                             ? `${import.meta.env.VITE_API_URL}${cat.image}`
-                            : Placeholder
+                            : undefined
                         }
                         alt={cat.name}
                       />
@@ -92,9 +95,7 @@ export default function Categories() {
                     </Avatar>
                   </TableCell>
                   <TableCell className="font-medium">{cat.name}</TableCell>
-                  <TableCell className="max-w-[300px] truncate text-gray-600">
-                    {cat.description || "—"}
-                  </TableCell>
+                 
                   <TableCell className="text-center space-x-2">
                     <CategoryForm
                       category={cat}
@@ -106,7 +107,7 @@ export default function Categories() {
                       size="xs"
                       onClick={() => handleDelete(cat._id)}
                     >
-                      <Trash/>
+                      <Trash />
                     </Button>
                   </TableCell>
                 </TableRow>

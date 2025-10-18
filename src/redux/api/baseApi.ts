@@ -180,14 +180,34 @@ export const baseApi = createApi({
       query: () => "/user/profile",
       providesTags: ["users"],
     }),
-   updateUser: builder.mutation<IUser, { id: string; payload: Partial<IUser> }>({
-  query: ({ id, payload }) => ({
-    url: `/user/${id}`,
-    method: "PATCH",
-    body: payload,
-  }),
-  invalidatesTags: ["users"],
-}),
+    updateUser: builder.mutation<
+      IUser,
+      { id: string; payload: Partial<IUser> }
+    >({
+      query: ({ id, payload }) => ({
+        url: `/user/${id}`,
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["users"],
+    }),
+
+    getStatistics: builder.query<
+      {
+        totalProducts: number;
+        totalCategories: number;
+        orders: {
+          total: number;
+          pending: number;
+          completed: number;
+          cancelled: number;
+        };
+      },
+      void
+    >({
+      query: () => "/dashboard",
+      providesTags: ["products", "categories", "orders"],
+    }),
   }),
 });
 
@@ -221,5 +241,7 @@ export const {
   useAddUserMutation,
   useDeleteUserMutation,
   useGetMyProfileQuery,
-  useUpdateUserMutation
+  useUpdateUserMutation,
+
+  useGetStatisticsQuery,
 } = baseApi;

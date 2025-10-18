@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CategoryForm from "@/components/categories/CategoryForm";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,11 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useGetAllSubCategoriesQuery, useDeleteCategoryMutation } from "@/redux/api/baseApi";
-import { toast } from "sonner";
+import {
+  useDeleteCategoryMutation,
+  useGetAllSubCategoriesQuery,
+} from "@/redux/api/baseApi";
 import { Image, Trash } from "lucide-react";
-import Placeholder from "@/assets/img/placeholder.png"
+import { toast } from "sonner";
 export default function Subcategories() {
   const { data, isLoading, isError, refetch } = useGetAllSubCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
@@ -40,8 +42,12 @@ export default function Subcategories() {
     });
   };
 
-  if (isLoading) return <p className="text-center p-4">Loading subcategories...</p>;
-  if (isError) return <p className="text-center text-red-500">Failed to load subcategories.</p>;
+  if (isLoading)
+    return <p className="text-center p-4">Loading subcategories...</p>;
+  if (isError)
+    return (
+      <p className="text-center text-red-500">Failed to load subcategories.</p>
+    );
 
   return (
     <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 py-2.5">
@@ -69,12 +75,13 @@ export default function Subcategories() {
                 <TableRow key={sub._id}>
                   <TableCell className="text-center">{index + 1}</TableCell>
                   <TableCell>
-                     <Avatar className="rounded size-8">
+                    <Avatar className="rounded size-8">
                       <AvatarImage
+                        className="rounded"
                         src={
                           sub.image
                             ? `${import.meta.env.VITE_API_URL}${sub.image}`
-                            : Placeholder
+                            : undefined
                         }
                         alt={sub.name}
                       />
@@ -96,7 +103,8 @@ export default function Subcategories() {
                     <Button
                       variant="destructive"
                       size="xs"
-                      onClick={() => handleDelete(sub)}>
+                      onClick={() => handleDelete(sub)}
+                    >
                       <Trash className="w-4 h-4" />
                     </Button>
                   </TableCell>

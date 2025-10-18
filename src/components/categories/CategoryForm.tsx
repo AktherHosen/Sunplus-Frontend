@@ -21,7 +21,7 @@ import {
   useGetAllCategoriesQuery,
   useUpdateCategoryMutation,
 } from "@/redux/api/categoriesApi";
-import { Edit } from "lucide-react";
+import { Edit, Loader2, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -46,7 +46,7 @@ export default function CategoryForm({
 
   const isEditMode = Boolean(category);
 
-  const { data: categories } = useGetAllCategoriesQuery(undefined);
+  const { data: categories, isLoading } = useGetAllCategoriesQuery(undefined);
   const [addCategory, { isLoading: isAdding }] = useAddCategoryMutation();
   const [updateCategory, { isLoading: isUpdating }] =
     useUpdateCategoryMutation();
@@ -122,7 +122,8 @@ export default function CategoryForm({
       <DialogTrigger asChild>
         <Button
           variant={isEditMode ? "outline" : "default"}
-          size={isEditMode ? "xs" : "sm"}>
+          size={isEditMode ? "xs" : "sm"}
+        >
           {isEditMode ? (
             <Edit className="w-6 h-6" />
           ) : (
@@ -155,7 +156,24 @@ export default function CategoryForm({
               required
             />
           </div>
-
+          {/* Parent Category */}
+          <div className="space-y-2">
+            <Label>Parent Category (optional)</Label>
+            <Select onValueChange={setParent} value={parent || ""}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select parent category (optional)" />
+              </SelectTrigger>
+              <SelectContent className="w-full">
+                {categories?.data
+                  ?.filter((cat: any) => cat._id !== category?._id)
+                  .map((cat: any) => (
+                    <SelectItem key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
           {/* Main Image */}
           <div className="space-y-2">
             <Label htmlFor="image">Upload Main Image</Label>
@@ -196,34 +214,14 @@ export default function CategoryForm({
             </div>
           </div>
 
-          {/* Parent Category */}
-          <div className="space-y-2">
-            <Label>Parent Category (optional)</Label>
-            <Select onValueChange={setParent} value={parent || ""}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select parent category (optional)" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories?.data
-                  ?.filter((cat: any) => cat._id !== category?._id)
-                  .map((cat: any) => (
-                    <SelectItem key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="flex justify-end pt-2">
             <Button type="submit" disabled={isAdding || isUpdating}>
-              {isEditMode
-                ? isUpdating
-                  ? "Updating..."
-                  : "Update"
-                : isAdding
-                ? "Saving..."
-                : "Save"}
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              Save
             </Button>
           </div>
         </form>

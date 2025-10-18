@@ -1,22 +1,5 @@
-import { useGetAllUsersQuery, useAddUserMutation, useDeleteUserMutation } from "@/redux/api/baseApi";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCcw, Trash, User, Plus } from "lucide-react";
-import Placeholder from "@/assets/img/placeholder.png";
-import { useAuth } from "@/context/auth-context";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -26,13 +9,29 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useAuth } from "@/context/auth-context";
+import {
+  useAddUserMutation,
+  useDeleteUserMutation,
+  useGetAllUsersQuery,
+} from "@/redux/api/baseApi";
+import { Image, Loader2, Plus, RefreshCcw, Trash } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function AllUsersPage() {
   const { data, isLoading, isError, refetch } = useGetAllUsersQuery();
   const { user: currentUser } = useAuth();
   const allUsers = data?.data ?? [];
-const [deleteUser] = useDeleteUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
   // Create user state
   const [addUser] = useAddUserMutation();
   const [name, setName] = useState("");
@@ -59,9 +58,11 @@ const [deleteUser] = useDeleteUserMutation();
       </div>
     );
 
-const handleDelete = async (userId: string, userRole: string) => {
-    if (userRole === "SUPER_ADMIN") return toast.warning("You cannot delete a Super Admin.");
-    if (userId === currentUser?._id) return toast.warning("You cannot delete your own account.");
+  const handleDelete = async (userId: string, userRole: string) => {
+    if (userRole === "SUPER_ADMIN")
+      return toast.warning("You cannot delete a Super Admin.");
+    if (userId === currentUser?._id)
+      return toast.warning("You cannot delete your own account.");
 
     if (!window.confirm("Are you sure you want to delete this user?")) return;
 
@@ -74,13 +75,13 @@ const handleDelete = async (userId: string, userRole: string) => {
     }
   };
 
-  if (isLoading) return (
-    <div className="flex items-center justify-center h-40">
-      <Loader2 className="animate-spin text-primary w-6 h-6 mr-2" />
-      <span>Loading users...</span>
-    </div>
-  );
-
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Loader2 className="animate-spin text-primary w-6 h-6 mr-2" />
+        <span>Loading users...</span>
+      </div>
+    );
 
   const handleAddUser = async () => {
     try {
@@ -151,7 +152,7 @@ const handleDelete = async (userId: string, userRole: string) => {
       </div>
 
       {allUsers.length > 0 ? (
-        <div className="overflow-x-auto border rounded-lg shadow-sm">
+        <div className="overflow-x-auto border rounded-lg shadow-none">
           <Table>
             <TableHeader>
               <TableRow>
@@ -171,15 +172,16 @@ const handleDelete = async (userId: string, userRole: string) => {
                   <TableCell>
                     <Avatar className="rounded size-8">
                       <AvatarImage
+                        className="rounded"
                         src={
-                          user.image
+                          user?.image
                             ? `${import.meta.env.VITE_API_URL}${user.image}`
-                            : Placeholder
+                            : undefined
                         }
-                        alt={user.name}
+                        alt={user?.name || "User avatar"}
                       />
-                      <AvatarFallback>
-                        <User className="size-5 text-muted-foreground" />
+                      <AvatarFallback className="rounded">
+                        <Image className="size-5 text-muted-foreground" />
                       </AvatarFallback>
                     </Avatar>
                   </TableCell>
@@ -196,12 +198,19 @@ const handleDelete = async (userId: string, userRole: string) => {
                     {user.isActive}
                   </TableCell>
                   <TableCell className="text-center space-x-2">
-                    {user.role !== "SUPER_ADMIN" && user._id !== currentUser?._id ? (
-                      <Button variant="destructive" size="xs" onClick={() => handleDelete(user._id, user.role)}>
+                    {user.role !== "SUPER_ADMIN" &&
+                    user._id !== currentUser?._id ? (
+                      <Button
+                        variant="destructive"
+                        size="xs"
+                        onClick={() => handleDelete(user._id, user.role)}
+                      >
                         <Trash className="w-4 h-4" />
                       </Button>
                     ) : (
-                      <span className="text-muted-foreground text-xs italic">Not allowed</span>
+                      <span className="text-muted-foreground text-xs italic">
+                        Not allowed
+                      </span>
                     )}
                   </TableCell>
                 </TableRow>
