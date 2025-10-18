@@ -12,7 +12,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useDeleteCategoryMutation, useGetAllCategoriesQuery } from "@/redux/api/categoriesApi";
 import { toast } from "sonner";
-import { Trash } from "lucide-react";
+import { Image, Trash } from "lucide-react";
+import Placeholder from "@/assets/img/placeholder.png"
 
 export default function Categories() {
   const { data, isLoading, isError, refetch } = useGetAllCategoriesQuery(undefined);
@@ -76,16 +77,18 @@ export default function Categories() {
                 <TableRow key={cat._id}>
                   <TableCell className="text-center">{index + 1}</TableCell>
                   <TableCell>
-                    <Avatar>
+                     <Avatar className="rounded size-8">
                       <AvatarImage
                         src={
                           cat.image
                             ? `${import.meta.env.VITE_API_URL}${cat.image}`
-                            : undefined
+                            : Placeholder
                         }
                         alt={cat.name}
                       />
-                      <AvatarFallback>{cat.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="rounded">
+                        <Image className="size-6 text-muted-foreground" />
+                      </AvatarFallback>
                     </Avatar>
                   </TableCell>
                   <TableCell className="font-medium">{cat.name}</TableCell>

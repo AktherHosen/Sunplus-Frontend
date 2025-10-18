@@ -12,8 +12,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetAllSubCategoriesQuery, useDeleteCategoryMutation } from "@/redux/api/baseApi";
 import { toast } from "sonner";
-import { Trash } from "lucide-react";
-
+import { Image, Trash } from "lucide-react";
+import Placeholder from "@/assets/img/placeholder.png"
 export default function Subcategories() {
   const { data, isLoading, isError, refetch } = useGetAllSubCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
@@ -69,16 +69,18 @@ export default function Subcategories() {
                 <TableRow key={sub._id}>
                   <TableCell className="text-center">{index + 1}</TableCell>
                   <TableCell>
-                    <Avatar>
+                     <Avatar className="rounded size-8">
                       <AvatarImage
                         src={
                           sub.image
                             ? `${import.meta.env.VITE_API_URL}${sub.image}`
-                            : undefined
+                            : Placeholder
                         }
                         alt={sub.name}
                       />
-                      <AvatarFallback>{sub.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="rounded">
+                        <Image className="size-6 text-muted-foreground" />
+                      </AvatarFallback>
                     </Avatar>
                   </TableCell>
                   <TableCell className="font-medium">{sub.name}</TableCell>
