@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
 import { Link, useNavigate, useParams } from "react-router";
-
+import placeholderImg from "@/assets/img/placeholder.png"
 const AllSubcategoriesPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const AllSubcategoriesPage = () => {
           {subcategories.map((sub: any) => (
             <Card
               key={sub._id}
-              className="hover:shadow-lg transition-shadow rounded-none py-0 pt-0"
+              className="rounded-lg shadow-none hover:border-primary py-0 pt-0"
             >
               <CardHeader className="flex items-center flex-col justify-center">
                 <h3 className="text-lg font-bold text-center text-primary py-2">
@@ -65,15 +65,17 @@ const AllSubcategoriesPage = () => {
 
               <CardContent className="mt-0 pt-0">
                 <img
-                  src={
-                    sub.image && `${import.meta.env.VITE_API_URL}${sub.image}`
+                   src={
+                    sub.image
+                      ? `${import.meta.env.VITE_API_URL}${sub.image}`
+                      : placeholderImg
                   }
                   alt={sub.name}
                   className="w-full h-full object-cover"
                 />
               </CardContent>
 
-              <CardFooter className="border-t !p-2.5 flex items-center justify-center">
+               <CardFooter className="border-t !p-2.5  rounded-b-lg flex items-center justify-center">
                 <Link
                   to={`/product/${sub.slug}`}
                   className="capitalize font-bold"
