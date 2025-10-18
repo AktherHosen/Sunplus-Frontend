@@ -175,6 +175,19 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["users"],
     }),
+
+    getMyProfile: builder.query<IUser, void>({
+      query: () => "/user/profile",
+      providesTags: ["users"],
+    }),
+   updateUser: builder.mutation<IUser, { id: string; payload: Partial<IUser> }>({
+  query: ({ id, payload }) => ({
+    url: `/user/${id}`,
+    method: "PATCH",
+    body: payload,
+  }),
+  invalidatesTags: ["users"],
+}),
   }),
 });
 
@@ -206,5 +219,7 @@ export const {
   // Users
   useGetAllUsersQuery,
   useAddUserMutation,
-  useDeleteUserMutation
+  useDeleteUserMutation,
+  useGetMyProfileQuery,
+  useUpdateUserMutation
 } = baseApi;

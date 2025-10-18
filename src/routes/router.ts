@@ -15,6 +15,7 @@ import Home from "@/pages/home/home";
 import MediaEventsPage from "@/pages/mediaevents-page";
 import NotFound from "@/pages/notFound/not-found";
 import ProductPage from "@/pages/products/product-page";
+import Profile from "@/pages/profile/profile";
 import SubcatProductDetailsPage from "@/pages/subcat-product-details-page";
 import AllUsersPage from "@/pages/users/all-users-page";
 import { createBrowserRouter } from "react-router";
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
         path: "dashboard",
         Component: SidebarLayout,
         children: [
+          {
+            index:true,
+            Component: Profile,
+          },
           { path: "/dashboard/products", Component: ProductPage },
           { path: "/dashboard/categories", Component: Categories },
           { path: "/dashboard/sub-categories", Component: Subcategories },
