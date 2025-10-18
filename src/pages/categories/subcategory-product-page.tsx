@@ -15,7 +15,6 @@ export default function SubcategoryProductPage() {
   if (isError) return <p>Error loading products.</p>;
   if (!data || data.length === 0) return <p>No products found.</p>;
 
-  console.log(data, "check");
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold mb-4">{subSlug}</h1>

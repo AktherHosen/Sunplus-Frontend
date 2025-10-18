@@ -28,7 +28,7 @@ const AllSubcategoriesPage = () => {
             <img
               src={`${import.meta.env.VITE_API_URL}${banners[0]}`}
               alt={`${category.name} banner`}
-              className="w-full h-full object-cover rounded"
+              className="w-full h-full object-cover rounded-lg"
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -37,7 +37,7 @@ const AllSubcategoriesPage = () => {
                   key={idx}
                   src={`${import.meta.env.VITE_API_URL}${banner}`}
                   alt={`Banner ${idx + 1}`}
-                  className="w-full h-60 object-cover rounded transition"
+                  className="w-full h-full object-cover rounded-lg transition"
                 />
               ))}
             </div>
@@ -71,7 +71,7 @@ const AllSubcategoriesPage = () => {
                       : placeholderImg
                   }
                   alt={sub.name}
-                  className="w-full h-full object-cover"
+                  className="w-full max-h-64 object-cover transition-transform duration-500 hover:scale-105"
                 />
               </CardContent>
 

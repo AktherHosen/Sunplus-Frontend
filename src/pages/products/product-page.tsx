@@ -33,9 +33,9 @@ import {
   useGetAllProductsQuery,
   useUpdateProductMutation,
 } from "@/redux/api/baseApi";
-import { Edit, Loader2, Trash, X } from "lucide-react";
+import { Edit, Image, Loader2, Trash, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import Placeholder from "@/assets/img/placeholder.png";
 const ProductPage = () => {
   const { data: productsData, refetch } = useGetAllProductsQuery();
   const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
@@ -52,7 +52,9 @@ const ProductPage = () => {
   const [category, setCategory] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [metaFields, setMetaFields] = useState<{ key: string; value: string }[]>([{ key: "", value: "" }]);
+  const [metaFields, setMetaFields] = useState<
+    { key: string; value: string }[]
+  >([{ key: "", value: "" }]);
 
   const products = productsData?.data || [];
   const categories = categoriesData?.data || [];
@@ -68,7 +70,9 @@ const ProductPage = () => {
       setImageFile(null);
 
       if (editingProduct.meta && typeof editingProduct.meta === "object") {
-        const metaArray = Object.entries(editingProduct.meta).map(([key, value]) => ({ key, value: String(value) }));
+        const metaArray = Object.entries(editingProduct.meta).map(
+          ([key, value]) => ({ key, value: String(value) })
+        );
         setMetaFields(metaArray.length ? metaArray : [{ key: "", value: "" }]);
       } else {
         setMetaFields([{ key: "", value: "" }]);
@@ -85,9 +89,15 @@ const ProductPage = () => {
   }, [editingProduct, categories, dialogOpen]);
 
   // Meta handlers remain the same
-  const handleAddMetaField = () => setMetaFields([...metaFields, { key: "", value: "" }]);
-  const handleRemoveMetaField = (index: number) => setMetaFields(metaFields.filter((_, i) => i !== index));
-  const handleMetaChange = (index: number, field: "key" | "value", newValue: string) => {
+  const handleAddMetaField = () =>
+    setMetaFields([...metaFields, { key: "", value: "" }]);
+  const handleRemoveMetaField = (index: number) =>
+    setMetaFields(metaFields.filter((_, i) => i !== index));
+  const handleMetaChange = (
+    index: number,
+    field: "key" | "value",
+    newValue: string
+  ) => {
     const updated = [...metaFields];
     updated[index][field] = newValue;
     setMetaFields(updated);
@@ -157,8 +167,7 @@ const ProductPage = () => {
           onClick={() => {
             setEditingProduct(null);
             setDialogOpen(true);
-          }}
-        >
+          }}>
           + Add Product
         </Button>
       </div>
@@ -184,23 +193,28 @@ const ProductPage = () => {
                 <TableRow key={product._id}>
                   <TableCell className="text-center">{index + 1}</TableCell>
                   <TableCell className="text-center">
-                    <Avatar>
+                    <Avatar className="rounded size-8">
                       <AvatarImage
                         src={
                           product.image
                             ? `${import.meta.env.VITE_API_URL}${product.image}`
-                            : "https://via.placeholder.com/150"
+                            : Placeholder
                         }
                         alt={product.name}
                       />
-                      <AvatarFallback>{product.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="rounded">
+                        <Image className="size-6 text-muted-foreground" />
+                      </AvatarFallback>
                     </Avatar>
                   </TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.category_id?.name || "N/A"}</TableCell>
-                  <TableCell>{product.subcategories?.[0]?.name || "N/A"}</TableCell>
+                  <TableCell>
+                    {product.subcategories?.[0]?.name || "N/A"}
+                  </TableCell>
                   <TableCell>${product.price}</TableCell>
-                  <TableCell>{product.quantity || 0}</TableCell> {/* <-- show quantity */}
+                  <TableCell>{product.quantity || 0}</TableCell>{" "}
+                  {/* <-- show quantity */}
                   <TableCell className="text-right space-x-2">
                     <Button
                       variant="outline"
@@ -208,11 +222,13 @@ const ProductPage = () => {
                       onClick={() => {
                         setEditingProduct(product);
                         setDialogOpen(true);
-                      }}
-                    >
+                      }}>
                       <Edit />
                     </Button>
-                    <Button variant="destructive" size="xs" onClick={() => handleDelete(product._id)}>
+                    <Button
+                      variant="destructive"
+                      size="xs"
+                      onClick={() => handleDelete(product._id)}>
                       <Trash />
                     </Button>
                   </TableCell>
@@ -220,7 +236,9 @@ const ProductPage = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-6 text-gray-500">
+                <TableCell
+                  colSpan={8}
+                  className="text-center py-6 text-gray-500">
                   <div className="flex items-center gap-1 justify-center">
                     <Loader2 className="w-4 h-4 text-primary animate-spin" />
                     <p className="text-primary">Loading...</p>
@@ -300,7 +318,9 @@ const ProductPage = () => {
 
               <div className="flex flex-col gap-2">
                 <Label>Subcategory</Label>
-                <Select onValueChange={setSubcategory} value={subcategory || ""}>
+                <Select
+                  onValueChange={setSubcategory}
+                  value={subcategory || ""}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select subcategory (optional)" />
                   </SelectTrigger>
@@ -325,21 +345,33 @@ const ProductPage = () => {
                   <Input
                     placeholder="Key (e.g., brand)"
                     value={field.key}
-                    onChange={(e) => handleMetaChange(index, "key", e.target.value)}
+                    onChange={(e) =>
+                      handleMetaChange(index, "key", e.target.value)
+                    }
                   />
                   <Input
                     placeholder="Value (e.g., Apple)"
                     value={field.value}
-                    onChange={(e) => handleMetaChange(index, "value", e.target.value)}
+                    onChange={(e) =>
+                      handleMetaChange(index, "value", e.target.value)
+                    }
                   />
                   {metaFields.length > 1 && (
-                    <Button type="button" variant="outline" size="icon" onClick={() => handleRemoveMetaField(index)}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleRemoveMetaField(index)}>
                       <X />
                     </Button>
                   )}
                 </div>
               ))}
-              <Button type="button" variant="outline" size="sm" onClick={handleAddMetaField}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleAddMetaField}>
                 + Add Meta Field
               </Button>
             </div>
@@ -351,7 +383,9 @@ const ProductPage = () => {
                 id="image"
                 type="file"
                 accept="image/*"
-                onChange={(e) => e.target.files && setImageFile(e.target.files[0])}
+                onChange={(e) =>
+                  e.target.files && setImageFile(e.target.files[0])
+                }
               />
               {imageFile && (
                 <img

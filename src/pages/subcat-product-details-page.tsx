@@ -7,9 +7,9 @@ import { useParams } from "react-router";
 // Shadcn/ui components
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Placeholder from "@/assets/img/placeholder.png"
 // API
 import Loader from "@/components/loader";
 import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
@@ -53,10 +53,10 @@ const SubcatProductDetailsPage = () => {
     : [];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+  
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* --- Product Section --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-10">
           {/* Left: Main Image */}
           <Card className="overflow-hidden shadow-none h-fit">
             <Zoom>
@@ -66,7 +66,7 @@ const SubcatProductDetailsPage = () => {
                     ? `${import.meta.env.VITE_API_URL}${
                         galleryImages[selectedImage]
                       }`
-                    : "/api/placeholder/600/600"
+                    : Placeholder
                 }
                 alt={product.name}
                 className="w-full h-[300px] object-contain p-4"
@@ -271,7 +271,7 @@ const SubcatProductDetailsPage = () => {
           </Tabs>
         </Card>
       </div>
-    </div>
+
   );
 };
 
