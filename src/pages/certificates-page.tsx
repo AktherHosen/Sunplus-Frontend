@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Award } from "lucide-react";
 
@@ -32,7 +32,7 @@ const certificates = [
 
 export default function CertificatesPage() {
   return (
-    <section className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 py-20 px-4 sm:px-6 lg:px-8">
+    <section className="min-h-screen bg-gradient-to-b from-background to-background/95 py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16 space-y-4">
@@ -42,10 +42,10 @@ export default function CertificatesPage() {
               Recognition & Certifications
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-800">
             Our <span className="text-primary">Certificates</span>
           </h1>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+          <p className="text-gray-600 text-base sm:text-lg md:text-xl max-w-3xl mx-auto">
             A testament to our dedication, innovation, and commitment to
             excellence. Every recognition reflects our unwavering pursuit of
             quality and trust.
@@ -55,34 +55,40 @@ export default function CertificatesPage() {
         <Separator className="bg-primary/20 mb-12" />
 
         {/* Certificate Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {certificates.map((cert) => (
             <Card
               key={cert.title}
-              className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 rounded-3xl bg-white/90 backdrop-blur-sm"
+              className="group flex flex-col h-full overflow-hidden pt-0 shadow-none border border-border transition-all duration-300 rounded-lg bg-white/90 backdrop-blur-sm"
             >
+              {/* Image */}
               <div className="overflow-hidden">
                 <img
                   src={cert.image}
                   alt={cert.title}
-                  className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="h-48 sm:h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <CardHeader>
-                <CardTitle className="text-xl font-semibold text-gray-800">
-                  {cert.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {cert.description}
-                </p>
-                <div className="mt-4">
-                  <Badge variant="secondary" className="text-xs uppercase">
-                    Certified
-                  </Badge>
-                </div>
-              </CardContent>
+
+              {/* Card Content */}
+              <div className="flex flex-col flex-grow">
+                <CardHeader className="px-4 pt-4">
+                  <CardTitle className="text-base sm:text-lg font-semibold text-gray-800">
+                    {cert.title}
+                  </CardTitle>
+                </CardHeader>
+
+                <CardContent className="flex flex-col flex-grow justify-between px-4 pb-4">
+                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                    {cert.description}
+                  </p>
+                  <div className="mt-4 self-start">
+                    <Badge variant="secondary" className="text-xs uppercase">
+                      Certified
+                    </Badge>
+                  </div>
+                </CardContent>
+              </div>
             </Card>
           ))}
         </div>
