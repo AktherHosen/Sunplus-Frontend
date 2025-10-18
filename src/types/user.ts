@@ -7,5 +7,5 @@ export interface IUser {
   isActive?: string;
   isDeleted?: string;
   isVerified?: boolean;
-  role: string;
+  role: "SUPER_ADMIN" | "ADMIN";
 }
