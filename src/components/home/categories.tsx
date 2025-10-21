@@ -7,12 +7,14 @@ import {
 import { useGetAllCategoriesQuery } from "@/redux/api/baseApi";
 import { Link } from "react-router";
 import Loader from "../loader";
-import placeholderImg from "@/assets/img/placeholder.png"
+import placeholderImg from "@/assets/img/placeholder.png";
+import SectionTitle from "@/components/ui/section-title";
+
 export default function Categories() {
   const { data, isLoading, isError } = useGetAllCategoriesQuery(undefined);
   const categories = data?.data || [];
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <Loader fullscreen={true} message="Fetching categories..." />;
   if (isError)
     return (
       <div className="text-center py-10 text-red-500">
@@ -23,40 +25,49 @@ export default function Categories() {
     return <div className="text-center py-10">No categories found.</div>;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  gap-6 my-8">
-      {categories.map((category: any) => (
-        <Card
-          key={category._id}
-          className=" rounded-lg border-border hover:border-primary shadow-none py-0 pt-4"
-        >
-          <CardHeader className="!p-2">
-            <h3 className="text-lg font-bold text-center text-primary">
-              {category.name}
-            </h3>
-          </CardHeader>
+    <section className="">
+      <SectionTitle
+        title="Shop by Categories"
+        subtitle="Explore products from our wide range of categories."
+        align="center"
+      />
 
-          <CardContent className="!p-0 !px-8">
-            <img
-             src={
-                    category.image
-                      ? `${import.meta.env.VITE_API_URL}${category.image}`
-                      : placeholderImg
-                  }
-              alt={category.name}
-              className="w-full max-h-[300px] object-cover"
-            />
-          </CardContent>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mt-8">
+        {categories.map((category: any) => (
+          <Card
+            key={category._id}
+            className="rounded-lg shadow-none border-border hover:border-primary transition-colors duration-300  hover:shadow-md overflow-hidden"
+          >
+            <CardHeader className="!p-2">
+              <h3 className="text-lg font-bold text-center text-primary truncate">
+                {category.name}
+              </h3>
+            </CardHeader>
 
-          <CardFooter className="border-t !p-2.5  rounded-b-lg flex items-center justify-center">
-            <Link
-              to={`/category/${category?.slug}`}
-              className="capitalize font-bold"
-            >
-              See More
-            </Link>
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
+            <CardContent className="!p-0 !px-8">
+              <img
+                src={
+                  category.image
+                    ? `${import.meta.env.VITE_API_URL}${category.image}`
+                    : placeholderImg
+                }
+                alt={category.name}
+                className="w-full max-h-[300px] object-cover rounded-md"
+                loading="lazy"
+              />
+            </CardContent>
+
+            <CardFooter className="border-t !p-2.5 flex items-center justify-center bg-muted/30">
+              <Link
+                to={`/category/${category?.slug}`}
+                className="capitalize font-semibold text-primary hover:underline"
+              >
+                See More
+              </Link>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    </section>
   );
 }

@@ -9,7 +9,7 @@ import Autoplay from "embla-carousel-autoplay";
 import Circuit from "../../assets/img/circuit-breaker-3.jpg";
 import Socket from "../../assets/img/socket.png";
 
-const banners = [Socket, Circuit, "/images/banner3.jpg"];
+const banners = [Socket, Circuit, Socket];
 
 export default function Banner() {
   return (
