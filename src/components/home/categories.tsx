@@ -36,7 +36,7 @@ export default function Categories() {
         {categories.map((category: any) => (
           <Card
             key={category._id}
-            className="rounded-lg shadow-none border-border hover:border-primary transition-colors duration-300  hover:shadow-md overflow-hidden"
+            className="rounded-lg py-0 shadow-none border-border hover:border-primary transition-colors duration-300  hover:shadow-md overflow-hidden"
           >
             <CardHeader className="!p-2">
               <h3 className="text-lg font-bold text-center text-primary truncate">
