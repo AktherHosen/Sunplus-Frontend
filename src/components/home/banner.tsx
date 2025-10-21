@@ -8,8 +8,9 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import Circuit from "../../assets/img/circuit-breaker-3.jpg";
 import Socket from "../../assets/img/socket.png";
+import Socket2 from "../../assets/img/socket.png";
 
-const banners = [Socket, Circuit, Socket];
+const banners = [Socket, Circuit, Socket2];
 
 export default function Banner() {
   return (
