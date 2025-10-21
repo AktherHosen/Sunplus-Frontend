@@ -38,7 +38,7 @@ export default function LatestProducts() {
   return (
     <section className="w-full py-8">
       <SectionTitle
-        title="Latest Products"
+        title="New Arrivals Products"
         subtitle="Discover our newest arrivals and best-selling items."
         align="center"
       />
@@ -80,8 +80,8 @@ export default function LatestProducts() {
                         {product.name}
                       </h3>
                       {product.price && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          ${Number(product.price).toFixed(2)}
+                        <p className="text-sm text-muted-foreground font-bold mt-1">
+                          ৳{Number(product.price).toFixed(2)}
                         </p>
                       )}
                     </div>

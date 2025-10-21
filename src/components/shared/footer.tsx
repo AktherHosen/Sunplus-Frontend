@@ -43,7 +43,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative bg-muted text-accent-foreground">
+    <footer className="relative bg-muted text-accent-foreground mt-auto">
       {/* Decorative Top Shape */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] bg-muted">
         <svg
