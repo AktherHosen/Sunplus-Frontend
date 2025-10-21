@@ -1,5 +1,6 @@
 import Banner from "@/components/home/banner";
 import Categories from "@/components/home/categories";
+import Features from "@/components/home/features";
 import LatestProducts from "@/components/home/latestProducts";
 
 const Home = () => {
@@ -13,6 +14,10 @@ const Home = () => {
 
       <section>
         <LatestProducts />
+      </section>
+
+      <section>
+        <Features/>
       </section>
     </div>
   );

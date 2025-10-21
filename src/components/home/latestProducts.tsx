@@ -1,10 +1,6 @@
 import { useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import type { IProduct } from "@/types/product";
 import { useGetAllProductsQuery } from "@/redux/api/baseApi";
@@ -60,7 +56,20 @@ export default function LatestProducts() {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className="h-full shadow-none transition">
+                <Card className="h-full shadow-none transition relative">
+                  {/* Stock Badge */}
+                  {product.quantity !== undefined && (
+                    <div
+                      className={`absolute top-2 right-2 px-2 py-1 text-xs font-semibold rounded ${
+                        Number(product.quantity) > 0
+                          ? "bg-chart-2 text-muted"
+                          : "bg-destructive text-muted"
+                      }`}
+                    >
+                      {Number(product.quantity) > 0 ? "In Stock" : "Out of Stock"}
+                    </div>
+                  )}
+
                   <CardContent className="flex flex-col h-full items-center justify-between p-4">
                     <div className="w-full aspect-square overflow-hidden rounded-lg mb-3">
                       <motion.img
@@ -75,6 +84,7 @@ export default function LatestProducts() {
                         whileHover={{ scale: 1.05 }}
                       />
                     </div>
+
                     <div className="flex flex-col items-center flex-grow">
                       <h3 className="text-sm font-medium text-center line-clamp-2">
                         {product.name}
