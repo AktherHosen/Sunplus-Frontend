@@ -4,19 +4,12 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useParams } from "react-router";
 
-// Shadcn/ui components
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Placeholder from "@/assets/img/placeholder.png"
-// API
+import Placeholder from "@/assets/img/placeholder.png";
 import Loader from "@/components/loader";
 import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
-
-import "react-medium-image-zoom/dist/styles.css";
-
-// Shadcn/ui components
 import OrderForm from "@/components/orders/order-form";
 import {
   Dialog,
@@ -29,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-// API
+import { motion } from "framer-motion"; // <-- added
 
 const SubcatProductDetailsPage = () => {
   const { categorySlug, subCategorySlug, productSlug } = useParams();
@@ -53,143 +46,170 @@ const SubcatProductDetailsPage = () => {
     : [];
 
   return (
-  
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* --- Product Section --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-10">
-          {/* Left: Main Image */}
-          <Card className="overflow-hidden shadow-none h-fit">
-            <Zoom>
-              <img
-                src={
-                  galleryImages[selectedImage]
-                    ? `${import.meta.env.VITE_API_URL}${
-                        galleryImages[selectedImage]
-                      }`
-                    : Placeholder
-                }
-                alt={product.name}
-                className="w-full h-[300px] object-contain p-4"
-              />
-            </Zoom>
-            {galleryImages.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto p-2">
-                {galleryImages.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedImage(idx)}
-                    className={`w-20 h-20 rounded-lg border-2 overflow-hidden transition ${
-                      selectedImage === idx
-                        ? "border-blue-600 ring-1 ring-blue-300"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}>
-                    <img
-                      src={`${import.meta.env.VITE_API_URL}${img}`}
-                      alt={`${product.name} view ${idx + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-          </Card>
+    <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
 
-          {/* Right: Info + Actions */}
-          <div className="space-y-4">
-            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+      {/* --- Product Section --- */}
+      <motion.div
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        {/* Left: Main Image */}
+        <Card className="overflow-hidden shadow-none h-fit">
+          <Zoom>
+            <motion.img
+              src={
+                galleryImages[selectedImage]
+                  ? `${import.meta.env.VITE_API_URL}${galleryImages[selectedImage]}`
+                  : Placeholder
+              }
+              alt={product.name}
+              className="w-full h-[300px] object-contain p-4"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            />
+          </Zoom>
 
-            <div className="flex items-center gap-4">
-              <span className="text-2xl font-semibold">${product.price}</span>
-              {product.originalPrice && (
-                <span className="line-through text-gray-400">
-                  ${product.originalPrice}
-                </span>
-              )}
-            </div>
-
-            <p className="text-gray-600">
-              {product.shortDescription ||
-                "Premium product with exceptional quality."}
-            </p>
-
-            <div
-              className={`flex items-center gap-1 text-sm ${
-                Number(product.quantity) > 0 ? "text-green-600" : "text-red-600"
-              }`}>
-              {Number(product.quantity) > 0 ? (
-                <span>● In Stock</span>
-              ) : (
-                <span>● Out of Stock</span>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex w-fit gap-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    size="lg"
-                    disabled={Number(product.quantity) <= 0}
-                    className="flex-1">
-                    <ShoppingCart className="w-5 h-5 mr-2" /> Order
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <OrderForm
-                    productId={product._id}
-                    productName={product.name}
-                    maxQuantity={product.quantity}
-                    onSuccess={() => setIsDialogOpen(false)}
+          {galleryImages.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto p-2">
+              {galleryImages.map((img, idx) => (
+                <motion.button
+                  key={idx}
+                  onClick={() => setSelectedImage(idx)}
+                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden transition ${
+                    selectedImage === idx
+                      ? "border-blue-600 ring-1 ring-blue-300"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <img
+                    src={`${import.meta.env.VITE_API_URL}${img}`}
+                    alt={`${product.name} view ${idx + 1}`}
+                    className="w-full h-full object-cover"
                   />
-                </DialogContent>
-              </Dialog>
-
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="lg" className="flex-1">
-                    Buy Now
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Contact Distributor</DialogTitle>
-                    <DialogDescription>
-                      Call: <strong>01686691262</strong> or Toll-Free:{" "}
-                      <strong>08000016267</strong>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="mt-4 flex justify-end">
-                    <DialogClose asChild>
-                      <Button>Close</Button>
-                    </DialogClose>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                </motion.button>
+              ))}
             </div>
+          )}
+        </Card>
 
-            {/* Category Info */}
-            <Card className="p-3 shadow-none">
-              <CardContent className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <dt className="font-semibold">Category</dt>
-                  <dd className="text-gray-600">{product.category_id?.name}</dd>
-                </div>
-                <div>
-                  <dt className="font-semibold">Subcategory</dt>
-                  <dd className="text-gray-600">
-                    {product.subcategories?.name}
-                  </dd>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Right: Info + Actions */}
+        <motion.div
+          className="space-y-4"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+
+          <div className="flex items-center gap-4">
+            <span className="text-2xl font-semibold">${product.price}</span>
+            {product.originalPrice && (
+              <span className="line-through text-gray-400">
+                ${product.originalPrice}
+              </span>
+            )}
           </div>
-        </div>
 
+          <p className="text-gray-600">
+            {product.shortDescription ||
+              "Premium product with exceptional quality."}
+          </p>
+
+          <div
+            className={`flex items-center gap-1 text-sm ${
+              Number(product.quantity) > 0 ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {Number(product.quantity) > 0 ? (
+              <span>● In Stock</span>
+            ) : (
+              <span>● Out of Stock</span>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <motion.div
+            className="flex w-fit gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  disabled={Number(product.quantity) <= 0}
+                  className="flex-1"
+                >
+                  <ShoppingCart className="w-5 h-5 mr-2" /> Order
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <OrderForm
+                  productId={product._id}
+                  productName={product.name}
+                  maxQuantity={product.quantity}
+                  onSuccess={() => setIsDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="lg" className="flex-1">
+                  Buy Now
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Contact Distributor</DialogTitle>
+                  <DialogDescription>
+                    Call: <strong>01686691262</strong> or Toll-Free:{" "}
+                    <strong>08000016267</strong>
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="mt-4 flex justify-end">
+                  <DialogClose asChild>
+                    <Button>Close</Button>
+                  </DialogClose>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </motion.div>
+
+          {/* Category Info */}
+          <Card className="p-3 shadow-none">
+            <CardContent className="grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <dt className="font-semibold">Category</dt>
+                <dd className="text-gray-600">{product.category_id?.name}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold">Subcategory</dt>
+                <dd className="text-gray-600">
+                  {product.subcategories?.name}
+                </dd>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </motion.div>
+
+      {/* Tabs Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
         <Card className="p-4 shadow-none">
           <Tabs defaultValue="features" className="w-full mt-2">
-            <TabsList className=" px-1 flex space-x-1">
+            <TabsList className="px-1 flex space-x-1">
               {["features", "specs", "gallery", "support"].map((tab) => (
-                <TabsTrigger key={tab} value={tab} className="">
+                <TabsTrigger key={tab} value={tab}>
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </TabsTrigger>
               ))}
@@ -217,7 +237,7 @@ const SubcatProductDetailsPage = () => {
 
               {/* Specifications */}
               <TabsContent value="specs">
-                  {product.meta?.specifications ? (
+                {product.meta?.specifications ? (
                   <ul className="list-disc pl-5 space-y-1 text-gray-700">
                     {product.meta.specifications
                       .split(" - ")
@@ -237,22 +257,30 @@ const SubcatProductDetailsPage = () => {
               <TabsContent value="gallery">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {galleryImages.map((img, idx) => (
-                    <Zoom key={idx}>
-                      <Avatar className="w-32 h-32 rounded-lg overflow-hidden">
-                        <AvatarImage
-                          src={`${import.meta.env.VITE_API_URL}${img}`}
-                          alt={`View ${idx + 1}`}
-                          className="object-cover w-full h-full"
-                        />
-                      </Avatar>
-                    </Zoom>
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    >
+                      <Zoom>
+                        <Avatar className="w-32 h-32 rounded-lg overflow-hidden">
+                          <AvatarImage
+                            src={`${import.meta.env.VITE_API_URL}${img}`}
+                            alt={`View ${idx + 1}`}
+                            className="object-cover w-full h-full"
+                          />
+                        </Avatar>
+                      </Zoom>
+                    </motion.div>
                   ))}
                 </div>
               </TabsContent>
 
               {/* Support */}
               <TabsContent value="support">
-                   {product.meta?.supports ? (
+                {product.meta?.supports ? (
                   <ul className="list-disc pl-5 space-y-1 text-gray-700">
                     {product.meta.supports
                       .split(" - ")
@@ -270,8 +298,8 @@ const SubcatProductDetailsPage = () => {
             </div>
           </Tabs>
         </Card>
-      </div>
-
+      </motion.div>
+    </div>
   );
 };
 
