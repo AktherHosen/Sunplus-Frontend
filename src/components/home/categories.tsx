@@ -45,16 +45,20 @@ export default function Categories() {
             </CardHeader>
 
             <CardContent className="!p-0 !px-8">
-              <img
-                src={
+
+              <div className="w-full aspect-square overflow-hidden rounded-lg mb-3">
+                    <img
+                      src={
                   category.image
                     ? `${import.meta.env.VITE_API_URL}${category.image}`
                     : placeholderImg
                 }
-                alt={category.name}
-                className="w-full max-h-[300px] object-cover rounded-md"
-                loading="lazy"
-              />
+                      alt={category.name}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      loading="lazy"
+                    />
+                  </div>
+
             </CardContent>
 
             <CardFooter className="border-t !p-2.5 flex items-center justify-center bg-muted/30">
