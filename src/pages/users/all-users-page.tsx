@@ -28,7 +28,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function AllUsersPage() {
-  const { data, isLoading, isError, refetch } = useGetAllUsersQuery();
+  const { data, isLoading, isError, refetch } = useGetAllUsersQuery(undefined);
   const { user: currentUser } = useAuth();
   const allUsers = data?.data ?? [];
   const [deleteUser] = useDeleteUserMutation();

@@ -156,7 +156,7 @@ export const baseApi = createApi({
     }),
 
     // ✅ Get all Orders
-    getAllUsers: builder.query<IUser[], void>({
+    getAllUsers: builder.query({
       query: () => "/user/all-users",
       providesTags: ["users"],
     }),

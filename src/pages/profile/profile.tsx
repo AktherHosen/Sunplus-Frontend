@@ -51,7 +51,7 @@ export default function Profile() {
           {/* Avatar */}
           <div className="relative group mb-4">
             <Avatar className="size-25 rounded-full">
-              <AvatarImage src={user?.avatar || ""} alt={user?.name} />
+              <AvatarImage src={user?.name || ""} alt={user?.name} />
               <AvatarFallback>{user?.name?.[0]}</AvatarFallback>
             </Avatar>
             <Button
