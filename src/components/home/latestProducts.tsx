@@ -72,7 +72,7 @@ export default function LatestProducts() {
                 >
                   {/* 👇 Use category/subcategory/slug in the link */}
                   <Link to={`/product/${category}/${subcategory}/${slug}`}>
-                    <Card className="h-full shadow-none transition relative hover:shadow-md hover:scale-[1.02] duration-200 cursor-pointer">
+                    <Card className="h-full shadow-none transition relative  duration-200 cursor-pointer">
                       {/* Stock Badge */}
                       {product.quantity !== undefined && (
                         <div
