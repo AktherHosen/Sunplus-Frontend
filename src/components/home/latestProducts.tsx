@@ -11,7 +11,7 @@ import { useGetAllProductsQuery } from "@/redux/api/baseApi";
 import SectionTitle from "../ui/section-title";
 import { motion } from "framer-motion";
 import { Image } from "lucide-react";
-import { Link } from "react-router";
+import { Link } from "react-router"; 
 
 export default function LatestProducts() {
   const autoplay = useRef(
@@ -37,7 +37,6 @@ export default function LatestProducts() {
     );
   }
 
-  console.log(products, "latest products");
   return (
     <section className="w-full py-8">
       <SectionTitle
@@ -53,11 +52,12 @@ export default function LatestProducts() {
       >
         <CarouselContent>
           {products.map((product: IProduct, index) => {
-            const category =
-              product.category_id?.slug;
-            const subcategory =
-              product.subcategories?.slug;
-            const slug = product.slug || product.name?.toLowerCase().replace(/\s+/g, "-");
+            const category = product.category_id?.slug ?? "unknown";
+            const subcategory = product.subcategories?.slug ?? "general";
+            const slug =
+              product.slug ||
+              product.name?.toLowerCase().replace(/\s+/g, "-") ||
+              "product";
 
             return (
               <CarouselItem
@@ -70,9 +70,8 @@ export default function LatestProducts() {
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  {/* 👇 Use category/subcategory/slug in the link */}
                   <Link to={`/product/${category}/${subcategory}/${slug}`}>
-                    <Card className="h-full shadow-none transition relative  duration-200 cursor-pointer">
+                    <Card className="h-full shadow-none transition relative duration-200 cursor-pointer">
                       {/* Stock Badge */}
                       {product.quantity !== undefined && (
                         <div

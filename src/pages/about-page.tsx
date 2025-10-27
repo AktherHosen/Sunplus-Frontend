@@ -3,13 +3,16 @@ import { useGetStatisticsQuery } from "@/redux/api/baseApi";
 import { Award, Globe, Lightbulb, ShieldCheck, Users, Zap } from "lucide-react";
 
 export default function AboutUsPage() {
-  const { data, isLoading } = useGetStatisticsQuery();
-  const stats = data?.data;
-  const achievements = [
-    { number: stats ? stats.totalProducts : "…", label: "Products Available" },
-    { number: stats ? stats.totalCategories : "…", label: "Categories" },
-    { number: "10k", label: "Happy Customers" },
-  ];
+const { data, isLoading } = useGetStatisticsQuery();
+const stats = data?.data; 
+
+const achievements = [
+  { number: stats?.totalProducts ?? "…", label: "Products Available" },
+  { number: stats?.totalCategories ?? "…", label: "Categories" },
+  { number: "10k", label: "Happy Customers" },
+];
+
+
   return (
     <div className="min-h-screen bg-background text-foreground py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-screen-xl mx-auto space-y-12">

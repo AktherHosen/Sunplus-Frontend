@@ -7,7 +7,6 @@ import {
 import { useGetAllCategoriesQuery } from "@/redux/api/baseApi";
 import { Link } from "react-router";
 import Loader from "../loader";
-import placeholderImg from "@/assets/img/placeholder.png";
 import SectionTitle from "@/components/ui/section-title";
 import { motion } from "framer-motion";
 import { Image } from "lucide-react";

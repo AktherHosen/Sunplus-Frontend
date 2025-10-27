@@ -1,6 +1,7 @@
 import { Truck, Phone, Percent, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 const Features = () => {
   const features = [
@@ -26,8 +27,8 @@ const Features = () => {
     },
   ];
 
-  // Container variant for staggering children
-  const container = {
+  // ✅ Explicitly typed variants
+  const container: Variants = {
     hidden: {},
     show: {
       transition: {
@@ -36,8 +37,7 @@ const Features = () => {
     },
   };
 
-  // Item variant for smooth fade + slide
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: {
       opacity: 1,
@@ -66,12 +66,10 @@ const Features = () => {
                   "flex items-center gap-4 p-3.5 rounded-lg border border-border bg-muted/80 transition shadow-none hover:border-primary hover:bg-background"
                 )}
               >
-                {/* Icon on the left */}
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 flex-shrink-0">
                   <Icon className="w-5 h-5 text-primary" />
                 </div>
 
-                {/* Title */}
                 <div className="flex flex-col justify-center">
                   <h3 className="text-sm sm:text-base font-semibold text-foreground">
                     {feature.title}

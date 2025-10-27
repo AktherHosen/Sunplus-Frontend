@@ -6,14 +6,12 @@ import { toast } from "sonner";
 
 interface OrderFormProps {
   productId: string;
-  productName: string;
   maxQuantity: number;
   onSuccess?: () => void;
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({
   productId,
-  productName,
   maxQuantity,
   onSuccess,
 }) => {
@@ -22,14 +20,12 @@ const OrderForm: React.FC<OrderFormProps> = ({
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Handle success or error
   useEffect(() => {
     if (isSuccess) {
       toast.success("Order placed successfully!");
-      formRef.current?.reset(); // Reset the form
-      onSuccess?.(); // Close the dialog
+      formRef.current?.reset(); 
+      onSuccess?.(); 
     } else if (isError) {
-      // RTK Query error object may vary
       const msg = (error as any)?.data?.message || "Failed to place order";
       toast.error(msg);
     }
@@ -41,7 +37,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
     const order = Object.fromEntries(formData.entries());
 
     createOrder({
-      item: productId,
+      item: { _id: productId } as any, 
       quantity: Number(order.quantity),
       ...order,
     });

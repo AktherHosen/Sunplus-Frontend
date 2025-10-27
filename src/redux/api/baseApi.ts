@@ -58,10 +58,14 @@ export const baseApi = createApi({
     }),
 
     // -------------------- Products --------------------
-    getAllProducts: builder.query<IProduct[], void>({
+    getAllProducts: builder.query<
+      { statusCode: number; success: boolean; message: string; data: IProduct[] },
+      void
+    >({
       query: () => "/product",
       providesTags: ["products"],
     }),
+
 
     getProductById: builder.query<IProduct, string>({
       query: (id) => `/product/${id}`,
@@ -123,7 +127,8 @@ export const baseApi = createApi({
     }),
 
     // ✅ Get all Orders
-    getAllOrders: builder.query<IOrder[], void>({
+    getAllOrders: builder.query<{ statusCode: number; success: boolean; message: string; data: IOrder[] },
+      void>({
       query: () => "/order",
       providesTags: ["orders"],
     }),
@@ -192,22 +197,27 @@ export const baseApi = createApi({
       invalidatesTags: ["users"],
     }),
 
-    getStatistics: builder.query<
-      {
-        totalProducts: number;
-        totalCategories: number;
-        orders: {
-          total: number;
-          pending: number;
-          completed: number;
-          cancelled: number;
-        };
-      },
-      void
-    >({
-      query: () => "/dashboard",
-      providesTags: ["products", "categories", "orders"],
-    }),
+    // In your baseApi.ts (or wherever the hook is defined)
+getStatistics: builder.query<
+  {
+    success: boolean;
+    data: {
+      totalProducts: number;
+      totalCategories: number;
+      orders: {
+        total: number;
+        pending: number;
+        completed: number;
+        cancelled: number;
+      };
+    };
+  },
+  void
+>({
+  query: () => "/dashboard",
+  providesTags: ["products", "categories", "orders"],
+}),
+
   }),
 });
 

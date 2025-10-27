@@ -1,15 +1,22 @@
-// frontend/src/types/product.ts
-export interface IProduct {
-  _id?: string; // Use string in frontend
+export interface ICategory {
+  _id: string;
   name: string;
-  price: number;
-  slug?: string;
+  slug: string;
   image?: string;
-  category_id: string; // string instead of ObjectId
-  subcategories?: string[]; // array of category _id strings
-  createdAt?: string; // ISO string
-  updatedAt?: string;
-  meta?: Record<string, any>;
-  quantity: number
+  banners?: string[];
+  parent?: string | null;
 }
 
+export interface IProduct {
+  _id: string;
+  name: string;
+  price: number;
+  quantity?: number;
+  image?: string;
+  slug?: string;
+  category_id?: ICategory | null;
+  subcategories?: ICategory | null;
+  meta?: Record<string, any>;
+  createdAt?: string;
+  updatedAt?: string;
+}

@@ -5,22 +5,17 @@ import {
   refreshAccessToken,
   resetPassword,
 } from "@/lib/api";
+import type { IUser } from "@/types/user";
 import axios from "axios";
 import {
   createContext,
-  ReactNode,
+  type ReactNode,
   useContext,
   useEffect,
   useState,
 } from "react";
 import { toast } from "sonner";
 
-interface IUser {
-  _id: string;
-  name: string;
-  email: string;
-  // add more if needed
-}
 
 interface AuthContextType {
   user: IUser | null;
@@ -59,9 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshToken = async () => {
     try {
-      const res = await refreshAccessToken();
-      // accessToken is set in cookie by backend
-      // optionally you can store it in state if needed
+      await refreshAccessToken();
     } catch (err: any) {
       setUser(null);
     }

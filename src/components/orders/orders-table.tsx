@@ -29,7 +29,6 @@ export const OrdersTable = () => {
   const [updateOrderStatus, { isLoading: isUpdating }] =
     useUpdateOrderStatusMutation();
 
-  // ✅ enum values (matches backend exactly)
   const allowedStatuses = [
     "pending",
     "confirmed",
@@ -95,7 +94,7 @@ export const OrdersTable = () => {
               <TableRow key={order._id}>
                 <TableCell>{idx + 1}</TableCell>
                 <TableCell>{order.name}</TableCell>
-                <TableCell>{order.item.name || "—"}</TableCell>
+                <TableCell>{order.item?.name || "—"}</TableCell>
                 <TableCell>{order.quantity}</TableCell>
                 <TableCell>
                   <Select
