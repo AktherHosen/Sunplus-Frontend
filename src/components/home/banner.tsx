@@ -30,7 +30,7 @@ export default function Banner() {
               <img
                 src={src}
                 alt={`Banner ${index + 1}`}
-                className="w-full h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
+                className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
               />
             </div>
           </CarouselItem>

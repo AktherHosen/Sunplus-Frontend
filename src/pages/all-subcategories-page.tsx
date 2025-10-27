@@ -41,7 +41,7 @@ const AllSubcategoriesPage = () => {
             <img
               src={`${import.meta.env.VITE_API_URL}${banners[0]}`}
               alt={`${category.name} banner`}
-              className="w-full h-auto object-cover rounded-lg"
+               className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -50,7 +50,7 @@ const AllSubcategoriesPage = () => {
                   key={idx}
                   src={`${import.meta.env.VITE_API_URL}${banner}`}
                   alt={`Banner ${idx + 1}`}
-                  className="w-full h-auto object-cover rounded-lg transition"
+                  className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
                 />
               ))}
             </div>

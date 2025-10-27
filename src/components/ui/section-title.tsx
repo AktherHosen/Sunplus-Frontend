@@ -21,7 +21,7 @@ export default function SectionTitle({
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.6 }}
       className={cn(
-        "w-full mb-10",
+        "w-full mb-6 sm:mb-8 md:mb-10 lg:mb-12",
         align === "center" && "text-center",
         align === "right" && "text-right",
         align === "left" && "text-left",
@@ -33,7 +33,10 @@ export default function SectionTitle({
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-3xl md:text-4xl font-bold tracking-tight text-foreground"
+        className={cn(
+          "font-bold tracking-tight text-foreground leading-tight",
+          "text-xl sm:text-2xl md:text-3xl lg:text-4xl"
+        )}
       >
         {title}
       </motion.h2>
@@ -44,7 +47,7 @@ export default function SectionTitle({
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className={cn(
-          "mt-3 h-[3px] w-16 bg-primary rounded-full origin-left",
+          "mt-2 sm:mt-3 h-[2px] sm:h-[3px] w-12 sm:w-16 md:w-20 bg-primary rounded-full origin-left",
           align === "center" && "mx-auto",
           align === "right" && "ml-auto",
           align === "left" && "mr-auto"
@@ -57,7 +60,13 @@ export default function SectionTitle({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto"
+          className={cn(
+            "mt-2 sm:mt-3 text-muted-foreground max-w-full sm:max-w-xl md:max-w-2xl",
+            "text-sm sm:text-base md:text-lg leading-relaxed",
+            align === "center" && "mx-auto",
+            align === "right" && "ml-auto",
+            align === "left" && "mr-auto"
+          )}
         >
           {subtitle}
         </motion.p>
