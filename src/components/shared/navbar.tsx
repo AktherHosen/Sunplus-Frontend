@@ -203,9 +203,9 @@ export default function Navbar() {
                 {allMenuItems
                   .filter(
                     (item) => item.title !== "Login" && item.title !== "Admin"
-                  ) // Exclude user-specific items
+                  ) 
                   .map((item) =>
-                    item.popover ? (
+                    item ? (
                       <div key={item.title} className="space-y-2">
                         <p className="text-lg font-semibold text-foreground">
                           {item.title}

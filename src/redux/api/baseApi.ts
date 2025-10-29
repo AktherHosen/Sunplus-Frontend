@@ -4,7 +4,6 @@ import type { IUser } from "@/types/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-console.log(BASE_URL, "from env");
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
@@ -72,7 +71,7 @@ export const baseApi = createApi({
       providesTags: ["products"],
     }),
 
-    getProductsBySubcategorySlug: builder.query<IProduct[], string>({
+    getProductsBySubcategorySlug: builder.query<IProduct[], void>({
       query: (slug) => `/product/${slug}`,
       providesTags: ["products"],
     }),
