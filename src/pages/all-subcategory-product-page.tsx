@@ -1,8 +1,8 @@
 import Loader from "@/components/loader";
 import SectionTitle from "@/components/ui/section-title";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter,  } from "@/components/ui/card";
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
-import { Check, X, Image as ImageIcon, Image } from "lucide-react";
+import { Check, X, Image } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import { motion } from "framer-motion";
 

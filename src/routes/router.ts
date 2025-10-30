@@ -6,7 +6,6 @@ import AllSubcategoryProductPage from "@/pages/all-subcategory-product-page";
 import LoginForm from "@/pages/auth/login";
 import Categories from "@/pages/categories/categories";
 import Subcategories from "@/pages/categories/subcategories";
-import SubcategoryProductPage from "@/pages/categories/subcategory-product-page";
 import CertificatesPage from "@/pages/certificates-page";
 import ChairmanMessagePage from "@/pages/chairmenmessage-page";
 import ContactPage from "@/pages/contact-page";
@@ -36,10 +35,10 @@ export const router = createBrowserRouter([
       { path: "certificates", Component: CertificatesPage },
       { path: "media-events", Component: MediaEventsPage },
       { path: "products", Component: ProductPage },
-      {
-        path: "category/:categorySlug/:subSlug",
-        Component: SubcategoryProductPage,
-      },
+      // {
+      //   path: "category/:categorySlug/:subSlug",
+      //   Component: SubcategoryProductPage,
+      // },
       // {
       //   path: "/:categorySlug/:subSlug/:productSlug",
       //   Component: ProductDetailsPage,

@@ -28,18 +28,25 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
-  const leftMenuItems = [
+  type MenuItem = {
+  title: string;
+  href: string;
+  popover?: boolean;
+  };
+
+  const leftMenuItems: MenuItem[] = [
     { title: "Contact", href: "/contact" },
     { title: "About Us", href: "/about" },
     { title: "Login", href: "/login" },
   ];
 
-  const rightMenuItems = [
+  const rightMenuItems: MenuItem[] = [
     { title: "Support", href: "/support", popover: true },
     { title: "Categories", href: "/categories" },
   ];
 
-  const allMenuItems = [...leftMenuItems, ...rightMenuItems];
+  const allMenuItems: MenuItem[] = [...leftMenuItems, ...rightMenuItems];
+
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -204,8 +211,8 @@ export default function Navbar() {
                   .filter(
                     (item) => item.title !== "Login" && item.title !== "Admin"
                   ) 
-                  .map((item) =>
-                    item ? (
+                  .map((item: MenuItem) =>
+                    item.popover ? (
                       <div key={item.title} className="space-y-2">
                         <p className="text-lg font-semibold text-foreground">
                           {item.title}

@@ -17,7 +17,7 @@ import {
 import { Image, Trash } from "lucide-react";
 import { toast } from "sonner";
 export default function Subcategories() {
-  const { data, isLoading, isError, refetch } = useGetAllSubCategoriesQuery();
+  const { data, isLoading, isError, refetch } = useGetAllSubCategoriesQuery(undefined);
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const subcategories = data?.data || [];

@@ -5,7 +5,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { useParams } from "react-router";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Placeholder from "@/assets/img/placeholder.png";
 import Loader from "@/components/loader";
