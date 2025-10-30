@@ -1,17 +1,16 @@
 import { Button } from "@/components/ui/button";
-import {
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
-} from "lucide-react";
-import { Link } from "react-router"; 
+import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { Link } from "react-router";
 
 const Footer = () => {
   const socialLinks = [
     { icon: Facebook, href: "https://facebook.com/sunplus", label: "Facebook" },
     { icon: Twitter, href: "https://twitter.com/sunplus", label: "Twitter" },
-    { icon: Instagram, href: "https://instagram.com/sunplus", label: "Instagram" },
+    {
+      icon: Instagram,
+      href: "https://instagram.com/sunplus",
+      label: "Instagram",
+    },
     { icon: Youtube, href: "https://youtube.com/sunplus", label: "YouTube" },
   ];
 
@@ -22,14 +21,13 @@ const Footer = () => {
         { name: "Home", href: "/" },
         { name: "About", href: "/about" },
         { name: "Message from Chairman", href: "/chairman-message" },
-        { name: "Certificates", href: "/certificates" },
       ],
     },
     {
       title: "Support",
       links: [
         { name: "Contact Us", href: "/contact" },
-        { name: "Store Locator", href: "/store-locator" },
+        { name: "Store Locator", href: "/contact" },
         { name: "Customer Care", href: "/customer-care" },
       ],
     },
@@ -73,8 +71,8 @@ const Footer = () => {
           </Link>
           <p className="text-sm text-accent-foreground/70 max-w-sm">
             Leading provider of high-quality electrical and electronic
-            solutions. Delivering innovation, safety, and reliability
-            across the globe.
+            solutions. Delivering innovation, safety, and reliability across the
+            globe.
           </p>
         </div>
 
@@ -128,7 +126,8 @@ const Footer = () => {
         </div>
 
         <p className="text-xs md:text-sm text-accent-foreground/70">
-          © {new Date().getFullYear()} <span className="font-semibold">SunPlus</span>. All rights reserved.
+          © {new Date().getFullYear()}{" "}
+          <span className="font-semibold">SunPlus</span>. All rights reserved.
         </p>
       </div>
     </footer>
