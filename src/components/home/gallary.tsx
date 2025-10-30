@@ -15,7 +15,7 @@ export default function Gallery() {
   };
 
   return (
-    <section>
+    <section className=" mb-8">
       <SectionTitle title="Product Gallery" align="center" />
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[250px] md:auto-rows-[300px]">
