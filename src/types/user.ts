@@ -12,3 +12,11 @@ export interface IUser {
   isVerified?: boolean;
   role: "SUPER_ADMIN" | "ADMIN";
 }
+
+
+export interface UserResponse {
+  statusCode: number;    
+  success: boolean;         
+  message: string;         
+  data: IUser | IUser[];
+}

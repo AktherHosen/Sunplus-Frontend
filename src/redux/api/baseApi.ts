@@ -1,5 +1,5 @@
 import type { IOrder } from "@/types/order";
-import type { IProduct } from "@/types/product";
+import type { IProduct, ProductResponse, SubcategoryProductsResponse } from "@/types/product";
 import type { IUser } from "@/types/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -71,13 +71,13 @@ export const baseApi = createApi({
       providesTags: ["products"],
     }),
 
-    getProductsBySubcategorySlug: builder.query<IProduct[], void>({
+    getProductsBySubcategorySlug: builder.query<SubcategoryProductsResponse, string>({
       query: (slug) => `/product/${slug}`,
       providesTags: ["products"],
     }),
 
     getProductsByCategoryAndSubcategory: builder.query<
-      IProduct[],
+      ProductResponse,
       { categorySlug: string; subSlug: string; productSlug: string }
     >({
       query: ({ categorySlug, subSlug, productSlug }) =>

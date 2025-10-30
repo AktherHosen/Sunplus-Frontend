@@ -15,3 +15,10 @@ export interface IOrder {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface OrderResponse {
+  statusCode: number;    
+  success: boolean;         
+  message: string;         
+  data: IOrder | IOrder[];
+}

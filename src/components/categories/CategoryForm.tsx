@@ -20,7 +20,7 @@ import {
   useAddCategoryMutation,
   useGetAllCategoriesQuery,
   useUpdateCategoryMutation,
-} from "@/redux/api/categoriesApi";
+} from "@/redux/api/baseApi";
 import { Edit, Loader2, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";

@@ -14,16 +14,16 @@ const AllSubcategoryProductPage = () => {
   if (isLoading) return <Loader />;
   if (isError)
     return <div className="text-center py-10 text-red-500">Failed to load products.</div>;
-
+  console.log(data)
   const products = data?.data?.products || [];
-  const subcategory = data?.data?.subcategory;
-  const banners = data?.data?.subcategory?.banners;
+  const subcategory = data?.data?.subcategory || [];
+  const banners = data?.data?.subcategory.banners || [];
 
   return (
     <div className="container mx-auto px-4 lg:px-0 py-10 space-y-10">
 
       {/* Banner Section */}
-            {banners.length > 0 && (
+            {banners?.length > 0 && (
               <motion.div
                 className="w-full"
                 initial={{ opacity: 0, y: 20 }}

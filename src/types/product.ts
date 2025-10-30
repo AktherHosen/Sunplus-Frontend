@@ -3,7 +3,7 @@ export interface ICategory {
   name: string;
   slug: string;
   image?: string;
-  banners?: string[];
+  banners: string[];
   parent?: string | null;
 }
 
@@ -19,4 +19,23 @@ export interface IProduct {
   meta?: Record<string, any>;
   createdAt?: string;
   updatedAt?: string;
+}
+
+
+export interface ProductResponse {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: IProduct;
+}
+
+
+export interface SubcategoryProductsResponse {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: {
+    products: IProduct[];
+    subcategory: ICategory;
+  };
 }

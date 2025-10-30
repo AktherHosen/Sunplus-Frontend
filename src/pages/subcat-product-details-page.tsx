@@ -112,18 +112,13 @@ const SubcatProductDetailsPage = () => {
             <span className="text-2xl font-bold text-primary">
               ৳{Number(product.price).toFixed(2)}
             </span>
-            {product.originalPrice && (
-              <span className="line-through text-muted-foreground text-lg">
-                ৳{Number(product.originalPrice).toFixed(2)}
-              </span>
-            )}
           </div>
 
           {/* Short Description */}
-          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-            {product.shortDescription ||
+          {/* <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+            {product.description ||
               "Premium product built with precision and quality you can trust."}
-          </p>
+          </p> */}
 
           {/* Stock + Category Info */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-3 border-y">

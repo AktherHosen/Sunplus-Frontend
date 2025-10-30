@@ -13,7 +13,7 @@ import {
 import {
   useDeleteCategoryMutation,
   useGetAllCategoriesQuery,
-} from "@/redux/api/categoriesApi";
+} from "@/redux/api/baseApi";
 import { Image, Trash } from "lucide-react";
 import { toast } from "sonner";
 
