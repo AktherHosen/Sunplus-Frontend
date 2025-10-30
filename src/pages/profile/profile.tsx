@@ -36,9 +36,13 @@ export default function Profile() {
 
   const handleSubmit = async () => {
     try {
+      if (!user) {
+        return;
+      }
       await updateUser({ id: user._id, payload: formState }).unwrap();
       toast.success("Profile updated successfully");
       setFormState((prev) => ({ ...prev, password: "" }));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to update profile");
     }
