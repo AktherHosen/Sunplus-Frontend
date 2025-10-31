@@ -115,7 +115,7 @@ export default function Navbar() {
                               href="mailto:support@sunplus.com"
                               className="flex items-center gap-2 hover:text-primary transition"
                             >
-                              <Mail size={16} /> support@sunplus.com
+                              <Mail size={16} /> support@sunplusbd.com
                             </a>
                             <Link
                               to="/service-centers"
