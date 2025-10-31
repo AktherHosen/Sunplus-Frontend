@@ -15,13 +15,11 @@ export interface IProduct {
   image?: string;
   slug?: string;
   category_id?: ICategory | null;
-  subcategory?: ICategory | null;   // ✅ renamed
+  subcategory?: ICategory | null;
   meta?: Record<string, any>;
   createdAt?: string;
   updatedAt?: string;
 }
-
-
 
 export interface ProductResponse {
   statusCode: number;
@@ -29,7 +27,6 @@ export interface ProductResponse {
   message: string;
   data: IProduct;
 }
-
 
 export interface SubcategoryProductsResponse {
   statusCode: number;
