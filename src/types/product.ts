@@ -15,11 +15,12 @@ export interface IProduct {
   image?: string;
   slug?: string;
   category_id?: ICategory | null;
-  subcategories?: ICategory | null;
+  subcategory?: ICategory | null;   // ✅ renamed
   meta?: Record<string, any>;
   createdAt?: string;
   updatedAt?: string;
 }
+
 
 
 export interface ProductResponse {

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 interface OrderFormProps {
   productId: string;
+  productName: string;
   maxQuantity: number;
   onSuccess?: () => void;
 }

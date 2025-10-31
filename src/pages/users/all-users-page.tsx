@@ -37,7 +37,8 @@ export default function AllUsersPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("USER");
+  const [role, setRole] = useState<"SUPER_ADMIN" | "ADMIN">("ADMIN");
+
 
   // Loading and error
   if (isLoading)
@@ -90,7 +91,7 @@ export default function AllUsersPage() {
       setName("");
       setEmail("");
       setPassword("");
-      setRole("USER");
+      setRole("ADMIN");
       refetch();
     } catch (error) {
       toast.error("Failed to add user.");
@@ -131,13 +132,15 @@ export default function AllUsersPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  <select
+                 <select
                     className="w-full border rounded px-2 py-1"
                     value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                    onChange={(e) => setRole(e.target.value as "SUPER_ADMIN" | "ADMIN")}
                   >
                     <option value="ADMIN">ADMIN</option>
+                    <option value="SUPER_ADMIN">SUPER ADMIN</option>
                   </select>
+
                 </div>
                 <DialogFooter>
                   <Button onClick={handleAddUser}>Create</Button>

@@ -16,7 +16,7 @@ const AllSubcategoryProductPage = () => {
     return <div className="text-center py-10 text-red-500">Failed to load products.</div>;
   console.log(data)
   const products = data?.data?.products || [];
-  const subcategory = data?.data?.subcategory || [];
+  const subcategory = data?.data?.subcategory ?? null;
   const banners = data?.data?.subcategory.banners || [];
 
   return (
@@ -33,7 +33,6 @@ const AllSubcategoryProductPage = () => {
                 {banners.length === 1 ? (
                   <img
                     src={`${import.meta.env.VITE_API_URL}${banners[0]}`}
-                    alt={`${subcategory.name} banner`}
                      className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
                   />
                 ) : (

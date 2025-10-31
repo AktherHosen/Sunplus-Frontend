@@ -1,4 +1,5 @@
 import { OrdersTable } from "@/components/orders/orders-table";
+import ProtectedRoute from "@/hooks/protectedRoute";
 import Main from "@/layout/main";
 import AboutUsPage from "@/pages/about-page";
 import AllSubcategoriesPage from "@/pages/all-subcategories-page";
@@ -53,22 +54,18 @@ export const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        Component: SidebarLayout,
+        Component: ProtectedRoute,
         children: [
           {
-            index:true,
-            Component: Profile,
-          },
-          { path: "/dashboard/products", Component: ProductPage },
-          { path: "/dashboard/categories", Component: Categories },
-          { path: "/dashboard/sub-categories", Component: Subcategories },
-          {
-            path: "/dashboard/orders",
-            Component: OrdersTable,
-          },
-           {
-            path: "/dashboard/users",
-            Component: AllUsersPage,
+            Component: SidebarLayout,
+            children: [
+              { index: true, Component: Profile },
+              { path: "products", Component: ProductPage },
+              { path: "categories", Component: Categories },
+              { path: "sub-categories", Component: Subcategories },
+              { path: "orders", Component: OrdersTable },
+              { path: "users", Component: AllUsersPage },
+            ],
           },
         ],
       },

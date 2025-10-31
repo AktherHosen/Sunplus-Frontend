@@ -53,7 +53,7 @@ export default function LatestProducts() {
         <CarouselContent>
           {products.map((product: IProduct, index) => {
             const category = product.category_id?.slug ?? "unknown";
-            const subcategory = product.subcategories?.slug ?? "general";
+            const subcategory = product.subcategory?.slug ?? "general";
             const slug =
               product.slug ||
               product.name?.toLowerCase().replace(/\s+/g, "-") ||

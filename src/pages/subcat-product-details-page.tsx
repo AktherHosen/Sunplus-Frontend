@@ -43,7 +43,7 @@ const SubcatProductDetailsPage = () => {
   if (isError || !product) return <div>Product not found</div>;
 
   const galleryImages = product.image
-    ? [product.image, ...(product.gallery || [])]
+    ? [product.image]
     : [];
 
   return (
@@ -152,7 +152,7 @@ const SubcatProductDetailsPage = () => {
                 Subcategory
               </dt>
               <dd className="font-semibold mt-1 text-foreground">
-                {product.subcategories?.name || "N/A"}
+                {product.subcategory?.name || "N/A"}
               </dd>
             </div>
           </div>
@@ -178,7 +178,7 @@ const SubcatProductDetailsPage = () => {
                 <OrderForm
                   productId={product._id}
                   productName={product.name}
-                  maxQuantity={product.quantity}
+                  maxQuantity={Number(product.quantity)}
                   onSuccess={() => setIsDialogOpen(false)}
                 />
               </DialogContent>

@@ -37,12 +37,12 @@ export default function Navbar() {
   const leftMenuItems: MenuItem[] = [
     { title: "Contact", href: "/contact" },
     { title: "About Us", href: "/about" },
-    { title: "Login", href: "/login" },
   ];
 
   const rightMenuItems: MenuItem[] = [
     { title: "Support", href: "/support", popover: true },
-    { title: "Categories", href: "/categories" },
+    ...(user ? [] : [{ title: "Login", href: "/login" }]),
+
   ];
 
   const allMenuItems: MenuItem[] = [...leftMenuItems, ...rightMenuItems];
