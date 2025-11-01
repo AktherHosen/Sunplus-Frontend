@@ -71,14 +71,14 @@ export default function LatestProducts() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
                   <Link to={`/product/${category}/${subcategory}/${slug}`}>
-                    <Card className="h-full pb-0 shadow-none transition relative duration-200 cursor-pointer">
+                    <Card className="pb-0 group relative h-full overflow-hidden rounded-lg border border-border bg-gradient-to-b from-background to-muted/30  hover:border-primary/40 transition-all duration-300 cursor-pointer">
                       {/* Stock Badge */}
                       {product.quantity !== undefined && (
                         <div
-                          className={`absolute top-2 right-2 px-2 py-1 text-xs font-semibold rounded ${
+                          className={`absolute top-3 right-3 z-10 px-2.5 py-1 text-[11px] font-semibold rounded-xl tracking-wide  ${
                             Number(product.quantity) > 0
-                              ? "bg-chart-2 text-muted"
-                              : "bg-destructive text-muted"
+                              ? "bg-emerald-500/90 text-white"
+                              : "bg-red-500/90 text-white"
                           }`}
                         >
                           {Number(product.quantity) > 0
@@ -87,31 +87,36 @@ export default function LatestProducts() {
                         </div>
                       )}
 
-                      <CardContent className="flex flex-col h-full items-center justify-between p-4">
-                        <div className="w-full aspect-square overflow-hidden rounded-lg mb-3">
+                      <CardContent className="flex flex-col items-center justify-between h-full p-4">
+                        {/* Image */}
+                        <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-muted/40">
                           {product.image ? (
                             <motion.img
                               src={`${import.meta.env.VITE_API_URL}${
                                 product.image
                               }`}
                               alt={product.name}
-                              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                               loading="lazy"
-                              whileHover={{ scale: 1.05 }}
                             />
                           ) : (
-                            <div className="flex items-center justify-center w-full h-full bg-gray-100">
-                              <Image className="w-12 h-12 text-gray-400" />
+                            <div className="flex items-center justify-center w-full h-full">
+                              <Image className="w-12 h-12 text-muted-foreground/60" />
                             </div>
                           )}
+
+                          {/* Overlay effect on hover */}
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
                         </div>
 
-                        <div className="flex flex-col items-center flex-grow">
-                          <h3 className="text-sm font-medium text-center line-clamp-2">
+                        {/* Product Info */}
+                        <div className="flex flex-col items-center justify-between flex-grow mt-3 text-center">
+                          <h3 className="text-sm font-semibold text-foreground/90 line-clamp-2 group-hover:text-primary transition-colors">
                             {product.name}
                           </h3>
+
                           {product.price && (
-                            <p className="text-sm text-muted-foreground font-bold mt-1">
+                            <p className="mt-2 text-base font-bold text-primary tracking-wide">
                               ৳{Number(product.price).toFixed(2)}
                             </p>
                           )}

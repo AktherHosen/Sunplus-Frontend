@@ -68,64 +68,77 @@ const AllSubcategoryProductPage = () => {
           No products found in this subcategory.
         </p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 my-8">
           {products.map((product, index: number) => (
             <motion.div
-              key={product._id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="rounded-lg shadow-none overflow-hidden"
             >
-              <Card
-                className="shadow-none py-0 rounded-lg border-border hover:border-primary cursor-pointer transition"
-                onClick={() =>
-                  navigate(
-                    `/product/${product.category_id?.slug}/${product.subcategory?.slug}/${product.slug}`
-                  )
-                }
-              >
-                <CardContent className="p-2 sm:p-4 flex justify-center">
-                  {product.image ? (
-                    <motion.img
-                      src={`${import.meta.env.VITE_API_URL}${product.image}`}
-                      alt={product.name}
-                      className="w-full max-h-48 sm:max-h-64 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
-                      whileHover={{ scale: 1.05 }}
-                    />
-                  ) : (
-                    <div className="w-full max-h-48 sm:max-h-64 flex items-center justify-center rounded-lg border border-dashed border-gray-300 text-gray-300">
-                      <Image className="w-12 h-12" />
-                    </div>
-                  )}
+              <Card className="border border-border hover:border-primary transition-colors duration-300 rounded-lg">
+                <CardContent className="!px-8 border-b border-border">
+                  <div className="w-full aspect-square overflow-hidden rounded-lg">
+                    {product.image ? (
+                      <motion.img
+                        src={`${import.meta.env.VITE_API_URL}${product.image}`}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        loading="lazy"
+                        whileHover={{ scale: 1.01 }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                        <Image className="w-12 h-12 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
 
-                <CardFooter className="flex flex-col gap-2 p-3">
-                  <p className="text-sm sm:text-base font-semibold text-primary truncate">
-                    {product.name}
-                  </p>
-                  <p className="text-sm sm:text-base font-bold text-primary">
-                    Tk. {product.price}
-                  </p>
+                {/* Card footer */}
+                <CardFooter className="flex flex-col px-4 bg-accent-foreground">
+                  <div className="flex flex-col items-start gap-1 w-full">
+                    <p className="text-base font-semibold text-foreground line-clamp-1">
+                      {product.name}
+                    </p>
+                    <p className="text-lg font-bold text-primary">
+                      Tk. {product.price.toLocaleString()}
+                    </p>
+                  </div>
 
                   <div
-                    className={`flex items-center gap-1 py-1 text-sm ${
+                    className={`flex items-center justify-between w-full mt-1.5 text-sm font-medium ${
                       Number(product.quantity) > 0
                         ? "text-green-600"
                         : "text-red-600"
                     }`}
                   >
-                    {Number(product.quantity) > 0 ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span className="font-semibold">In Stock</span>
-                      </>
-                    ) : (
-                      <>
-                        <X className="w-4 h-4" />
-                        <span className="font-semibold">Out of Stock</span>
-                      </>
-                    )}
+                    <div className="flex items-center gap-1">
+                      {Number(product.quantity) > 0 ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          <span>In Stock</span>
+                        </>
+                      ) : (
+                        <>
+                          <X className="w-4 h-4" />
+                          <span>Out of Stock</span>
+                        </>
+                      )}
+                    </div>
+
+                    <button
+                      className="text-xs sm:text-sm font-semibold px-3 py-1 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(
+                          `/product/${product.category_id?.slug}/${product.subcategory?.slug}/${product.slug}`
+                        );
+                      }}
+                    >
+                      View Details
+                    </button>
                   </div>
                 </CardFooter>
               </Card>
