@@ -48,9 +48,9 @@ export default function Categories() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="rounded-lg shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden"
+              className=""
             >
-              <Card className="py-0">
+              <Card className="py-0 rounded-lg shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden">
                 <CardHeader className="!p-2">
                   <h3 className="text-lg font-bold text-center text-primary truncate">
                     {category.name}

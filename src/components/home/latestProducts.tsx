@@ -71,7 +71,7 @@ export default function LatestProducts() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
                   <Link to={`/product/${category}/${subcategory}/${slug}`}>
-                    <Card className="pb-0 group relative h-full overflow-hidden rounded-lg border border-border bg-gradient-to-b from-background to-muted/30  hover:border-primary/40 transition-all duration-300 cursor-pointer">
+                    <Card className="py-0 rounded-lg shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden">
                       {/* Stock Badge */}
                       {product.quantity !== undefined && (
                         <div
