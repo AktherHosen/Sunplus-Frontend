@@ -1,17 +1,17 @@
-import { useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import type { IProduct } from "@/types/product";
 import { useGetAllProductsQuery } from "@/redux/api/baseApi";
-import SectionTitle from "../ui/section-title";
+import type { IProduct } from "@/types/product";
+import Autoplay from "embla-carousel-autoplay";
 import { motion } from "framer-motion";
 import { Image } from "lucide-react";
-import { Link } from "react-router"; 
+import { useRef } from "react";
+import { Link } from "react-router";
+import SectionTitle from "../ui/section-title";
 
 export default function LatestProducts() {
   const autoplay = useRef(
@@ -71,7 +71,7 @@ export default function LatestProducts() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
                   <Link to={`/product/${category}/${subcategory}/${slug}`}>
-                    <Card className="h-full shadow-none transition relative duration-200 cursor-pointer">
+                    <Card className="h-full pb-0 shadow-none transition relative duration-200 cursor-pointer">
                       {/* Stock Badge */}
                       {product.quantity !== undefined && (
                         <div
@@ -91,7 +91,9 @@ export default function LatestProducts() {
                         <div className="w-full aspect-square overflow-hidden rounded-lg mb-3">
                           {product.image ? (
                             <motion.img
-                              src={`${import.meta.env.VITE_API_URL}${product.image}`}
+                              src={`${import.meta.env.VITE_API_URL}${
+                                product.image
+                              }`}
                               alt={product.name}
                               className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                               loading="lazy"

@@ -1,5 +1,9 @@
 import type { IOrder } from "@/types/order";
-import type { IProduct, ProductResponse, SubcategoryProductsResponse } from "@/types/product";
+import type {
+  IProduct,
+  ProductResponse,
+  SubcategoryProductsResponse,
+} from "@/types/product";
 import type { IUser } from "@/types/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -58,20 +62,27 @@ export const baseApi = createApi({
 
     // -------------------- Products --------------------
     getAllProducts: builder.query<
-      { statusCode: number; success: boolean; message: string; data: IProduct[] },
+      {
+        statusCode: number;
+        success: boolean;
+        message: string;
+        data: IProduct[];
+      },
       void
     >({
       query: () => "/product",
       providesTags: ["products"],
     }),
 
-
     getProductById: builder.query<IProduct, string>({
       query: (id) => `/product/${id}`,
       providesTags: ["products"],
     }),
 
-    getProductsBySubcategorySlug: builder.query<SubcategoryProductsResponse, string>({
+    getProductsBySubcategorySlug: builder.query<
+      SubcategoryProductsResponse,
+      string
+    >({
       query: (slug) => `/product/${slug}`,
       providesTags: ["products"],
     }),
@@ -126,8 +137,10 @@ export const baseApi = createApi({
     }),
 
     // ✅ Get all Orders
-    getAllOrders: builder.query<{ statusCode: number; success: boolean; message: string; data: IOrder[] },
-      void>({
+    getAllOrders: builder.query<
+      { statusCode: number; success: boolean; message: string; data: IOrder[] },
+      void
+    >({
       query: () => "/order",
       providesTags: ["orders"],
     }),
@@ -197,26 +210,25 @@ export const baseApi = createApi({
     }),
 
     // In your baseApi.ts (or wherever the hook is defined)
-getStatistics: builder.query<
-  {
-    success: boolean;
-    data: {
-      totalProducts: number;
-      totalCategories: number;
-      orders: {
-        total: number;
-        pending: number;
-        completed: number;
-        cancelled: number;
-      };
-    };
-  },
-  void
->({
-  query: () => "/dashboard",
-  providesTags: ["products", "categories", "orders"],
-}),
-
+    getStatistics: builder.query<
+      {
+        success: boolean;
+        data: {
+          totalProducts: number;
+          totalCategories: number;
+          orders: {
+            total: number;
+            pending: number;
+            completed: number;
+            cancelled: number;
+          };
+        };
+      },
+      void
+    >({
+      query: () => "/dashboard",
+      providesTags: ["products", "categories", "orders"],
+    }),
   }),
 });
 
