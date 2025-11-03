@@ -1,3 +1,4 @@
+import logo from "@/assets/logo.svg";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -5,7 +6,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import logo from "@/assets/logo.svg"
 export function CompanyHeader() {
   return (
     <SidebarMenu>
@@ -17,7 +17,7 @@ export function CompanyHeader() {
           <div className="grid flex-1 text-left text-sm leading-tight">
             <div className="flex-1 flex justify-start items-center h-12">
               <Link to="/" aria-label="Go to homepage">
-                <Avatar className="h-42 w-42">
+                <Avatar className="h-40 w-40">
                   <AvatarImage
                     src={logo}
                     alt="SunPluS Logo"

@@ -1,3 +1,4 @@
+import logo from "@/assets/logo.svg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,15 +24,14 @@ import { useAuth } from "@/context/auth-context";
 import { Headphones, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
-import logo from "@/assets/logo.svg"
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
   type MenuItem = {
-  title: string;
-  href: string;
-  popover?: boolean;
+    title: string;
+    href: string;
+    popover?: boolean;
   };
 
   const leftMenuItems: MenuItem[] = [
@@ -42,11 +42,9 @@ export default function Navbar() {
   const rightMenuItems: MenuItem[] = [
     { title: "Support", href: "/support", popover: true },
     ...(user ? [] : [{ title: "Login", href: "/login" }]),
-
   ];
 
   const allMenuItems: MenuItem[] = [...leftMenuItems, ...rightMenuItems];
-
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -69,22 +67,18 @@ export default function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
 
-        {/* Center Logo */}
-            <div className="flex-1 flex justify-center items-center h-16">
-              <Link to="/" aria-label="Go to homepage">
-                <Avatar className="h-52 w-52">
-                  <AvatarImage
-                    src={logo}
-                    alt="SunPluS Logo"
-                    className="object-contain"
-                  />
-                  <AvatarFallback className="bg-primary text-white flex items-center justify-center">
-                    SP
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-            </div>
-
+          {/* Center Logo */}
+          <div className="flex-1 flex justify-center items-center h-12">
+            <Link to="/" aria-label="Go to homepage">
+              <Avatar className="h-44 w-44">
+                <AvatarImage
+                  src={logo}
+                  alt="SunPluS Logo"
+                  className="object-contain"
+                />
+              </Avatar>
+            </Link>
+          </div>
 
           {/* Right Menu */}
           <div className="flex items-center gap-6">
@@ -191,20 +185,17 @@ export default function Navbar() {
         {/* Mobile Navbar */}
         <div className="md:hidden flex items-center justify-between w-full">
           {/* Logo */}
-          <div className="flex-1 flex  items-center h-16">
-              <Link to="/" aria-label="Go to homepage">
-                <Avatar className="h-52 w-52">
-                  <AvatarImage
-                    src={logo}
-                    alt="SunPluS Logo"
-                    className="object-contain"
-                  />
-                  <AvatarFallback className="bg-primary text-white flex items-center justify-center">
-                    SP
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-            </div>
+          <div className="flex-1 flex  items-center h-12">
+            <Link to="/" aria-label="Go to homepage">
+              <Avatar className="h-44 w-44">
+                <AvatarImage
+                  src={logo}
+                  alt="SunPluS Logo"
+                  className="object-contain"
+                />
+              </Avatar>
+            </Link>
+          </div>
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
@@ -226,7 +217,7 @@ export default function Navbar() {
                 {allMenuItems
                   .filter(
                     (item) => item.title !== "Login" && item.title !== "Admin"
-                  ) 
+                  )
                   .map((item: MenuItem) =>
                     item.popover ? (
                       <div key={item.title} className="space-y-2">

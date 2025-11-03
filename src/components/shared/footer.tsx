@@ -1,8 +1,8 @@
+import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import { Link } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import logo from "@/assets/logo.svg"
+import { Avatar, AvatarImage } from "../ui/avatar";
 const Footer = () => {
   const socialLinks = [
     { icon: Facebook, href: "https://facebook.com/sunplus", label: "Facebook" },
@@ -63,20 +63,17 @@ const Footer = () => {
       <div className="relative container mx-auto px-4 lg:px-0 pt-20 pb-10 flex flex-col lg:flex-row justify-between gap-12">
         {/* Company Info */}
         <div className="flex-1 space-y-4">
-          <div className="flex-1 flex justify-start items-center h-16">
-              <Link to="/" aria-label="Go to homepage">
-                <Avatar className="h-52 w-52">
-                  <AvatarImage
-                    src={logo}
-                    alt="SunPluS Logo"
-                    className="object-contain"
-                  />
-                  <AvatarFallback className="bg-primary text-white flex items-center justify-center">
-                    SP
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-            </div>
+          <div className="flex-1 flex justify-start items-center h-12">
+            <Link to="/" aria-label="Go to homepage">
+              <Avatar className="h-44 w-44">
+                <AvatarImage
+                  src={logo}
+                  alt="SunPluS Logo"
+                  className="object-contain"
+                />
+              </Avatar>
+            </Link>
+          </div>
           <p className="text-sm text-accent-foreground/70 max-w-sm">
             Leading provider of high-quality electrical and electronic
             solutions. Delivering innovation, safety, and reliability across the

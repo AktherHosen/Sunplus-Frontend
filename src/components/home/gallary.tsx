@@ -1,16 +1,28 @@
-import { motion } from "framer-motion";
-import SectionTitle from "../ui/section-title";
 import img1 from "@/assets/img/gallary/Color-led-light.jpg";
+import img7 from "@/assets/img/gallary/Fan-02.png";
 import img2 from "@/assets/img/gallary/Others-12.png";
 import img3 from "@/assets/img/gallary/UFO-led-Bulb.jpg";
 import img4 from "@/assets/img/gallary/led-bulb-tube-light-20w.jpg";
-import img7 from "@/assets/img/gallary/Fan-02.png";
+import { motion } from "framer-motion";
+import SectionTitle from "../ui/section-title";
 
 const products = [
-  { src: img7, name: "Ceiling Fan", desc: "High-speed energy-saving ceiling fan" },
+  {
+    src: img7,
+    name: "Ceiling Fan",
+    desc: "High-speed energy-saving ceiling fan",
+  },
   { src: img2, name: "LED Light Product", desc: "Premium LED for indoor use" },
-  { src: img3, name: "UFO LED Bulb", desc: "Bright & efficient UFO-style bulb" },
-  { src: img4, name: "Tube Light", desc: "20W LED tube for workspace lighting" },
+  {
+    src: img3,
+    name: "UFO LED Bulb",
+    desc: "Bright & efficient UFO-style bulb",
+  },
+  {
+    src: img4,
+    name: "Tube Light",
+    desc: "20W LED tube for workspace lighting",
+  },
   { src: img1, name: "Color LED", desc: "Vibrant RGB lighting solution" },
 ];
 
@@ -69,20 +81,6 @@ export default function Gallery() {
                 <p className="text-sm text-muted-foreground mt-1 sm:mt-2 line-clamp-2">
                   {product.desc}
                 </p>
-
-                {/* Optional Footer (price / button placeholder) */}
-                <div className="mt-4 border-t border-border/40 pt-3">
-                  <button
-                    className="
-                      inline-flex items-center justify-center w-full 
-                      text-sm font-medium px-4 py-2 rounded-xl 
-                      bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground
-                      transition-colors duration-300
-                    "
-                  >
-                    View Details
-                  </button>
-                </div>
               </div>
             </motion.div>
           ))}
