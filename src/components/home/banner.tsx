@@ -10,33 +10,42 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-const banners = [Car1, Car2, Car3];
-
 export default function Banner() {
   return (
     <Carousel
-      className="w-full"
-      plugins={[
-        Autoplay({
-          delay: 4000,
-          stopOnInteraction: false,
-        }),
-      ]}
+      className="w-full overflow-hidden rounded-lg"
+      plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
     >
-      <CarouselContent className="rounded-lg overflow-hidden">
-        {banners.map((src, index) => (
-          <CarouselItem key={index}>
-            <div className="relative w-full flex justify-center overflow-hidden rounded-lg">
-              <img
-                src={src}
-                alt={`Banner ${index + 1}`}
-                className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
-              />
-            </div>
-          </CarouselItem>
-        ))}
+      <CarouselContent className="flex w-full rounded-lg">
+        {/* First Banner */}
+        <CarouselItem className="flex-shrink-0 w-full rounded-lg">
+          <img
+            src={Car1}
+            alt="Banner 1"
+            className="w-full max-h-[400px] object-cover rounded-lg"
+          />
+        </CarouselItem>
+
+        {/* Second Banner */}
+        <CarouselItem className="flex-shrink-0 w-full rounded-lg">
+          <img
+            src={Car2}
+            alt="Banner 2"
+            className="w-full max-h-[400px] object-cover rounded-lg"
+          />
+        </CarouselItem>
+
+        {/* Third Banner */}
+        <CarouselItem className="flex-shrink-0 w-full rounded-lg">
+          <img
+            src={Car3}
+            alt="Banner 3"
+            className="w-full max-h-[400px] object-cover rounded-lg"
+          />
+        </CarouselItem>
       </CarouselContent>
 
+      {/* Navigation */}
       <CarouselPrevious className="bg-transparent border-none text-muted hover:text-primary" />
       <CarouselNext className="bg-transparent border-none text-muted hover:text-primary" />
     </Carousel>
