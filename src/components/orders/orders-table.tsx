@@ -165,7 +165,7 @@ export const OrdersTable = () => {
                       }
                       disabled={isUpdating}
                     >
-                      <SelectTrigger className="w-40">
+                      <SelectTrigger className="">
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>

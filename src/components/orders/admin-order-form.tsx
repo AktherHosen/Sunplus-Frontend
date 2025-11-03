@@ -17,6 +17,7 @@ import type { OrderStatus } from "@/types/order";
 import type { IProduct } from "@/types/product";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Textarea } from "../ui/textarea";
 
 interface AdminOrderFormProps {
   existingOrder?: any;
@@ -30,7 +31,7 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
     address: existingOrder?.address || "",
     item: existingOrder?.item?._id || "",
     quantity: existingOrder?.quantity || 1,
-    status: (existingOrder?.status?.toUpperCase() as OrderStatus) || "pending",
+    status: existingOrder?.status || "pending",
   });
 
   const ORDER_STATUSES: OrderStatus[] = [
@@ -55,14 +56,12 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
 
     try {
       if (existingOrder) {
-        // Only update status when editing
         await updateOrderStatus({
           id: existingOrder._id,
           status: form.status,
         }).unwrap();
         toast.success("Order updated successfully!");
       } else {
-        // Create order with default 'PENDING' status
         await createOrder({
           name: form.name,
           phone: form.phone,
@@ -109,51 +108,56 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
             </div>
           </div>
 
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label className="text-sm font-medium text-gray-700">
+                Select Product
+              </label>
+              <Select
+                value={form.item}
+                onValueChange={(val) => setForm({ ...form, item: val })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={
+                      productLoading
+                        ? "Loading products..."
+                        : "Select a product"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {products.map((p) => (
+                    <SelectItem key={p._id} value={p._id}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex-1">
+              <label className="text-sm font-medium text-gray-700">
+                Quantity
+              </label>
+              <Input
+                type="number"
+                value={form.quantity}
+                onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+                min={1}
+                required
+                className="w-full"
+              />
+            </div>
+          </div>
+
           <div>
             <label className="text-sm font-medium text-gray-700">Address</label>
-            <Input
+            <Textarea
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               required
               placeholder="Enter delivery address"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Select Product
-            </label>
-            <Select
-              value={form.item}
-              onValueChange={(val) => setForm({ ...form, item: val })}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder={
-                    productLoading ? "Loading products..." : "Select a product"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {products.map((p) => (
-                  <SelectItem key={p._id} value={p._id}>
-                    {p.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Quantity
-            </label>
-            <Input
-              type="number"
-              value={form.quantity}
-              onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-              min={1}
-              required
             />
           </div>
         </>
@@ -174,7 +178,7 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
             <SelectContent>
               {ORDER_STATUSES.map((status) => (
                 <SelectItem key={status} value={status}>
-                  {status.charAt(0) + status.slice(1).toLowerCase()}
+                  {status}
                 </SelectItem>
               ))}
             </SelectContent>
