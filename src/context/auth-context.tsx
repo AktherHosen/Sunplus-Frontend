@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await loginUser({ email, password });
       setUser(res.data.data.user);
-
+      
       toast.success("Logged in successfully!");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Login failed");
