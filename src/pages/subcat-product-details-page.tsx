@@ -4,13 +4,12 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useParams } from "react-router";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Placeholder from "@/assets/img/placeholder.png";
 import Loader from "@/components/loader";
-import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
 import OrderForm from "@/components/orders/order-form";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogClose,
@@ -20,10 +19,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
 
-import { motion } from "framer-motion"; // <-- added
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion"; // <-- added
 
 const SubcatProductDetailsPage = () => {
   const { categorySlug, subCategorySlug, productSlug } = useParams();
@@ -42,9 +43,7 @@ const SubcatProductDetailsPage = () => {
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
 
-  const galleryImages = product.image
-    ? [product.image]
-    : [];
+  const galleryImages = product.image ? [product.image] : [];
 
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -53,7 +52,8 @@ const SubcatProductDetailsPage = () => {
         className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}>
+        transition={{ duration: 0.8 }}
+      >
         {/* Left: Main Image */}
         <Card className="overflow-hidden shadow-none h-fit">
           <Zoom>
@@ -84,7 +84,8 @@ const SubcatProductDetailsPage = () => {
                       ? "border-blue-600 ring-1 ring-blue-300"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
-                  whileHover={{ scale: 1.05 }}>
+                  whileHover={{ scale: 1.05 }}
+                >
                   <img
                     src={`${import.meta.env.VITE_API_URL}${img}`}
                     alt={`${product.name} view ${idx + 1}`}
@@ -101,7 +102,8 @@ const SubcatProductDetailsPage = () => {
           className="space-y-4 p-6 rounded-xl border bg-background/40 backdrop-blur-sm "
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}>
+          transition={{ duration: 0.8 }}
+        >
           {/* Product Title */}
           <h1 className="text-2xl md:text-3xl font-semibold text-foreground leading-tight">
             {product.name}
@@ -119,6 +121,19 @@ const SubcatProductDetailsPage = () => {
             {product.description ||
               "Premium product built with precision and quality you can trust."}
           </p> */}
+          {product.meta?.watt && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              {product.meta.watt.split(",").map((w: string, idx: number) => (
+                <Badge
+                  key={idx}
+                  variant="secondary"
+                  className="text-sm font-medium capitalize"
+                >
+                  {w.trim()}
+                </Badge>
+              ))}
+            </div>
+          )}
 
           {/* Stock + Category Info */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-3 border-y">
@@ -132,7 +147,8 @@ const SubcatProductDetailsPage = () => {
                   Number(product.quantity) > 0
                     ? "text-green-600"
                     : "text-red-600"
-                )}>
+                )}
+              >
                 <span className="text-lg">●</span>
                 {Number(product.quantity) > 0 ? "In Stock" : "Out of Stock"}
               </dd>
@@ -152,7 +168,7 @@ const SubcatProductDetailsPage = () => {
                 Subcategory
               </dt>
               <dd className="font-semibold mt-1 text-foreground">
-                {product.subcategory?.name || "N/A"}
+                {product.subcategories?.name || "N/A"}
               </dd>
             </div>
           </div>
@@ -162,14 +178,16 @@ const SubcatProductDetailsPage = () => {
             className="flex flex-row gap-3 pt-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.6 }}>
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
             {/* Order Button */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button
                   size="lg"
                   disabled={Number(product.quantity) <= 0}
-                  className="flex-1 text-base font-medium gap-2">
+                  className="flex-1 text-base font-medium gap-2"
+                >
                   <ShoppingCart className="w-5 h-5" />
                   Order Now
                 </Button>
@@ -190,7 +208,8 @@ const SubcatProductDetailsPage = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="flex-1 text-base font-medium gap-2">
+                  className="flex-1 text-base font-medium gap-2"
+                >
                   Contact Distributor
                 </Button>
               </DialogTrigger>
@@ -217,7 +236,8 @@ const SubcatProductDetailsPage = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}>
+        transition={{ duration: 0.8 }}
+      >
         <Card className="p-4 shadow-none">
           <Tabs defaultValue="features" className="w-full mt-2">
             <TabsList className="px-1 flex space-x-1">
@@ -275,7 +295,8 @@ const SubcatProductDetailsPage = () => {
                       initial={{ opacity: 0, scale: 0.95 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true, amount: 0.3 }}
-                      transition={{ duration: 0.4, delay: idx * 0.1 }}>
+                      transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    >
                       <Zoom>
                         <Avatar className="w-32 h-32 rounded-lg overflow-hidden">
                           <AvatarImage

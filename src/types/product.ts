@@ -15,7 +15,7 @@ export interface IProduct {
   image?: string;
   slug?: string;
   category_id?: ICategory | null;
-  subcategory?: ICategory | null;
+  subcategories?: ICategory | null;
   meta?: Record<string, any>;
   createdAt?: string;
   updatedAt?: string;
