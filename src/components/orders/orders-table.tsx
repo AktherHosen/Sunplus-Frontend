@@ -27,7 +27,7 @@ import {
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
 } from "@/redux/api/baseApi";
-import type { OrderStatus } from "@/types/order";
+import type { IOrder, OrderStatus } from "@/types/order";
 import { Edit, RefreshCcw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -39,7 +39,7 @@ export const OrdersTable = () => {
     useUpdateOrderStatusMutation();
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [editingOrder, setEditingOrder] = useState(null);
+  const [editingOrder, setEditingOrder] = useState<IOrder | null>(null);
 
   const [refreshing, setRefreshing] = useState(false);
   const handleRefresh = async () => {
@@ -161,7 +161,7 @@ export const OrdersTable = () => {
                     <Select
                       defaultValue={order.status}
                       onValueChange={(val) =>
-                        handleStatusChange(order._id, val)
+                        handleStatusChange(order._id, val as OrderStatus)
                       }
                       disabled={isUpdating}
                     >

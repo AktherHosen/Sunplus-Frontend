@@ -1,3 +1,6 @@
+import Car1 from "@/assets/carousel/car1.png";
+import Car2 from "@/assets/carousel/car2.png";
+import Car3 from "@/assets/carousel/car3.png";
 import {
   Carousel,
   CarouselContent,
@@ -6,11 +9,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import Circuit from "../../assets/img/circuit-breaker-3.jpg";
-import Socket from "../../assets/img/socket.png";
-import Socket2 from "../../assets/img/socket.png";
 
-const banners = [Socket, Circuit, Socket2];
+const banners = [Car1, Car2, Car3];
 
 export default function Banner() {
   return (
