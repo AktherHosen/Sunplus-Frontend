@@ -32,7 +32,7 @@ import {
   useGetAllProductsQuery,
   useUpdateProductMutation,
 } from "@/redux/api/baseApi";
-import { Edit, Image, Loader2, Trash, X } from "lucide-react";
+import { Edit, Image, Loader2, RefreshCcw, Trash, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 const ProductPage = () => {
@@ -57,6 +57,16 @@ const ProductPage = () => {
 
   const products = productsData?.data || [];
   const categories = categoriesData?.data || [];
+
+  const [refreshing, setRefreshing] = useState(false);
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await refetch(); // refetch returns a promise
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   // Load form when editing
   useEffect(() => {
@@ -173,14 +183,25 @@ const ProductPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Products</h1>
-        <Button
-          onClick={() => {
-            setEditingProduct(null);
-            setDialogOpen(true);
-          }}
-        >
-          + Add Product
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            onClick={() => {
+              setEditingProduct(null);
+              setDialogOpen(true);
+            }}>
+            + Add Product
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}>
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+            />
+          </Button>
+        </div>
       </div>
 
       {/* Product Table */}
@@ -230,15 +251,13 @@ const ProductPage = () => {
                       onClick={() => {
                         setEditingProduct(product);
                         setDialogOpen(true);
-                      }}
-                    >
+                      }}>
                       <Edit />
                     </Button>
                     <Button
                       variant="destructive"
                       size="xs"
-                      onClick={() => handleDelete(product._id)}
-                    >
+                      onClick={() => handleDelete(product._id)}>
                       <Trash />
                     </Button>
                   </TableCell>
@@ -248,8 +267,7 @@ const ProductPage = () => {
               <TableRow>
                 <TableCell
                   colSpan={8}
-                  className="text-center py-6 text-gray-500"
-                >
+                  className="text-center py-6 text-gray-500">
                   <div className="flex items-center gap-1 justify-center">
                     <Loader2 className="w-4 h-4 text-primary animate-spin" />
                     <p className="text-primary">Loading...</p>
@@ -370,8 +388,7 @@ const ProductPage = () => {
                 {metaFields.map((field, index) => (
                   <div
                     key={index}
-                    className="flex flex-col sm:flex-row gap-3 w-full"
-                  >
+                    className="flex flex-col sm:flex-row gap-3 w-full">
                     <Input
                       placeholder="Key (e.g., brand)"
                       value={field.key}
@@ -392,8 +409,7 @@ const ProductPage = () => {
                         variant="outline"
                         size="icon"
                         className="self-center"
-                        onClick={() => handleRemoveMetaField(index)}
-                      >
+                        onClick={() => handleRemoveMetaField(index)}>
                         <X className="size-4" />
                       </Button>
                     )}
@@ -403,8 +419,7 @@ const ProductPage = () => {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={handleAddMetaField}
-                >
+                  onClick={handleAddMetaField}>
                   + Add Meta Field
                 </Button>
               </div>
@@ -415,8 +430,7 @@ const ProductPage = () => {
               <Button
                 size="lg"
                 className="px-8 w-full sm:w-auto"
-                onClick={handleSave}
-              >
+                onClick={handleSave}>
                 {editingProduct ? "Update" : "Save"}
               </Button>
             </div>

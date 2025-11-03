@@ -40,14 +40,14 @@ export default function AllUsersPage() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"SUPER_ADMIN" | "ADMIN">("ADMIN");
   const [refreshing, setRefreshing] = useState(false);
-const handleRefresh = async () => {
-  try {
-    setRefreshing(true);
-    await refetch(); // refetch returns a promise
-  } finally {
-    setRefreshing(false);
-  }
-};
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await refetch(); // refetch returns a promise
+    } finally {
+      setRefreshing(false);
+    }
+  };
   // Loading and error
   if (isLoading)
     return (
@@ -140,15 +140,15 @@ const handleRefresh = async () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                 <select
+                  <select
                     className="w-full border rounded px-2 py-1"
                     value={role}
-                    onChange={(e) => setRole(e.target.value as "SUPER_ADMIN" | "ADMIN")}
-                  >
+                    onChange={(e) =>
+                      setRole(e.target.value as "SUPER_ADMIN" | "ADMIN")
+                    }>
                     <option value="ADMIN">ADMIN</option>
                     <option value="SUPER_ADMIN">SUPER ADMIN</option>
                   </select>
-
                 </div>
                 <DialogFooter>
                   <Button onClick={handleAddUser}>Create</Button>
@@ -156,16 +156,15 @@ const handleRefresh = async () => {
               </DialogContent>
             </Dialog>
           )}
-<Button
-  variant="outline"
-  size="sm"
-  onClick={handleRefresh}
-  disabled={refreshing}
->
-  <RefreshCcw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
-</Button>
-
-
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}>
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+            />
+          </Button>
         </div>
       </div>
 
@@ -207,21 +206,21 @@ const handleRefresh = async () => {
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="capitalize">{user.role}</TableCell>
                   <TableCell className="text-start">
-                      <Badge
-                        variant={user.isActive === "ACTIVE" ? "default" : "destructive"}
-                        className="capitalize"
-                      >
-                        {user.isActive}
-                      </Badge>
-                    </TableCell>
+                    <Badge
+                      variant={
+                        user.isActive === "ACTIVE" ? "default" : "destructive"
+                      }
+                      className="capitalize">
+                      {user.isActive}
+                    </Badge>
+                  </TableCell>
                   <TableCell className="text-center space-x-2">
                     {user.role !== "SUPER_ADMIN" &&
                     user._id !== currentUser?._id ? (
                       <Button
                         variant="destructive"
                         size="xs"
-                        onClick={() => handleDelete(user._id, user.role)}
-                      >
+                        onClick={() => handleDelete(user._id, user.role)}>
                         <Trash className="w-4 h-4" />
                       </Button>
                     ) : (
