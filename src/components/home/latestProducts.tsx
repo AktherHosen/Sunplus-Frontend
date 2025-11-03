@@ -88,35 +88,29 @@ export default function LatestProducts() {
                             </div>
                           )}
 
-                          {/* Overlay effect on hover */}
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
                         </div>
 
-                        {/* Product Info */}
-                        <div className="flex flex-col items-center justify-between flex-grow mt-3 text-center">
-                          <h3 className="text-sm font-semibold text-foreground/90 line-clamp-2 group-hover:text-primary transition-colors">
+                        <div className="flex flex-col justify-between flex-grow mt-3 group">
+                          {/* Product Name */}
+                          <h3 className="text-sm md:text-base font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300 text-left">
                             {product.name}
                           </h3>
 
-                          <div className="flex justify-between items-center">
+                          {/* Price & Stock */}
+                          <div className="flex items-center justify-start mt-2 gap-4">
                             {product.price && (
-                              <p className="mt-2 text-base font-bold text-primary tracking-wide">
+                              <p className="text-base md:text-lg font-bold text-primary tracking-wide">
                                 ৳{Number(product.price).toFixed(2)}
                               </p>
                             )}
 
-                            {/* Stock Badge */}
                             {product.quantity !== undefined && (
                               <Badge
-                                variant={
-                                  Number(product.quantity) > 0
-                                    ? "outline"
-                                    : "destructive"
-                                }
-                                className="absolute top-3 right-3 z-10 px-2.5 py-1 text-[11px] font-semibold rounded-full">
-                                {Number(product.quantity) > 0
-                                  ? "In Stock"
-                                  : "Out of Stock"}
+                                variant={Number(product.quantity) > 0 ? "default" : "destructive"}
+                                className="text-sm font-medium"
+                              >
+                                {Number(product.quantity) > 0 ? "In Stock" : "Out of Stock"}
                               </Badge>
                             )}
                           </div>
