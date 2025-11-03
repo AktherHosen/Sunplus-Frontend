@@ -39,8 +39,15 @@ export default function AllUsersPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"SUPER_ADMIN" | "ADMIN">("ADMIN");
-
-
+  const [refreshing, setRefreshing] = useState(false);
+const handleRefresh = async () => {
+  try {
+    setRefreshing(true);
+    await refetch(); // refetch returns a promise
+  } finally {
+    setRefreshing(false);
+  }
+};
   // Loading and error
   if (isLoading)
     return (
@@ -149,13 +156,13 @@ export default function AllUsersPage() {
               </DialogContent>
             </Dialog>
           )}
-         <Button
+<Button
   variant="outline"
   size="sm"
-  onClick={() => refetch()}
-  disabled={isLoading}
+  onClick={handleRefresh}
+  disabled={refreshing}
 >
-  <RefreshCcw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
+  <RefreshCcw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
 </Button>
 
 

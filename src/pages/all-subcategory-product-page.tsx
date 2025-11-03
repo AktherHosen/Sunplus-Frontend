@@ -33,8 +33,7 @@ const AllSubcategoryProductPage = () => {
           className="w-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
+          transition={{ duration: 0.8 }}>
           {banners.length === 1 ? (
             <img
               src={`${import.meta.env.VITE_API_URL}${banners[0]}`}
@@ -75,10 +74,9 @@ const AllSubcategoryProductPage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="rounded-lg shadow-none overflow-hidden"
-            >
-              <Card className="border border-border hover:border-primary transition-colors duration-300 rounded-lg">
-                <CardContent className="!px-8 border-b border-border">
+              className="rounded-lg shadow-none overflow-hidden">
+              <Card className="border gap-0 border-border hover:border-primary hover:rounded-lg transition-colors duration-300 rounded-lg p-0">
+                <CardContent className="p-2">
                   <div className="w-full aspect-square overflow-hidden rounded-lg">
                     {product.image ? (
                       <motion.img
@@ -97,7 +95,7 @@ const AllSubcategoryProductPage = () => {
                 </CardContent>
 
                 {/* Card footer */}
-                <CardFooter className="flex flex-col px-4 bg-accent-foreground">
+                <CardFooter className="flex flex-col rounded-b-lg bg-accent p-2 ">
                   <div className="flex flex-col items-start gap-1 w-full">
                     <p className="text-base font-semibold text-foreground line-clamp-1">
                       {product.name}
@@ -112,8 +110,7 @@ const AllSubcategoryProductPage = () => {
                       Number(product.quantity) > 0
                         ? "text-green-600"
                         : "text-red-600"
-                    }`}
-                  >
+                    }`}>
                     <div className="flex items-center gap-1">
                       {Number(product.quantity) > 0 ? (
                         <>
@@ -135,8 +132,7 @@ const AllSubcategoryProductPage = () => {
                         navigate(
                           `/product/${product.category_id?.slug}/${product.subcategory?.slug}/${product.slug}`
                         );
-                      }}
-                    >
+                      }}>
                       View Details
                     </button>
                   </div>
