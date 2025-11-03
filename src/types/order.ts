@@ -2,7 +2,12 @@ import type { IProduct } from "./product";
 
 export type ObjectId = string;
 
-export type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED";
+export type OrderStatus =
+  | "pending"
+  | "confirmed"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
 
 export interface IOrder {
   _id: string;
@@ -17,8 +22,8 @@ export interface IOrder {
 }
 
 export interface OrderResponse {
-  statusCode: number;    
-  success: boolean;         
-  message: string;         
+  statusCode: number;
+  success: boolean;
+  message: string;
   data: IOrder | IOrder[];
 }

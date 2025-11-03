@@ -27,6 +27,7 @@ import {
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
 } from "@/redux/api/baseApi";
+import type { OrderStatus } from "@/types/order";
 import { Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -38,9 +39,9 @@ export const OrdersTable = () => {
     useUpdateOrderStatusMutation();
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [editingOrder, setEditingOrder] = useState<any>(null);
+  const [editingOrder, setEditingOrder] = useState(null);
 
-  const allowedStatuses = [
+  const allowedStatuses: OrderStatus[] = [
     "pending",
     "confirmed",
     "shipped",

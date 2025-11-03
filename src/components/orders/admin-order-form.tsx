@@ -30,10 +30,16 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
     address: existingOrder?.address || "",
     item: existingOrder?.item?._id || "",
     quantity: existingOrder?.quantity || 1,
-    status: (existingOrder?.status?.toUpperCase() as OrderStatus) || "PENDING",
+    status: (existingOrder?.status?.toUpperCase() as OrderStatus) || "pending",
   });
 
-  const ORDER_STATUSES: OrderStatus[] = ["PENDING", "COMPLETED", "CANCELLED"];
+  const ORDER_STATUSES: OrderStatus[] = [
+    "pending",
+    "confirmed",
+    "shipped",
+    "delivered",
+    "cancelled",
+  ];
 
   const { data: productData, isLoading: productLoading } =
     useGetAllProductsQuery();
@@ -74,10 +80,8 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-      {/* Form fields (only for new order) */}
       {!existingOrder && (
         <>
-          {/* Name & Phone */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-700">
@@ -105,7 +109,6 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
             </div>
           </div>
 
-          {/* Address */}
           <div>
             <label className="text-sm font-medium text-gray-700">Address</label>
             <Input
@@ -116,7 +119,6 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
             />
           </div>
 
-          {/* Product */}
           <div>
             <label className="text-sm font-medium text-gray-700">
               Select Product
@@ -142,7 +144,6 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
             </Select>
           </div>
 
-          {/* Quantity */}
           <div>
             <label className="text-sm font-medium text-gray-700">
               Quantity
