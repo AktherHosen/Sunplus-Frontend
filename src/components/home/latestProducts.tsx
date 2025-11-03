@@ -12,6 +12,7 @@ import { Image } from "lucide-react";
 import { useRef } from "react";
 import { Link } from "react-router";
 import SectionTitle from "../ui/section-title";
+import { Badge } from "@/components/ui/badge";
 
 export default function LatestProducts() {
   const autoplay = useRef(
@@ -48,8 +49,7 @@ export default function LatestProducts() {
       <Carousel
         plugins={[autoplay.current]}
         className="w-full"
-        opts={{ align: "start", loop: true }}
-      >
+        opts={{ align: "start", loop: true }}>
         <CarouselContent>
           {products.map((product: IProduct, index) => {
             const category = product.category_id?.slug ?? "unknown";
@@ -62,31 +62,14 @@ export default function LatestProducts() {
             return (
               <CarouselItem
                 key={product._id}
-                className="basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
-              >
+                className="basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
+                  transition={{ duration: 0.5, delay: index * 0.1 }}>
                   <Link to={`/product/${category}/${subcategory}/${slug}`}>
-                    <Card className="py-0 rounded-lg shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden">
-                      {/* Stock Badge */}
-                      {product.quantity !== undefined && (
-                        <div
-                          className={`absolute top-3 right-3 z-10 px-2.5 py-1 text-[11px] font-semibold rounded-xl tracking-wide  ${
-                            Number(product.quantity) > 0
-                              ? "bg-emerald-500/90 text-white"
-                              : "bg-red-500/90 text-white"
-                          }`}
-                        >
-                          {Number(product.quantity) > 0
-                            ? "In Stock"
-                            : "Out of Stock"}
-                        </div>
-                      )}
-
+                    <Card className="relative py-0 rounded-lg shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden">
                       <CardContent className="flex flex-col items-center justify-between h-full p-4">
                         {/* Image */}
                         <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-muted/40">
@@ -115,11 +98,28 @@ export default function LatestProducts() {
                             {product.name}
                           </h3>
 
-                          {product.price && (
-                            <p className="mt-2 text-base font-bold text-primary tracking-wide">
-                              ৳{Number(product.price).toFixed(2)}
-                            </p>
-                          )}
+                          <div className="flex justify-between items-center">
+                            {product.price && (
+                              <p className="mt-2 text-base font-bold text-primary tracking-wide">
+                                ৳{Number(product.price).toFixed(2)}
+                              </p>
+                            )}
+
+                            {/* Stock Badge */}
+                            {product.quantity !== undefined && (
+                              <Badge
+                                variant={
+                                  Number(product.quantity) > 0
+                                    ? "outline"
+                                    : "destructive"
+                                }
+                                className="absolute top-3 right-3 z-10 px-2.5 py-1 text-[11px] font-semibold rounded-full">
+                                {Number(product.quantity) > 0
+                                  ? "In Stock"
+                                  : "Out of Stock"}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -129,7 +129,7 @@ export default function LatestProducts() {
             );
           })}
         </CarouselContent>
-      </Carousel>
+      </Carousel> 
     </section>
   );
 }
