@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,10 +20,10 @@ import {
 } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/context/auth-context";
-import { Headphones, Mail, Menu, Phone, X } from "lucide-react";
+import { Headphones, Image, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
-
+import logo from "@/assets/logo.svg"
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -69,14 +69,22 @@ export default function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Center Logo */}
-          <div className="flex-1 flex justify-center items-center">
-            <Link to="/" aria-label="Go to homepage">
-              <span className="text-2xl font-extrabold tracking-wide text-primary transition-transform duration-300 hover:scale-105">
-                SunPluS
-              </span>
-            </Link>
-          </div>
+        {/* Center Logo */}
+            <div className="flex-1 flex justify-center items-center h-16">
+              <Link to="/" aria-label="Go to homepage">
+                <Avatar className="h-52 w-52">
+                  <AvatarImage
+                    src={logo}
+                    alt="SunPluS Logo"
+                    className="object-contain"
+                  />
+                  <AvatarFallback className="bg-primary text-white flex items-center justify-center">
+                    SP
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            </div>
+
 
           {/* Right Menu */}
           <div className="flex items-center gap-6">
@@ -183,12 +191,20 @@ export default function Navbar() {
         {/* Mobile Navbar */}
         <div className="md:hidden flex items-center justify-between w-full">
           {/* Logo */}
-          <Link to="/" aria-label="Go to homepage">
-            <span className="text-2xl font-extrabold tracking-wide text-primary transition-transform duration-300 hover:scale-105">
-              SunPluS
-            </span>
-          </Link>
-
+          <div className="flex-1 flex  items-center h-16">
+              <Link to="/" aria-label="Go to homepage">
+                <Avatar className="h-52 w-52">
+                  <AvatarImage
+                    src={logo}
+                    alt="SunPluS Logo"
+                    className="object-contain"
+                  />
+                  <AvatarFallback className="bg-primary text-white flex items-center justify-center">
+                    SP
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            </div>
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
