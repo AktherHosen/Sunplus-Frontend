@@ -28,7 +28,7 @@ import {
   useUpdateOrderStatusMutation,
 } from "@/redux/api/baseApi";
 import type { OrderStatus } from "@/types/order";
-import { Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { Edit, RefreshCcw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -40,6 +40,16 @@ export const OrdersTable = () => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [editingOrder, setEditingOrder] = useState(null);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const allowedStatuses: OrderStatus[] = [
     "pending",
@@ -69,7 +79,7 @@ export const OrdersTable = () => {
     });
   };
 
-  const handleStatusChange = async (id: string, status: string) => {
+  const handleStatusChange = async (id: string, status: OrderStatus) => {
     if (!allowedStatuses.includes(status))
       return toast.error("Invalid status!");
     try {
@@ -82,36 +92,48 @@ export const OrdersTable = () => {
   };
 
   return (
-    <>
+    <div className="space-y-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Orders</h1>
-
-        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-          <DialogTrigger asChild>
-            <Button
-              onClick={() => {
-                setEditingOrder(null);
-                setOpenDialog(true);
-              }}
-            >
-              <PlusCircle className="w-4 h-4 mr-2" /> Add Order
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                {editingOrder ? "Edit Order" : "Create Order"}
-              </DialogTitle>
-            </DialogHeader>
-            <AdminOrderForm
-              existingOrder={editingOrder}
-              onSuccess={() => {
-                setOpenDialog(false);
-                refetch();
-              }}
+        <div className="flex gap-2">
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogTrigger asChild>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setEditingOrder(null);
+                  setOpenDialog(true);
+                }}
+              >
+                + Add Order
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingOrder ? "Edit Order" : "Create Order"}
+                </DialogTitle>
+              </DialogHeader>
+              <AdminOrderForm
+                existingOrder={editingOrder}
+                onSuccess={() => {
+                  setOpenDialog(false);
+                  refetch();
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}
+          >
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
             />
-          </DialogContent>
-        </Dialog>
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-md border">
@@ -158,17 +180,17 @@ export const OrdersTable = () => {
                   <TableCell className="text-right flex justify-end gap-2">
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="xs"
                       onClick={() => {
                         setEditingOrder(order);
                         setOpenDialog(true);
                       }}
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Edit className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="destructive"
-                      size="sm"
+                      size="xs"
                       onClick={() => handleDelete(order._id)}
                       disabled={isDeleting}
                     >
@@ -187,6 +209,6 @@ export const OrdersTable = () => {
           </TableBody>
         </Table>
       </div>
-    </>
+    </div>
   );
 };
