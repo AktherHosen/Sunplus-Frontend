@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/context/auth-context";
-import { Headphones, Image, Mail, Menu, Phone, X } from "lucide-react";
+import { Headphones, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import logo from "@/assets/logo.svg"
