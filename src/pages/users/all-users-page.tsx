@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -191,15 +192,14 @@ export default function AllUsersPage() {
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="capitalize">{user.role}</TableCell>
-                  <TableCell
-                    className={`${
-                      user.isActive === "ACTIVE"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    } font-medium`}
-                  >
-                    {user.isActive}
-                  </TableCell>
+                  <TableCell className="text-start">
+                      <Badge
+                        variant={user.isActive === "ACTIVE" ? "default" : "destructive"}
+                        className="capitalize"
+                      >
+                        {user.isActive}
+                      </Badge>
+                    </TableCell>
                   <TableCell className="text-center space-x-2">
                     {user.role !== "SUPER_ADMIN" &&
                     user._id !== currentUser?._id ? (
