@@ -93,6 +93,15 @@ const OrderForm: React.FC<OrderFormProps> = ({
           placeholder="Enter your delivery address"
         />
       </div>
+      <div>
+        <label className="text-sm font-medium text-gray-700">Note</label>
+        <Textarea
+          name="orderNote"
+          required
+          className="w-full border rounded-md p-2 mt-1"
+          placeholder="Any Note?"
+        />
+      </div>
 
       <div className="flex justify-end gap-3 pt-2">
         <DialogClose asChild>

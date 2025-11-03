@@ -15,6 +15,7 @@ export interface IOrder {
   phone: string;
   address: string;
   quantity: number;
+  orderNote: string;
   item: IProduct;
   status?: OrderStatus;
   createdAt?: string;

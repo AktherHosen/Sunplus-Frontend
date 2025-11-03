@@ -32,6 +32,7 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
     item: existingOrder?.item?._id || "",
     quantity: existingOrder?.quantity || 1,
     status: existingOrder?.status || "pending",
+    orderNote: existingOrder?.orderNote || "",
   });
 
   const ORDER_STATUSES: OrderStatus[] = [
@@ -67,6 +68,7 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
           phone: form.phone,
           address: form.address,
           item: form.item,
+          orderNote: form.orderNote,
           quantity: Number(form.quantity),
         }).unwrap();
         toast.success("Order created successfully!");
@@ -158,6 +160,16 @@ const AdminOrderForm = ({ existingOrder, onSuccess }: AdminOrderFormProps) => {
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               required
               placeholder="Enter delivery address"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">Note</label>
+            <Textarea
+              value={form.orderNote}
+              onChange={(e) => setForm({ ...form, orderNote: e.target.value })}
+              required
+              placeholder="Any Note?"
             />
           </div>
         </>
