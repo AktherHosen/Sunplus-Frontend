@@ -149,9 +149,16 @@ export default function AllUsersPage() {
               </DialogContent>
             </Dialog>
           )}
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
-            <RefreshCcw className="w-4 h-4" />
-          </Button>
+         <Button
+  variant="outline"
+  size="sm"
+  onClick={() => refetch()}
+  disabled={isLoading}
+>
+  <RefreshCcw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
+</Button>
+
+
         </div>
       </div>
 
