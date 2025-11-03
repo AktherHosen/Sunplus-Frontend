@@ -13,10 +13,11 @@ import { useRef } from "react";
 import { Link } from "react-router";
 import SectionTitle from "../ui/section-title";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function LatestProducts() {
   const autoplay = useRef(
-    Autoplay({ delay: 1500, stopOnInteraction: false, stopOnMouseEnter: true })
+    Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true })
   );
 
   const { data, isLoading } = useGetAllProductsQuery();
@@ -38,6 +39,14 @@ export default function LatestProducts() {
     );
   }
 
+  function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+    const results: T[][] = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      results.push(array.slice(i, i + chunkSize));
+    }
+    return results;
+  }
+
   return (
     <section className="w-full py-8">
       <SectionTitle
@@ -50,80 +59,80 @@ export default function LatestProducts() {
         plugins={[autoplay.current]}
         className="w-full"
         opts={{ align: "start", loop: true }}>
-        <CarouselContent>
-          {products.map((product: IProduct, index) => {
-            const category = product.category_id?.slug ?? "unknown";
-            const subcategory = product.subcategory?.slug ?? "general";
-            const slug =
-              product.slug ||
-              product.name?.toLowerCase().replace(/\s+/g, "-") ||
-              "product";
+        <CarouselContent className="gap-4">
+          {chunkArray(products, 6).map((chunk, chunkIndex) => (
+            <CarouselItem
+              key={chunkIndex}
+              className="w-full grid gap-4 
+                         grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-start">
+              {chunk.map((product, index) => {
+                const category = product.category_id?.slug ?? "unknown";
+                const subcategory = product.subcategory?.slug ?? "general";
+                const slug =
+                  product.slug ||
+                  product.name?.toLowerCase().replace(/\s+/g, "-") ||
+                  "product";
 
-            return (
-              <CarouselItem
-                key={product._id}
-                className="basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}>
-                  <Link to={`/product/${category}/${subcategory}/${slug}`}>
-                    <Card className="relative py-0 rounded-lg shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden">
-                      <CardContent className="flex flex-col items-center justify-between h-full p-4">
-                        {/* Image */}
-                        <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-muted/40">
+                return (
+                  <motion.div
+                    key={product._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}>
+                    <Link to={`/product/${category}/${subcategory}/${slug}`}>
+                      <Card className="rounded-lg p-2 shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden h-full">
+                        <CardContent className="flex flex-row items-center gap-4  h-full p-0">
+                        <Avatar className="w-20 h-20 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-22 lg:h-22 flex-shrink-0 rounded-lg overflow-hidden bg-muted/40">
                           {product.image ? (
-                            <motion.img
-                              src={`${import.meta.env.VITE_API_URL}${
-                                product.image
-                              }`}
+                            <AvatarImage
+                              src={`${import.meta.env.VITE_API_URL}${product.image}`}
                               alt={product.name}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                              loading="lazy"
+                              className="w-full h-full object-contain" 
                             />
                           ) : (
-                            <div className="flex items-center justify-center w-full h-full">
-                              <Image className="w-12 h-12 text-muted-foreground/60" />
-                            </div>
+                            <AvatarFallback>
+                              <Image className="w-12 h-12 rounded-lg text-muted-foreground/60" />
+                            </AvatarFallback>
                           )}
+                        </Avatar>
+                          {/* Product Info */}
+                          <div className="flex flex-col justify-between flex-grow w-full">
+                            <h3 className="text-sm md:text-base font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
+                              {product.name}
+                            </h3>
 
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-                        </div>
-
-                        <div className="flex flex-col justify-between flex-grow mt-3 group">
-                          {/* Product Name */}
-                          <h3 className="text-sm md:text-base font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300 text-left">
-                            {product.name}
-                          </h3>
-
-                          {/* Price & Stock */}
-                          <div className="flex items-center justify-start mt-2 gap-4">
-                            {product.price && (
-                              <p className="text-base md:text-lg font-bold text-primary tracking-wide">
-                                ৳{Number(product.price).toFixed(2)}
-                              </p>
-                            )}
-
-                            {product.quantity !== undefined && (
-                              <Badge
-                                variant={Number(product.quantity) > 0 ? "default" : "destructive"}
-                                className="text-sm font-medium"
-                              >
-                                {Number(product.quantity) > 0 ? "In Stock" : "Out of Stock"}
-                              </Badge>
-                            )}
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-2 gap-2 sm:gap-4">
+                              {product.price && (
+                                <p className="text-base md:text-lg font-bold text-primary tracking-wide">
+                                  ৳{Number(product.price).toFixed(2)}
+                                </p>
+                              )}
+                              {product.quantity !== undefined && (
+                                <Badge
+                                  variant={
+                                    Number(product.quantity) > 0
+                                      ? "default"
+                                      : "destructive"
+                                  }
+                                  className="text-sm font-medium">
+                                  {Number(product.quantity) > 0
+                                    ? "In Stock"
+                                    : "Out of Stock"}
+                                </Badge>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </motion.div>
-              </CarouselItem>
-            );
-          })}
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </CarouselItem>
+          ))}
         </CarouselContent>
-      </Carousel> 
+      </Carousel>
     </section>
   );
 }
