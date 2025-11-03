@@ -95,7 +95,7 @@ const AllSubcategoryProductPage = () => {
                 </CardContent>
 
                 {/* Card footer */}
-                <CardFooter className="flex flex-col rounded-b-lg bg-accent p-2 ">
+                <CardFooter className="flex flex-col w-full rounded-b-lg bg-accent px-4 py-2 ">
                   <div className="flex flex-col items-start gap-1 w-full">
                     <p className="text-base font-semibold text-foreground line-clamp-1">
                       {product.name}
@@ -124,18 +124,25 @@ const AllSubcategoryProductPage = () => {
                         </>
                       )}
                     </div>
-
-                    <button
-                      className="text-xs sm:text-sm font-semibold px-3 py-1 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition"
-                      onClick={(e) => {
+                  </div>
+                  <div className="mt-4 border-t border-border/40 pt-3 w-full">
+                  <button
+                  onClick={(e) => {
                         e.stopPropagation();
                         navigate(
                           `/product/${product.category_id?.slug}/${product.subcategory?.slug}/${product.slug}`
                         );
-                      }}>
-                      View Details
-                    </button>
-                  </div>
+                      }}
+                    className="
+                      inline-flex items-center justify-center w-full 
+                      text-sm font-medium px-4 py-2 rounded-lg
+                      bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground
+                      transition-colors duration-300
+                    "
+                  >
+                    View Details
+                  </button>
+                </div>
                 </CardFooter>
               </Card>
             </motion.div>

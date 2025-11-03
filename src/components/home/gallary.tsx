@@ -1,12 +1,18 @@
-import img6 from "@/assets/img/gallary/Bullet-led-35.jpg";
+import { motion } from "framer-motion";
+import SectionTitle from "../ui/section-title";
 import img1 from "@/assets/img/gallary/Color-led-light.jpg";
-import img7 from "@/assets/img/gallary/Fan-02.png";
 import img2 from "@/assets/img/gallary/Others-12.png";
 import img3 from "@/assets/img/gallary/UFO-led-Bulb.jpg";
 import img4 from "@/assets/img/gallary/led-bulb-tube-light-20w.jpg";
-import img5 from "@/assets/img/gallary/mosquete bat.png";
-import { motion } from "framer-motion";
-import SectionTitle from "../ui/section-title";
+import img7 from "@/assets/img/gallary/Fan-02.png";
+
+const products = [
+  { src: img7, name: "Ceiling Fan", desc: "High-speed energy-saving ceiling fan" },
+  { src: img2, name: "LED Light Product", desc: "Premium LED for indoor use" },
+  { src: img3, name: "UFO LED Bulb", desc: "Bright & efficient UFO-style bulb" },
+  { src: img4, name: "Tube Light", desc: "20W LED tube for workspace lighting" },
+  { src: img1, name: "Color LED", desc: "Vibrant RGB lighting solution" },
+];
 
 export default function Gallery() {
   const fadeIn = {
@@ -15,115 +21,72 @@ export default function Gallery() {
   };
 
   return (
-    <section className=" mb-8">
-      <SectionTitle title="Product Gallery" align="center" />
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[250px] md:auto-rows-[300px]">
-        {/* Image 1 */}
-        <motion.div
-          className="relative overflow-hidden rounded-xl lg:row-span-2 group"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeIn}
-          transition={{ duration: 0.5 }}
+    <section className="relative py-12 sm:py-16 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,hsl(var(--primary)/0.1),transparent_70%)] pointer-events-none" />
+      <div className="relative container mx-auto px-3 sm:px-6 lg:px-8">
+        <SectionTitle title="Our Products" align="center" />
+        <div
+          className="
+            mt-10 grid 
+            grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 
+            gap-5 sm:gap-6 md:gap-8
+          "
         >
-          <img
-            src={img7}
-            alt="LED Light"
-            className="w-full h-full  transition-transform duration-700 ease-out group-hover:scale-110"
-          />
-        </motion.div>
+          {products.map((product, i) => (
+            <motion.div
+              key={i}
+              className="
+                group bg-card rounded-2xl overflow-hidden border border-border/50 
+                 transition-all duration-500
+                flex flex-col
+              "
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={fadeIn}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+            >
+              {/* Image Section */}
+              <div className="relative aspect-square overflow-hidden">
+                <img
+                  src={product.src}
+                  alt={product.name}
+                  className="
+                    w-full h-full object-cover transition-transform duration-700 
+                    group-hover:scale-110
+                  "
+                />
 
-        {/* Image 2 */}
-        <motion.div
-          className="relative overflow-hidden rounded-xl group"
-          initial="hidden"
-          whileInView="visible"
-          variants={fadeIn}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <img
-            src={img2}
-            alt="Product 2"
-            className="w-full h-full  transition-transform duration-700 ease-out group-hover:scale-110"
-          />
-        </motion.div>
+                {/* Overlay effect */}
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
 
-        {/* Image 3 - Wide */}
-        <motion.div
-          className="relative overflow-hidden rounded-xl col-span-2 group"
-          initial="hidden"
-          whileInView="visible"
-          variants={fadeIn}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <img
-            src={img4}
-            alt="LED Tube Light"
-            className="w-full h-full  transition-transform duration-700 ease-out group-hover:scale-110"
-          />
-        </motion.div>
+              {/* Product Content */}
+              <div className="flex-1 flex flex-col justify-between p-4 sm:p-5 text-center">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {product.name}
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 sm:mt-2 line-clamp-2">
+                  {product.desc}
+                </p>
 
-        {/* Image 4 */}
-        <motion.div
-          className="relative overflow-hidden rounded-xl group"
-          initial="hidden"
-          whileInView="visible"
-          variants={fadeIn}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <img
-            src={img3}
-            alt="UFO Led Light"
-            className="w-full h-full  transition-transform duration-700 ease-out group-hover:scale-110"
-          />
-        </motion.div>
-
-        {/* Image 5 - Tall */}
-        <motion.div
-          className="relative overflow-hidden rounded-xl row-span-2 group"
-          initial="hidden"
-          whileInView="visible"
-          variants={fadeIn}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <img
-            src={img5}
-            alt="Mosquito Bat"
-            className="w-full h-full  transition-transform duration-700 ease-out group-hover:scale-110"
-          />
-        </motion.div>
-
-        {/* Image 6 */}
-        <motion.div
-          className="relative overflow-hidden rounded-xl group"
-          initial="hidden"
-          whileInView="visible"
-          variants={fadeIn}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <img
-            src={img6}
-            alt="Bullet LED"
-            className="w-full h-full  transition-transform duration-700 ease-out group-hover:scale-110"
-          />
-        </motion.div>
-
-        {/* Image 7 - Wide */}
-        <motion.div
-          className="relative overflow-hidden rounded-xl col-span-2 group"
-          initial="hidden"
-          whileInView="visible"
-          variants={fadeIn}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <img
-            src={img1}
-            alt="Color LED"
-            className="w-full h-full  transition-transform duration-700 ease-out group-hover:scale-110"
-          />
-        </motion.div>
+                {/* Optional Footer (price / button placeholder) */}
+                <div className="mt-4 border-t border-border/40 pt-3">
+                  <button
+                    className="
+                      inline-flex items-center justify-center w-full 
+                      text-sm font-medium px-4 py-2 rounded-xl 
+                      bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground
+                      transition-colors duration-300
+                    "
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
