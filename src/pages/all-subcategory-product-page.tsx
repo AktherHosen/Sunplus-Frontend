@@ -33,7 +33,8 @@ const AllSubcategoryProductPage = () => {
           className="w-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}>
+          transition={{ duration: 0.8 }}
+        >
           {banners.length === 1 ? (
             <img
               src={`${import.meta.env.VITE_API_URL}${banners[0]}`}
@@ -74,7 +75,8 @@ const AllSubcategoryProductPage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="rounded-lg shadow-none overflow-hidden">
+              className="rounded-lg shadow-none overflow-hidden"
+            >
               <Card className="border gap-0 border-border hover:border-primary hover:rounded-lg transition-colors duration-300 rounded-lg p-0">
                 <CardContent className="p-2">
                   <div className="w-full aspect-square overflow-hidden rounded-lg">
@@ -110,7 +112,8 @@ const AllSubcategoryProductPage = () => {
                       Number(product.quantity) > 0
                         ? "text-green-600"
                         : "text-red-600"
-                    }`}>
+                    }`}
+                  >
                     <div className="flex items-center gap-1">
                       {Number(product.quantity) > 0 ? (
                         <>
@@ -126,23 +129,23 @@ const AllSubcategoryProductPage = () => {
                     </div>
                   </div>
                   <div className="mt-4 border-t border-border/40 pt-3 w-full">
-                  <button
-                  onClick={(e) => {
+                    <button
+                      onClick={(e) => {
                         e.stopPropagation();
                         navigate(
-                          `/product/${product.category_id?.slug}/${product.subcategory?.slug}/${product.slug}`
+                          `/product/${product.category_id?.slug}/${product.subcategories?.slug}/${product.slug}`
                         );
                       }}
-                    className="
+                      className="
                       inline-flex items-center justify-center w-full 
                       text-sm font-medium px-4 py-2 rounded-lg
                       bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground
                       transition-colors duration-300
                     "
-                  >
-                    View Details
-                  </button>
-                </div>
+                    >
+                      View Details
+                    </button>
+                  </div>
                 </CardFooter>
               </Card>
             </motion.div>

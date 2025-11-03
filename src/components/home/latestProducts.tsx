@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -11,9 +12,8 @@ import { motion } from "framer-motion";
 import { Image } from "lucide-react";
 import { useRef } from "react";
 import { Link } from "react-router";
-import SectionTitle from "../ui/section-title";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import SectionTitle from "../ui/section-title";
 
 export default function LatestProducts() {
   const autoplay = useRef(
@@ -58,16 +58,18 @@ export default function LatestProducts() {
       <Carousel
         plugins={[autoplay.current]}
         className="w-full"
-        opts={{ align: "start", loop: true }}>
+        opts={{ align: "start", loop: true }}
+      >
         <CarouselContent className="gap-4">
           {chunkArray(products, 6).map((chunk, chunkIndex) => (
             <CarouselItem
               key={chunkIndex}
               className="w-full grid gap-4 
-                         grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-start">
+                         grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-start"
+            >
               {chunk.map((product, index) => {
                 const category = product.category_id?.slug ?? "unknown";
-                const subcategory = product.subcategory?.slug ?? "general";
+                const subcategory = product.subcategories?.slug ?? "general";
                 const slug =
                   product.slug ||
                   product.name?.toLowerCase().replace(/\s+/g, "-") ||
@@ -79,23 +81,26 @@ export default function LatestProducts() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}>
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                  >
                     <Link to={`/product/${category}/${subcategory}/${slug}`}>
                       <Card className="rounded-lg p-2 shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden h-full">
                         <CardContent className="flex flex-row items-center gap-4  h-full p-0">
-                        <Avatar className="w-20 h-20 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-22 lg:h-22 flex-shrink-0 rounded-lg overflow-hidden bg-muted/40">
-                          {product.image ? (
-                            <AvatarImage
-                              src={`${import.meta.env.VITE_API_URL}${product.image}`}
-                              alt={product.name}
-                              className="w-full h-full object-contain" 
-                            />
-                          ) : (
-                            <AvatarFallback>
-                              <Image className="w-12 h-12 rounded-lg text-muted-foreground/60" />
-                            </AvatarFallback>
-                          )}
-                        </Avatar>
+                          <Avatar className="w-20 h-20 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-22 lg:h-22 flex-shrink-0 rounded-lg overflow-hidden bg-muted/40">
+                            {product.image ? (
+                              <AvatarImage
+                                src={`${import.meta.env.VITE_API_URL}${
+                                  product.image
+                                }`}
+                                alt={product.name}
+                                className="w-full h-full object-contain"
+                              />
+                            ) : (
+                              <AvatarFallback>
+                                <Image className="w-12 h-12 rounded-lg text-muted-foreground/60" />
+                              </AvatarFallback>
+                            )}
+                          </Avatar>
                           {/* Product Info */}
                           <div className="flex flex-col justify-between flex-grow w-full">
                             <h3 className="text-sm md:text-base font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
@@ -115,7 +120,8 @@ export default function LatestProducts() {
                                       ? "default"
                                       : "destructive"
                                   }
-                                  className="text-sm font-medium">
+                                  className="text-sm font-medium"
+                                >
                                   {Number(product.quantity) > 0
                                     ? "In Stock"
                                     : "Out of Stock"}
