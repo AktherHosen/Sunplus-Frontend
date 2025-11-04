@@ -35,15 +35,6 @@ export const router = createBrowserRouter([
       { path: "chairman-message", Component: ChairmanMessagePage },
       { path: "certificates", Component: CertificatesPage },
       { path: "media-events", Component: MediaEventsPage },
-      { path: "products", Component: ProductPage },
-      // {
-      //   path: "category/:categorySlug/:subSlug",
-      //   Component: SubcategoryProductPage,
-      // },
-      // {
-      //   path: "/:categorySlug/:subSlug/:productSlug",
-      //   Component: ProductDetailsPage,
-      // },
       {
         path: "product/:catSlug/:subCatSlug/:productSlug",
         Component: SubcatProductDetailsPage,
