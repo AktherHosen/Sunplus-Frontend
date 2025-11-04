@@ -27,32 +27,41 @@ export default function Gallery() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <SectionTitle title="Our Products" align="center" />
 
-        <motion.div
-          className="mt-12 columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {products.map((product, i) => (
-            <motion.div
-              key={i}
-              className="w-full mb-4 overflow-hidden rounded-xl cursor-pointer relative"
-              variants={fadeIn}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ scale: 1.05 }}
-            >
-              <img
-                src={product.src}
-                alt={product.name}
-                className="w-full h-auto object-cover rounded-xl"
-              />
-              <div className="absolute bottom-2 left-2 text-white bg-black/40 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                {product.name}
-              </div>
-            </motion.div>
+        {/* Masonry-style grid (Flowbite pattern) */}
+        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[0, 1, 2, 3].map((col) => (
+            <div key={col} className="grid gap-4">
+              {products
+                .filter((_, i) => i % 4 === col) // distribute items into 4 columns
+                .map((product, i) => (
+                  <motion.div
+                    key={i}
+                    className="relative overflow-hidden rounded-xl group"
+                    variants={fadeIn}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.1 }}
+                    whileHover={{ scale: 1.03 }}
+                  >
+                    <img
+                      src={product.src}
+                      alt={product.name}
+                      className="h-auto max-w-full rounded-lg object-cover"
+                    />
+                    <div className="absolute bottom-2 left-2 text-sm text-white bg-black/50 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      {product.name}
+                    </div>
+                  </motion.div>
+                ))}
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
+
+      <section>
+        
+      </section>
     </section>
   );
 }
