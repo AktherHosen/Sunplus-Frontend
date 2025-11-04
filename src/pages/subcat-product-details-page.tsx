@@ -202,7 +202,6 @@ const SubcatProductDetailsPage = () => {
               </DialogContent>
             </Dialog>
 
-            {/* Buy Now / Contact */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button
@@ -232,24 +231,53 @@ const SubcatProductDetailsPage = () => {
         </motion.div>
       </motion.div>
 
-      {/* Tabs Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <Card className="p-4 shadow-none">
-          <Tabs defaultValue="features" className="w-full mt-2">
+          <Tabs defaultValue="specs" className="w-full mt-2">
             <TabsList className="px-1 flex space-x-1">
-              {["features", "specs", "gallery", "support"].map((tab) => (
+              {["specs", "features", "gallery", "support"].map((tab) => (
                 <TabsTrigger key={tab} value={tab}>
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {/* Tab Content */}
             <div className="px-2 pt-4 bg-background rounded-b-xl space-y-6">
+              <TabsContent value="specs">
+                {product.meta?.specs ||
+                product.meta?.voltage ||
+                product.meta?.current ? (
+                  <ul className="list-none space-y-1 text-foreground">
+                    {product.meta?.specs &&
+                      product.meta.specs
+                        .split(",")
+                        .filter(Boolean)
+                        .map((feature: string, idx: number) => (
+                          <li key={`spec-${idx}`}>{feature.trim()}</li>
+                        ))}
+
+                    {product.meta?.voltage && (
+                      <li>
+                        <strong>Voltage:</strong> {product.meta.voltage}
+                      </li>
+                    )}
+                    {product.meta?.current && (
+                      <li>
+                        <strong>Current:</strong> {product.meta.current}
+                      </li>
+                    )}
+                  </ul>
+                ) : (
+                  <p className="text-muted-foreground">
+                    No technical specifications available.
+                  </p>
+                )}
+              </TabsContent>
+
               {/* Features */}
               <TabsContent value="features">
                 {product.meta?.features ? (
@@ -264,24 +292,6 @@ const SubcatProductDetailsPage = () => {
                 ) : (
                   <p className="text-muted-foreground">
                     No feature details available.
-                  </p>
-                )}
-              </TabsContent>
-
-              {/* Specifications */}
-              <TabsContent value="specs">
-                {product.meta?.specifications ? (
-                  <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                    {product.meta.specifications
-                      .split(" - ")
-                      .filter(Boolean)
-                      .map((feature: string, idx: number) => (
-                        <li key={idx}>{feature}</li>
-                      ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted-foreground">
-                    No technical specifications available.
                   </p>
                 )}
               </TabsContent>
