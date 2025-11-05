@@ -48,7 +48,7 @@ export default function LatestProducts() {
   }
 
   return (
-    <section className="w-full py-8">
+    <section className="w-full py-8" id="latestProducts">
       <SectionTitle
         title="New Arrivals Products"
         subtitle="Discover our newest arrivals and best-selling items."

@@ -9,6 +9,7 @@ import {
   Linkedin,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function ContactPage() {
   return (
@@ -115,14 +116,26 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent className="p-0 mt-3 flex flex-wrap gap-4">
               {[
-                { icon: Facebook, label: "Facebook", href: "#" },
-                { icon: Twitter, label: "Twitter", href: "#" },
-                { icon: Instagram, label: "Instagram", href: "#" },
-                { icon: Linkedin, label: "LinkedIn", href: "#" },
+                {
+                  icon: Facebook,
+                  href: "https://www.facebook.com/share/1BGFTvK7kz",
+                  label: "Facebook",
+                },
+                {
+                  icon: Instagram,
+                  href: "https://instagram.com/sunplus",
+                  label: "Instagram",
+                },
+                {
+                  icon: FaWhatsapp,
+                  href: "https://wa.me/8801835926605",
+                  label: "WhatsApp",
+                },
               ].map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
                   className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
                   <Icon size={20} /> <span>{label}</span>
                 </a>

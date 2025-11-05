@@ -17,15 +17,12 @@ export function CompanyHeader() {
           <div className="grid flex-1 text-left text-sm leading-tight">
             <div className="flex-1 flex justify-start items-center h-12">
               <Link to="/" aria-label="Go to homepage">
-                <Avatar className="h-40 w-40">
+                <Avatar className="h-full w-full">
                   <AvatarImage
                     src={logo}
                     alt="SunPluS Logo"
-                    className="object-contain"
+                    className="object-contain aspect-auto"
                   />
-                  <AvatarFallback className="bg-primary text-white flex items-center justify-center">
-                    SP
-                  </AvatarFallback>
                 </Avatar>
               </Link>
             </div>

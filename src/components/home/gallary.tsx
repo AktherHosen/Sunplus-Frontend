@@ -33,7 +33,7 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section className="my-8">
+    <section className="my-8" id="faq">
       <SectionTitle title="Frequently Asked Questions" align="center" />
 
       <div className="mt-12 w-full max-w-4xl mx-auto">
