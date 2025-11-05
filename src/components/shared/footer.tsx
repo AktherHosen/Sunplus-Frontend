@@ -1,6 +1,6 @@
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
-import { Facebook, Instagram, Mail, MapPin, Phone, Twitter, Youtube } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone, } from "lucide-react";
 import { Link } from "react-router";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { FaWhatsapp } from "react-icons/fa";

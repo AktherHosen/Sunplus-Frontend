@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Avatar, AvatarImage } from "./avatar";
 export function CompanyHeader() {
   return (
     <SidebarMenu>

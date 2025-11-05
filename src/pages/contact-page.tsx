@@ -4,9 +4,7 @@ import {
   Mail,
   Headphones,
   Facebook,
-  Twitter,
   Instagram,
-  Linkedin,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaWhatsapp } from "react-icons/fa";
