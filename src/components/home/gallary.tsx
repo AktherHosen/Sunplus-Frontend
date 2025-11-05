@@ -1,67 +1,60 @@
-import img5 from "@/assets/img/gallary/Bullet-led-35.jpg";
-import img1 from "@/assets/img/gallary/Color-led-light.jpg";
-import img7 from "@/assets/img/gallary/Fan-02.png";
-import img2 from "@/assets/img/gallary/Others-08.png";
-import img3 from "@/assets/img/gallary/UFO-led-Bulb.jpg";
-import img4 from "@/assets/img/gallary/led-bulb-tube-light-20w.jpg";
-import { motion } from "framer-motion";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import SectionTitle from "../ui/section-title";
 
-const products = [
-  { src: img7, name: "Ceiling Fan" },
-  { src: img2, name: "Junction Box" },
-  { src: img3, name: "UFO LED Bulb" },
-  { src: img4, name: "Tube Light" },
-  { src: img1, name: "Color LED" },
-  { src: img5, name: "Bullet LED" },
+const faqs = [
+  {
+    question: "What products does SunPlus sell?",
+    answer:
+      "SunPlus offers a wide range of high-quality electrical products including LED lighting, mosquito bats, switches, circuit breakers, ceiling and exhaust fans, DB boxes, sockets, and other home and commercial electrical solutions.",
+  },
+  {
+    question: "Do you ship nationwide?",
+    answer: "Yes, we ship across the country using trusted courier partners. Standard delivery usually takes 3-5 business days, and express delivery is available for faster shipping.",
+  },
+  {
+    question: "What is the return policy?",
+    answer: "We offer a 30-day hassle-free return policy. Products must be returned in their original packaging for a full refund.",
+  },
+  {
+    question: "Do SunPlus products come with a warranty?",
+    answer: "Yes. Depending on the product category, warranties range from 1 to 5 years. Our support team is available for any warranty claims or product assistance.",
+  },
+  {
+    question: "How can I track my order?",
+    answer:
+      "SunPlus support will contact you directly with shipment updates and estimated delivery time. We ensure every order reaches you safely and on time.",
+  },
 ];
 
-export default function Gallery() {
-  const fadeIn = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1 },
-  };
-
+export default function FAQSection() {
   return (
-    <section className="py-16 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionTitle title="Our Products" align="center" />
+    <section className="my-8">
+      <SectionTitle title="Frequently Asked Questions" align="center" />
 
-        {/* Masonry-style grid (Flowbite pattern) */}
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[0, 1, 2, 3].map((col) => (
-            <div key={col} className="grid gap-4">
-              {products
-                .filter((_, i) => i % 4 === col) // distribute items into 4 columns
-                .map((product, i) => (
-                  <motion.div
-                    key={i}
-                    className="relative overflow-hidden rounded-xl group"
-                    variants={fadeIn}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.1 }}
-                    whileHover={{ scale: 1.03 }}
-                  >
-                    <img
-                      src={product.src}
-                      alt={product.name}
-                      className="h-auto max-w-full rounded-lg object-cover"
-                    />
-                    <div className="absolute bottom-2 left-2 text-sm text-white bg-black/50 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                      {product.name}
-                    </div>
-                  </motion.div>
-                ))}
-            </div>
+      <div className="mt-12 w-full max-w-4xl mx-auto">
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue="faq-0" 
+          className="w-full"
+        >
+          {faqs.map((faq, i) => (
+            <AccordionItem key={i} value={`faq-${i}`}>
+              <AccordionTrigger className="p-4 text-lg font-semibold flex items-center gap-4">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-4 px-4 pb-4 text-balance">
+                <p>{faq.answer}</p>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </div>
-
-      <section>
-        
-      </section>
     </section>
   );
 }

@@ -50,14 +50,31 @@ export default function Categories() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className=""
             >
-              <Card className="py-0 rounded-lg shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden">
+              <Card className="py-0 rounded-lg gap-0 shadow-none border border-border hover:border-primary transition-colors duration-300 overflow-hidden">
                 <CardHeader className="!p-2">
                   <h3 className="text-lg font-bold text-center text-primary truncate">
                     {category.name}
                   </h3>
                 </CardHeader>
 
-                <CardContent className="!p-0 !px-8">
+<CardContent className="p-4">
+                  <div className="w-full aspect-square overflow-hidden rounded-lg">
+                    {category.image ? (
+                      <motion.img
+                        src={`${import.meta.env.VITE_API_URL}${category.image}`}
+                        alt={category.name}
+                        className="w-full h-full transition-transform duration-300 hover:scale-105"
+                        loading="lazy"
+                        whileHover={{ scale: 1.01 }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                        <Image className="w-12 h-12 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+                {/* <CardContent className="!p-0 !px-8">
                   <div className="w-full aspect-square overflow-hidden rounded-lg mb-3">
                     {category.image ? (
                       <motion.img
@@ -73,7 +90,7 @@ export default function Categories() {
                       </div>
                     )}
                   </div>
-                </CardContent>
+                </CardContent> */}
 
                 <CardFooter className="border-t !p-2.5 flex items-center justify-center bg-muted/30">
                   <Link
