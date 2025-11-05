@@ -29,7 +29,6 @@ const linkSections = [
     links: [
       { name: "Contact", href: "/contact" },
       { name: "FAQs", href: "#faq" },
-      { name: "Warranty", href: "/warranty" },
     ],
   },
 ];
@@ -119,14 +118,14 @@ const Footer = () => {
       </div>
 
       {/* Bottom Copyright */}
-      <div className="border-t container mx-auto flex justify-between items-center border-accent-foreground/10 mt-6 pt-4 text-center">
+      <div className="border-t container mx-auto px-4 lg:px-0 flex justify-between items-center border-accent-foreground/10 mt-6 pt-4 text-center">
         <p className="text-xs md:text-sm text-accent-foreground/70">
           © {new Date().getFullYear()} <span className="font-semibold">SunPlus</span>. All rights reserved.
         </p>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs md:text-sm text-accent-foreground/70">
-          <Link to="#">Terms & Conditions</Link>
-          <span>|</span>
-          <Link to="#">Privacy Policy</Link>
+        <div className="flex flex-row gap-2 sm:gap-4 text-xs md:text-sm text-accent-foreground/70">
+          <Link to="terms-and-conditions">Terms & Conditions</Link>
+          <span className="hidden sm:flex">|</span>
+          <Link to="privacy-policy">Privacy Policy</Link>
         </div>
       </div>
     </footer>

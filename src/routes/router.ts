@@ -14,9 +14,11 @@ import SidebarLayout from "@/pages/dashboard/sidebarLayout";
 import Home from "@/pages/home/home";
 import MediaEventsPage from "@/pages/mediaevents-page";
 import NotFound from "@/pages/notFound/not-found";
+import PrivacyPolicyPage from "@/pages/privacy-policy-page";
 import ProductPage from "@/pages/products/product-page";
 import Profile from "@/pages/profile/profile";
 import SubcatProductDetailsPage from "@/pages/subcat-product-details-page";
+import TermsAndConditionsPage from "@/pages/terms-and-conditions-page";
 import AllUsersPage from "@/pages/users/all-users-page";
 import { createBrowserRouter } from "react-router";
 
@@ -39,6 +41,8 @@ export const router = createBrowserRouter([
         path: "product/:catSlug/:subCatSlug/:productSlug",
         Component: SubcatProductDetailsPage,
       },
+      { path: "terms-and-conditions", Component: TermsAndConditionsPage},
+      { path: "privacy-policy", Component: PrivacyPolicyPage},
       {
         path: "login",
         Component: LoginForm,
