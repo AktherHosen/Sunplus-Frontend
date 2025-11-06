@@ -3,9 +3,11 @@ import { DialogClose } from "@/components/ui/dialog";
 import { useCreateOrderMutation } from "@/redux/api/baseApi";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { Textarea } from "../ui/textarea";
 
 interface OrderFormProps {
   productId: string;
+  productName: string;
   maxQuantity: number;
   onSuccess?: () => void;
 }
@@ -23,8 +25,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
   useEffect(() => {
     if (isSuccess) {
       toast.success("Order placed successfully!");
-      formRef.current?.reset(); 
-      onSuccess?.(); 
+      formRef.current?.reset();
+      onSuccess?.();
     } else if (isError) {
       const msg = (error as any)?.data?.message || "Failed to place order";
       toast.error(msg);
@@ -37,7 +39,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
     const order = Object.fromEntries(formData.entries());
 
     createOrder({
-      item: { _id: productId } as any, 
+      item: { _id: productId } as any,
       quantity: Number(order.quantity),
       ...order,
     });
@@ -71,16 +73,6 @@ const OrderForm: React.FC<OrderFormProps> = ({
       </div>
 
       <div>
-        <label className="text-sm font-medium text-gray-700">Address</label>
-        <textarea
-          name="address"
-          required
-          className="w-full border rounded-md p-2 mt-1"
-          placeholder="Enter your delivery address"
-        />
-      </div>
-
-      <div>
         <label className="text-sm font-medium text-gray-700">Quantity</label>
         <input
           type="number"
@@ -89,6 +81,25 @@ const OrderForm: React.FC<OrderFormProps> = ({
           max={maxQuantity}
           defaultValue={1}
           className="w-full border rounded-md p-2 mt-1"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-gray-700">Address</label>
+        <Textarea
+          name="address"
+          required
+          className="w-full border rounded-md p-2 mt-1"
+          placeholder="Enter your delivery address"
+        />
+      </div>
+      <div>
+        <label className="text-sm font-medium text-gray-700">Note</label>
+        <Textarea
+          name="orderNote"
+          required
+          className="w-full border rounded-md p-2 mt-1"
+          placeholder="Any Note?"
         />
       </div>
 

@@ -1,5 +1,12 @@
-// src/components/orders/OrdersTable.tsx
+import AdminOrderForm from "@/components/orders/admin-order-form";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -20,7 +27,9 @@ import {
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
 } from "@/redux/api/baseApi";
-import { Trash2 } from "lucide-react";
+import type { IOrder, OrderStatus } from "@/types/order";
+import { Edit, RefreshCcw, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const OrdersTable = () => {
@@ -29,7 +38,20 @@ export const OrdersTable = () => {
   const [updateOrderStatus, { isLoading: isUpdating }] =
     useUpdateOrderStatusMutation();
 
-  const allowedStatuses = [
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editingOrder, setEditingOrder] = useState<IOrder | null>(null);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const allowedStatuses: OrderStatus[] = [
     "pending",
     "confirmed",
     "shipped",
@@ -56,11 +78,10 @@ export const OrdersTable = () => {
       },
     });
   };
-  const handleStatusChange = async (id: string, status: string) => {
-    if (!allowedStatuses.includes(status)) {
-      toast.error("Invalid status!");
-      return;
-    }
+
+  const handleStatusChange = async (id: string, status: OrderStatus) => {
+    if (!allowedStatuses.includes(status))
+      return toast.error("Invalid status!");
     try {
       await updateOrderStatus({ id, status }).unwrap();
       toast.success("Order status updated!");
@@ -71,70 +92,123 @@ export const OrdersTable = () => {
   };
 
   return (
-    <>
-    <div className="flex justify-between items-center mb-4">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Orders</h1>
+        <div className="flex gap-2">
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogTrigger asChild>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setEditingOrder(null);
+                  setOpenDialog(true);
+                }}
+              >
+                + Add Order
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingOrder ? "Edit Order" : "Create Order"}
+                </DialogTitle>
+              </DialogHeader>
+              <AdminOrderForm
+                existingOrder={editingOrder}
+                onSuccess={() => {
+                  setOpenDialog(false);
+                  refetch();
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}
+          >
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+            />
+          </Button>
+        </div>
       </div>
-   <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>#</TableHead>
-            <TableHead>Customer</TableHead>
-            <TableHead>Product</TableHead>
-            <TableHead>Quantity</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
 
-        <TableBody>
-          {orders?.data?.length ? (
-            orders.data.map((order, idx) => (
-              <TableRow key={order._id}>
-                <TableCell>{idx + 1}</TableCell>
-                <TableCell>{order.name}</TableCell>
-                <TableCell>{order.item?.name || "—"}</TableCell>
-                <TableCell>{order.quantity}</TableCell>
-                <TableCell>
-                  <Select
-                    defaultValue={order.status}
-                    onValueChange={(val) => handleStatusChange(order._id, val)}
-                    disabled={isUpdating}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {allowedStatuses.map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(order._id)}
-                    disabled={isDeleting}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>#</TableHead>
+              <TableHead>Customer</TableHead>
+              <TableHead>Product</TableHead>
+              <TableHead>Quantity</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {orders?.data?.length ? (
+              orders.data.map((order, idx) => (
+                <TableRow key={order._id}>
+                  <TableCell>{idx + 1}</TableCell>
+                  <TableCell>{order.name}</TableCell>
+                  <TableCell>{order.item?.name || "—"}</TableCell>
+                  <TableCell>{order.quantity}</TableCell>
+                  <TableCell>
+                    <Select
+                      defaultValue={order.status}
+                      onValueChange={(val) =>
+                        handleStatusChange(order._id, val as OrderStatus)
+                      }
+                      disabled={isUpdating}
+                    >
+                      <SelectTrigger className="">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {allowedStatuses.map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell className="text-right flex justify-end gap-2">
+                    <Button
+                      variant="outline"
+                      size="xs"
+                      onClick={() => {
+                        setEditingOrder(order);
+                        setOpenDialog(true);
+                      }}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="xs"
+                      onClick={() => handleDelete(order._id)}
+                      disabled={isDeleting}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center text-gray-500">
+                  No orders found.
                 </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center text-gray-500">
-                No orders found.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
-    </>
- 
   );
 };

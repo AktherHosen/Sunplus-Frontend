@@ -1,4 +1,5 @@
 import { OrdersTable } from "@/components/orders/orders-table";
+import ProtectedRoute from "@/hooks/protectedRoute";
 import Main from "@/layout/main";
 import AboutUsPage from "@/pages/about-page";
 import AllSubcategoriesPage from "@/pages/all-subcategories-page";
@@ -6,7 +7,6 @@ import AllSubcategoryProductPage from "@/pages/all-subcategory-product-page";
 import LoginForm from "@/pages/auth/login";
 import Categories from "@/pages/categories/categories";
 import Subcategories from "@/pages/categories/subcategories";
-import SubcategoryProductPage from "@/pages/categories/subcategory-product-page";
 import CertificatesPage from "@/pages/certificates-page";
 import ChairmanMessagePage from "@/pages/chairmenmessage-page";
 import ContactPage from "@/pages/contact-page";
@@ -14,9 +14,11 @@ import SidebarLayout from "@/pages/dashboard/sidebarLayout";
 import Home from "@/pages/home/home";
 import MediaEventsPage from "@/pages/mediaevents-page";
 import NotFound from "@/pages/notFound/not-found";
+import PrivacyPolicyPage from "@/pages/privacy-policy-page";
 import ProductPage from "@/pages/products/product-page";
 import Profile from "@/pages/profile/profile";
 import SubcatProductDetailsPage from "@/pages/subcat-product-details-page";
+import TermsAndConditionsPage from "@/pages/terms-and-conditions-page";
 import AllUsersPage from "@/pages/users/all-users-page";
 import { createBrowserRouter } from "react-router";
 
@@ -35,41 +37,30 @@ export const router = createBrowserRouter([
       { path: "chairman-message", Component: ChairmanMessagePage },
       { path: "certificates", Component: CertificatesPage },
       { path: "media-events", Component: MediaEventsPage },
-      { path: "products", Component: ProductPage },
-      {
-        path: "category/:categorySlug/:subSlug",
-        Component: SubcategoryProductPage,
-      },
-      // {
-      //   path: "/:categorySlug/:subSlug/:productSlug",
-      //   Component: ProductDetailsPage,
-      // },
       {
         path: "product/:catSlug/:subCatSlug/:productSlug",
         Component: SubcatProductDetailsPage,
       },
+      { path: "terms-and-conditions", Component: TermsAndConditionsPage},
+      { path: "privacy-policy", Component: PrivacyPolicyPage},
       {
         path: "login",
         Component: LoginForm,
       },
       {
         path: "dashboard",
-        Component: SidebarLayout,
+        Component: ProtectedRoute,
         children: [
           {
-            index:true,
-            Component: Profile,
-          },
-          { path: "/dashboard/products", Component: ProductPage },
-          { path: "/dashboard/categories", Component: Categories },
-          { path: "/dashboard/sub-categories", Component: Subcategories },
-          {
-            path: "/dashboard/orders",
-            Component: OrdersTable,
-          },
-           {
-            path: "/dashboard/users",
-            Component: AllUsersPage,
+            Component: SidebarLayout,
+            children: [
+              { index: true, Component: Profile },
+              { path: "products", Component: ProductPage },
+              { path: "categories", Component: Categories },
+              { path: "sub-categories", Component: Subcategories },
+              { path: "orders", Component: OrdersTable },
+              { path: "users", Component: AllUsersPage },
+            ],
           },
         ],
       },

@@ -4,17 +4,10 @@ import {
   Mail,
   Headphones,
   Facebook,
-  Twitter,
   Instagram,
-  Linkedin,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function ContactPage() {
   return (
@@ -59,15 +52,24 @@ export default function ContactPage() {
               title: "Email",
               text: (
                 <>
-                  support@sunplus.com <br /> info@sunplus.com
+                  <a
+                    href="mailto:support@sunplusbd.com"
+                    className="text-primary hover:underline">
+                    support@sunplusbd.com
+                  </a>
+                  <br />
+                  <a
+                    href="mailto:info@sunplusbd.com"
+                    className="text-primary hover:underline">
+                    info@sunplusbd.com
+                  </a>
                 </>
               ),
             },
           ].map(({ icon: Icon, title, text }) => (
             <Card
               key={title}
-              className="border border-border shadow-none  transition-all rounded-lg p-6 flex flex-col items-start"
-            >
+              className="border border-border shadow-none  transition-all rounded-lg p-6 flex flex-col items-start">
               <CardHeader className="flex items-center gap-3 mb-3 p-0">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <Icon className="text-primary" size={24} />
@@ -101,7 +103,7 @@ export default function ContactPage() {
             </CardContent>
           </Card>
 
-         <Card className="border border-border shadow-none  transition-all rounded-lg-2xl p-8">
+          <Card className="border border-border shadow-none  transition-all rounded-lg-2xl p-8">
             <CardHeader className="flex items-center gap-3 mb-3 p-0">
               <div className="p-2 bg-primary/10 rounded-lg-lg">
                 <Facebook className="text-primary" size={24} />
@@ -112,16 +114,27 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent className="p-0 mt-3 flex flex-wrap gap-4">
               {[
-                { icon: Facebook, label: "Facebook", href: "#" },
-                { icon: Twitter, label: "Twitter", href: "#" },
-                { icon: Instagram, label: "Instagram", href: "#" },
-                { icon: Linkedin, label: "LinkedIn", href: "#" },
+                {
+                  icon: Facebook,
+                  href: "https://www.facebook.com/share/1BGFTvK7kz",
+                  label: "Facebook",
+                },
+                {
+                  icon: Instagram,
+                  href: "https://instagram.com/sunplus",
+                  label: "Instagram",
+                },
+                {
+                  icon: FaWhatsapp,
+                  href: "https://wa.me/8801835926605",
+                  label: "WhatsApp",
+                },
               ].map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
                   href={href}
-                  className="flex items-center gap-2 text-gray-600 hover:text-primary transition"
-                >
+                  target="_blank"
+                  className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
                   <Icon size={20} /> <span>{label}</span>
                 </a>
               ))}
@@ -130,7 +143,7 @@ export default function ContactPage() {
         </div>
 
         {/* Map Section */}
-       <Card className="border border-border shadow-none  transition-all rounded-lg py-0">
+        <Card className="border border-border shadow-none  transition-all rounded-lg py-0">
           <iframe
             title="Sunplus HQ Map"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d922.6060376199395!2d91.83025222852348!3d22.337607998723456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd8a797445159%3A0xbbf5f064c4fc5a99!2sKader%20Tower%20Building%20Complex!5e0!3m2!1sen!2sbd!4v1760429567692!5m2!1sen!2sbd"

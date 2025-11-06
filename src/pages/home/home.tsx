@@ -1,6 +1,7 @@
 import Banner from "@/components/home/banner";
 import Categories from "@/components/home/categories";
 import Features from "@/components/home/features";
+import Gallery from "@/components/home/gallary";
 import LatestProducts from "@/components/home/latestProducts";
 import { Helmet } from "react-helmet-async";
 
@@ -28,6 +29,10 @@ const Home = () => {
 
       <section>
         <Features/>
+      </section>
+
+      <section>
+        <Gallery/>
       </section>
     </div>
     </>

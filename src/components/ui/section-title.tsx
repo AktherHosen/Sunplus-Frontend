@@ -21,7 +21,7 @@ export default function SectionTitle({
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.6 }}
       className={cn(
-        "w-full mb-6 sm:mb-8 md:mb-10 lg:mb-12",
+        "w-full mb-4 sm:mb-6 md:mb-8 lg:mb-10",
         align === "center" && "text-center",
         align === "right" && "text-right",
         align === "left" && "text-left",
@@ -35,7 +35,7 @@ export default function SectionTitle({
         transition={{ duration: 0.6 }}
         className={cn(
           "font-bold tracking-tight text-foreground leading-tight",
-          "text-xl sm:text-2xl md:text-3xl lg:text-4xl"
+          "text-lg sm:text-xl md:text-2xl lg:text-3xl"
         )}
       >
         {title}
@@ -47,7 +47,7 @@ export default function SectionTitle({
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className={cn(
-          "mt-2 sm:mt-3 h-[2px] sm:h-[3px] w-12 sm:w-16 md:w-20 bg-primary rounded-full origin-left",
+          "mt-2 sm:mt-3 h-[2px] sm:h-[3px] w-10 sm:w-14 md:w-16 bg-primary rounded-full origin-left",
           align === "center" && "mx-auto",
           align === "right" && "ml-auto",
           align === "left" && "mr-auto"

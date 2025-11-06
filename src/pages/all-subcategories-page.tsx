@@ -1,15 +1,15 @@
 import Loader from "@/components/loader";
-import SectionTitle from "@/components/ui/section-title";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import SectionTitle from "@/components/ui/section-title";
 import { useGetCategoryBySlugQuery } from "@/redux/api/baseApi";
-import { Link, useParams } from "react-router";
-import { Image } from "lucide-react";
 import { motion } from "framer-motion";
+import { Image } from "lucide-react";
+import { Link, useParams } from "react-router";
 
 const AllSubcategoriesPage = () => {
   const { slug } = useParams();
@@ -41,7 +41,7 @@ const AllSubcategoriesPage = () => {
             <img
               src={`${import.meta.env.VITE_API_URL}${banners[0]}`}
               alt={`${category.name} banner`}
-               className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
+              className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -77,41 +77,44 @@ const AllSubcategoriesPage = () => {
           No subcategories found under this category.
         </p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 md:gap-8 my-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 my-8">
           {subcategories.map((sub: any, index: number) => (
             <motion.div
-              key={sub._id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="rounded-lg shadow-none border-border hover:border-primary transition-colors duration-300 overflow-hidden"
             >
-              <Card className="rounded-lg shadow-none hover:border-primary transition-colors duration-300 py-0">
-                <CardHeader className="flex flex-col items-center justify-center py-2">
-                  <h3 className="text-base sm:text-lg font-semibold text-center text-primary line-clamp-2">
+              <Card className="py-0">
+                <CardHeader className="!p-2">
+                  <h3 className="text-lg font-bold text-center text-primary truncate">
                     {sub.name}
                   </h3>
                 </CardHeader>
 
-                <CardContent className="p-2 sm:p-4 flex justify-center">
-                  {sub.image ? (
-                    <motion.img
-                      src={`${import.meta.env.VITE_API_URL}${sub.image}`}
-                      alt={sub.name}
-                      className="w-full max-h-48 sm:max-h-64 object-cover rounded-lg transition-transform duration-500 hover:scale-105"
-                      whileHover={{ scale: 1.05 }}
-                    />
-                  ) : (
-                    <div className="w-full max-h-48 sm:max-h-64 flex items-center justify-center rounded-lg border border-dashed border-gray-300 text-gray-300">
-                      <Image className="w-12 h-12" />
-                    </div>
-                  )}
+                <CardContent className="!p-0 !px-8">
+                  <div className="w-full aspect-square overflow-hidden rounded-lg mb-3">
+                    {sub.image ? (
+                      <motion.img
+                        src={`${import.meta.env.VITE_API_URL}${sub.image}`}
+                        alt={sub.name}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        loading="lazy"
+                        whileHover={{ scale: 1.01 }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                        <Image className="w-12 h-12 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
 
-                <CardFooter className="border-t !p-2 rounded-b-lg flex items-center justify-center">
+                <CardFooter className="border-t !p-2.5 flex items-center justify-center bg-muted/30">
                   <Link
-                    to={`/product/${sub.slug}`}
-                    className="capitalize font-semibold text-sm sm:text-base hover:underline text-primary"
+                    to={`/product/${sub?.slug}`}
+                    className="uppercase text-base font-semibold text-primary hover:underline"
                   >
                     See More
                   </Link>

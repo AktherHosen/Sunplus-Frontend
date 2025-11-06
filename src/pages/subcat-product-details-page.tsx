@@ -4,13 +4,12 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useParams } from "react-router";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Placeholder from "@/assets/img/placeholder.png";
 import Loader from "@/components/loader";
-import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
 import OrderForm from "@/components/orders/order-form";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogClose,
@@ -20,10 +19,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
 
-import { motion } from "framer-motion"; // <-- added
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion"; // <-- added
 
 const SubcatProductDetailsPage = () => {
   const { categorySlug, subCategorySlug, productSlug } = useParams();
@@ -42,9 +43,7 @@ const SubcatProductDetailsPage = () => {
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
 
-  const galleryImages = product.image
-    ? [product.image, ...(product.gallery || [])]
-    : [];
+  const galleryImages = product.image ? [product.image] : [];
 
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -53,7 +52,8 @@ const SubcatProductDetailsPage = () => {
         className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}>
+        transition={{ duration: 0.8 }}
+      >
         {/* Left: Main Image */}
         <Card className="overflow-hidden shadow-none h-fit">
           <Zoom>
@@ -84,7 +84,8 @@ const SubcatProductDetailsPage = () => {
                       ? "border-blue-600 ring-1 ring-blue-300"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
-                  whileHover={{ scale: 1.05 }}>
+                  whileHover={{ scale: 1.05 }}
+                >
                   <img
                     src={`${import.meta.env.VITE_API_URL}${img}`}
                     alt={`${product.name} view ${idx + 1}`}
@@ -101,7 +102,8 @@ const SubcatProductDetailsPage = () => {
           className="space-y-4 p-6 rounded-xl border bg-background/40 backdrop-blur-sm "
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}>
+          transition={{ duration: 0.8 }}
+        >
           {/* Product Title */}
           <h1 className="text-2xl md:text-3xl font-semibold text-foreground leading-tight">
             {product.name}
@@ -112,18 +114,26 @@ const SubcatProductDetailsPage = () => {
             <span className="text-2xl font-bold text-primary">
               ৳{Number(product.price).toFixed(2)}
             </span>
-            {product.originalPrice && (
-              <span className="line-through text-muted-foreground text-lg">
-                ৳{Number(product.originalPrice).toFixed(2)}
-              </span>
-            )}
           </div>
 
           {/* Short Description */}
-          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-            {product.shortDescription ||
+          {/* <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+            {product.description ||
               "Premium product built with precision and quality you can trust."}
-          </p>
+          </p> */}
+          {product.meta?.watt && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              {product.meta.watt.split(",").map((w: string, idx: number) => (
+                <Badge
+                  key={idx}
+                  variant="secondary"
+                  className="text-sm font-medium capitalize"
+                >
+                  {w.trim()}
+                </Badge>
+              ))}
+            </div>
+          )}
 
           {/* Stock + Category Info */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-3 border-y">
@@ -137,7 +147,8 @@ const SubcatProductDetailsPage = () => {
                   Number(product.quantity) > 0
                     ? "text-green-600"
                     : "text-red-600"
-                )}>
+                )}
+              >
                 <span className="text-lg">●</span>
                 {Number(product.quantity) > 0 ? "In Stock" : "Out of Stock"}
               </dd>
@@ -167,14 +178,16 @@ const SubcatProductDetailsPage = () => {
             className="flex flex-row gap-3 pt-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.6 }}>
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
             {/* Order Button */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button
                   size="lg"
                   disabled={Number(product.quantity) <= 0}
-                  className="flex-1 text-base font-medium gap-2">
+                  className="flex-1 text-base font-medium gap-2"
+                >
                   <ShoppingCart className="w-5 h-5" />
                   Order Now
                 </Button>
@@ -183,19 +196,19 @@ const SubcatProductDetailsPage = () => {
                 <OrderForm
                   productId={product._id}
                   productName={product.name}
-                  maxQuantity={product.quantity}
+                  maxQuantity={Number(product.quantity)}
                   onSuccess={() => setIsDialogOpen(false)}
                 />
               </DialogContent>
             </Dialog>
 
-            {/* Buy Now / Contact */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
                   size="lg"
-                  className="flex-1 text-base font-medium gap-2">
+                  className="flex-1 text-base font-medium gap-2"
+                >
                   Contact Distributor
                 </Button>
               </DialogTrigger>
@@ -218,23 +231,53 @@ const SubcatProductDetailsPage = () => {
         </motion.div>
       </motion.div>
 
-      {/* Tabs Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}>
+        transition={{ duration: 0.8 }}
+      >
         <Card className="p-4 shadow-none">
-          <Tabs defaultValue="features" className="w-full mt-2">
+          <Tabs defaultValue="specs" className="w-full mt-2">
             <TabsList className="px-1 flex space-x-1">
-              {["features", "specs", "gallery", "support"].map((tab) => (
+              {["specs", "features", "gallery", "support"].map((tab) => (
                 <TabsTrigger key={tab} value={tab}>
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {/* Tab Content */}
             <div className="px-2 pt-4 bg-background rounded-b-xl space-y-6">
+              <TabsContent value="specs">
+                {product.meta?.specs ||
+                product.meta?.voltage ||
+                product.meta?.current ? (
+                  <ul className="list-none space-y-1 text-foreground">
+                    {product.meta?.specs &&
+                      product.meta.specs
+                        .split(",")
+                        .filter(Boolean)
+                        .map((feature: string, idx: number) => (
+                          <li key={`spec-${idx}`}>{feature.trim()}</li>
+                        ))}
+
+                    {product.meta?.voltage && (
+                      <li>
+                        <strong>Voltage:</strong> {product.meta.voltage}
+                      </li>
+                    )}
+                    {product.meta?.current && (
+                      <li>
+                        <strong>Current:</strong> {product.meta.current}
+                      </li>
+                    )}
+                  </ul>
+                ) : (
+                  <p className="text-muted-foreground">
+                    No technical specifications available.
+                  </p>
+                )}
+              </TabsContent>
+
               {/* Features */}
               <TabsContent value="features">
                 {product.meta?.features ? (
@@ -253,24 +296,6 @@ const SubcatProductDetailsPage = () => {
                 )}
               </TabsContent>
 
-              {/* Specifications */}
-              <TabsContent value="specs">
-                {product.meta?.specifications ? (
-                  <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                    {product.meta.specifications
-                      .split(" - ")
-                      .filter(Boolean)
-                      .map((feature: string, idx: number) => (
-                        <li key={idx}>{feature}</li>
-                      ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted-foreground">
-                    No technical specifications available.
-                  </p>
-                )}
-              </TabsContent>
-
               {/* Gallery */}
               <TabsContent value="gallery">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -280,7 +305,8 @@ const SubcatProductDetailsPage = () => {
                       initial={{ opacity: 0, scale: 0.95 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true, amount: 0.3 }}
-                      transition={{ duration: 0.4, delay: idx * 0.1 }}>
+                      transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    >
                       <Zoom>
                         <Avatar className="w-32 h-32 rounded-lg overflow-hidden">
                           <AvatarImage

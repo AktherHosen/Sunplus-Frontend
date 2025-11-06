@@ -13,12 +13,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import useRemoveWebuzo from "@/hooks/useRemoveWebuzo";
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router";
 
 export default function SidebarLayout() {
+  useRemoveWebuzo();
   const location = useLocation();
-
   // Get path segments (e.g. ["dashboard", "products", "add"])
   const pathnames = location.pathname.split("/").filter(Boolean);
 

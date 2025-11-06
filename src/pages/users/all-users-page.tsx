@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -37,8 +38,16 @@ export default function AllUsersPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("USER");
-
+  const [role, setRole] = useState<"SUPER_ADMIN" | "ADMIN">("ADMIN");
+  const [refreshing, setRefreshing] = useState(false);
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await refetch(); // refetch returns a promise
+    } finally {
+      setRefreshing(false);
+    }
+  };
   // Loading and error
   if (isLoading)
     return (
@@ -90,7 +99,7 @@ export default function AllUsersPage() {
       setName("");
       setEmail("");
       setPassword("");
-      setRole("USER");
+      setRole("ADMIN");
       refetch();
     } catch (error) {
       toast.error("Failed to add user.");
@@ -134,9 +143,11 @@ export default function AllUsersPage() {
                   <select
                     className="w-full border rounded px-2 py-1"
                     value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                  >
+                    onChange={(e) =>
+                      setRole(e.target.value as "SUPER_ADMIN" | "ADMIN")
+                    }>
                     <option value="ADMIN">ADMIN</option>
+                    <option value="SUPER_ADMIN">SUPER ADMIN</option>
                   </select>
                 </div>
                 <DialogFooter>
@@ -145,8 +156,14 @@ export default function AllUsersPage() {
               </DialogContent>
             </Dialog>
           )}
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
-            <RefreshCcw className="w-4 h-4" />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}>
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+            />
           </Button>
         </div>
       </div>
@@ -188,14 +205,14 @@ export default function AllUsersPage() {
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="capitalize">{user.role}</TableCell>
-                  <TableCell
-                    className={`${
-                      user.isActive === "ACTIVE"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    } font-medium`}
-                  >
-                    {user.isActive}
+                  <TableCell className="text-start">
+                    <Badge
+                      variant={
+                        user.isActive === "ACTIVE" ? "default" : "destructive"
+                      }
+                      className="capitalize">
+                      {user.isActive}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-center space-x-2">
                     {user.role !== "SUPER_ADMIN" &&
@@ -203,8 +220,7 @@ export default function AllUsersPage() {
                       <Button
                         variant="destructive"
                         size="xs"
-                        onClick={() => handleDelete(user._id, user.role)}
-                      >
+                        onClick={() => handleDelete(user._id, user.role)}>
                         <Trash className="w-4 h-4" />
                       </Button>
                     ) : (

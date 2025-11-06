@@ -1,3 +1,6 @@
+import Car1 from "@/assets/carousel/car1.png";
+import Car2 from "@/assets/carousel/car2.png";
+import Car3 from "@/assets/carousel/car3.png";
 import {
   Carousel,
   CarouselContent,
@@ -6,37 +9,38 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import Circuit from "../../assets/img/circuit-breaker-3.jpg";
-import Socket from "../../assets/img/socket.png";
-import Socket2 from "../../assets/img/socket.png";
-
-const banners = [Socket, Circuit, Socket2];
 
 export default function Banner() {
   return (
     <Carousel
-      className="w-full"
-      plugins={[
-        Autoplay({
-          delay: 4000,
-          stopOnInteraction: false,
-        }),
-      ]}
+      className="w-full overflow-hidden rounded-lg "
+      plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
     >
-      <CarouselContent className="rounded-lg overflow-hidden">
-        {banners.map((src, index) => (
-          <CarouselItem key={index}>
-            <div className="relative w-full flex justify-center overflow-hidden rounded-lg">
-              <img
-                src={src}
-                alt={`Banner ${index + 1}`}
-                className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
-              />
-            </div>
-          </CarouselItem>
-        ))}
+      <CarouselContent className="flex w-full ml-0 gap-0">
+        <CarouselItem className="flex-shrink-0 w-full ml-0 pl-0">
+          <img
+            src={Car1}
+            alt="Banner 1"
+            className="w-full max-h-[400px] object-cover rounded-lg m-0"
+          />
+        </CarouselItem>
+        <CarouselItem className="flex-shrink-0 w-full pl-0 ml-0">
+          <img
+            src={Car2}
+            alt="Banner 2"
+            className="w-full max-h-[400px] object-cover rounded-lg m-0"
+          />
+        </CarouselItem>
+        <CarouselItem className="flex-shrink-0 w-full pl-0 ml-0">
+          <img
+            src={Car3}
+            alt="Banner 3"
+            className="w-full max-h-[400px] object-cover rounded-lg m-0"
+          />
+        </CarouselItem>
       </CarouselContent>
 
+      {/* Navigation */}
       <CarouselPrevious className="bg-transparent border-none text-muted hover:text-primary" />
       <CarouselNext className="bg-transparent border-none text-muted hover:text-primary" />
     </Carousel>

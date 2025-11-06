@@ -1,4 +1,5 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import logo from "@/assets/logo.svg";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,26 +24,30 @@ import { useAuth } from "@/context/auth-context";
 import { Headphones, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
-
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 
-  const leftMenuItems = [
+  type MenuItem = {
+    title: string;
+    href: string;
+    popover?: boolean;
+  };
+
+  const leftMenuItems: MenuItem[] = [
     { title: "Contact", href: "/contact" },
     { title: "About Us", href: "/about" },
-    { title: "Login", href: "/login" },
   ];
 
-  const rightMenuItems = [
+  const rightMenuItems: MenuItem[] = [
     { title: "Support", href: "/support", popover: true },
-    { title: "Categories", href: "/categories" },
+    ...(user ? [] : [{ title: "Login", href: "/login" }]),
   ];
 
-  const allMenuItems = [...leftMenuItems, ...rightMenuItems];
+  const allMenuItems: MenuItem[] = [...leftMenuItems, ...rightMenuItems];
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b border-border backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 bg-accent border-b border-border backdrop-blur supports-[backdrop-filter]:bg-accent/80">
       <div className="container mx-auto px-4 lg:px-0 py-2.5">
         {/* Desktop Navbar */}
         <div className="hidden md:flex items-center justify-between w-full">
@@ -63,11 +68,15 @@ export default function Navbar() {
           </NavigationMenu>
 
           {/* Center Logo */}
-          <div className="flex-1 flex justify-center items-center">
+          <div className="flex-1 flex justify-center items-center h-12">
             <Link to="/" aria-label="Go to homepage">
-              <span className="text-2xl font-extrabold tracking-wide text-primary transition-transform duration-300 hover:scale-105">
-                SunPluS
-              </span>
+              <Avatar className="h-full w-full">
+                <AvatarImage
+                  src={logo}
+                  alt="SunPluS Logo"
+                  className="object-contain aspect-auto"
+                />
+              </Avatar>
             </Link>
           </div>
 
@@ -93,25 +102,19 @@ export default function Navbar() {
                           </h4>
                           <div className="space-y-3 text-sm">
                             <a
-                              href="tel:+880123456789"
+                              href="tel:+8801835926605"
                               className="flex items-center gap-2 hover:text-primary transition"
                             >
-                              <Phone size={16} /> +880 123 456 789
-                            </a>
-                            <a
-                              href="tel:+880987654321"
-                              className="flex items-center gap-2 hover:text-primary transition"
-                            >
-                              <Phone size={16} /> +880 987 654 321
+                              <Phone size={16} /> +880 1835 926 605
                             </a>
                             <a
                               href="mailto:support@sunplus.com"
                               className="flex items-center gap-2 hover:text-primary transition"
                             >
-                              <Mail size={16} /> support@sunplus.com
+                              <Mail size={16} /> support@sunplusbd.com
                             </a>
                             <Link
-                              to="/service-centers"
+                              to="/contact"
                               className="flex items-center gap-2 hover:text-primary transition"
                             >
                               <Headphones size={16} /> Service Centers
@@ -176,12 +179,17 @@ export default function Navbar() {
         {/* Mobile Navbar */}
         <div className="md:hidden flex items-center justify-between w-full">
           {/* Logo */}
-          <Link to="/" aria-label="Go to homepage">
-            <span className="text-2xl font-extrabold tracking-wide text-primary transition-transform duration-300 hover:scale-105">
-              SunPluS
-            </span>
-          </Link>
-
+          <div className="flex-1 flex  items-center h-12">
+            <Link to="/" aria-label="Go to homepage">
+              <Avatar className="h-full w-full">
+                <AvatarImage
+                  src={logo}
+                  alt="SunPluS Logo"
+                  className="object-contain aspect-auto"
+                />
+              </Avatar>
+            </Link>
+          </div>
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
@@ -203,8 +211,8 @@ export default function Navbar() {
                 {allMenuItems
                   .filter(
                     (item) => item.title !== "Login" && item.title !== "Admin"
-                  ) // Exclude user-specific items
-                  .map((item) =>
+                  )
+                  .map((item: MenuItem) =>
                     item.popover ? (
                       <div key={item.title} className="space-y-2">
                         <p className="text-lg font-semibold text-foreground">

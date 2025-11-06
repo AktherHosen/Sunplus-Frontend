@@ -1,4 +1,7 @@
+import type { ObjectId } from "./order";
+
 export interface IUser {
+  _id: ObjectId
   name: string;
   email: string;
   picture?: string;
@@ -8,4 +11,12 @@ export interface IUser {
   isDeleted?: string;
   isVerified?: boolean;
   role: "SUPER_ADMIN" | "ADMIN";
+}
+
+
+export interface UserResponse {
+  statusCode: number;    
+  success: boolean;         
+  message: string;         
+  data: IUser | IUser[];
 }
