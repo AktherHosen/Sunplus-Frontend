@@ -13,34 +13,26 @@ import Autoplay from "embla-carousel-autoplay";
 export default function Banner() {
   return (
     <Carousel
-      className="w-full overflow-hidden rounded-lg "
+      className="w-full overflow-hidden rounded-lg"
       plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
     >
-      <CarouselContent className="flex w-full ml-0 gap-0">
-        <CarouselItem className="flex-shrink-0 w-full ml-0 pl-0">
-          <img
-            src={Car1}
-            alt="Banner 1"
-            className="w-full max-h-[400px] object-cover rounded-lg m-0"
-          />
-        </CarouselItem>
-        <CarouselItem className="flex-shrink-0 w-full pl-0 ml-0">
-          <img
-            src={Car2}
-            alt="Banner 2"
-            className="w-full max-h-[400px] object-cover rounded-lg m-0"
-          />
-        </CarouselItem>
-        <CarouselItem className="flex-shrink-0 w-full pl-0 ml-0">
-          <img
-            src={Car3}
-            alt="Banner 3"
-            className="w-full max-h-[400px] object-cover rounded-lg m-0"
-          />
-        </CarouselItem>
+      <CarouselContent className="w-full  ml-0 ">
+        {[Car1, Car2, Car3].map((img, idx) => (
+          <CarouselItem key={idx} className="w-full ml-0 pl-0">
+            <img
+              src={img}
+              alt={`Banner ${idx + 1}`}
+              className="
+                w-full 
+                max-h-[450px] 
+                object-cover 
+                rounded-lg 
+              "
+            />
+          </CarouselItem>
+        ))}
       </CarouselContent>
 
-      {/* Navigation */}
       <CarouselPrevious className="bg-transparent border-none text-muted hover:text-primary" />
       <CarouselNext className="bg-transparent border-none text-muted hover:text-primary" />
     </Carousel>
