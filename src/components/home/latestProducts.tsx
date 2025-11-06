@@ -50,7 +50,7 @@ export default function LatestProducts() {
   return (
     <section className="w-full py-8" id="latestProducts">
       <SectionTitle
-        title="New Arrivals Products"
+        title="New Arrivals"
         subtitle="Discover our newest arrivals and best-selling items."
         align="center"
       />

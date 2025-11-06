@@ -1,16 +1,24 @@
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
-import { Facebook, Instagram, Mail, MapPin, Phone, } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import { Link } from "react-router";
 import { Avatar, AvatarImage } from "../ui/avatar";
-import { FaWhatsapp } from "react-icons/fa";
 const socialLinks = [
-  { icon: Facebook, href: "https://www.facebook.com/share/1BGFTvK7kz", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com/sunplus", label: "Instagram" },
-  { 
-    icon: FaWhatsapp, 
-    href: "https://wa.me/8801835926605", 
-    label: "WhatsApp" 
+  {
+    icon: Facebook,
+    href: "https://www.facebook.com/share/1BGFTvK7kz",
+    label: "Facebook",
+  },
+  {
+    icon: Instagram,
+    href: "https://instagram.com/sunplus",
+    label: "Instagram",
+  },
+  {
+    icon: FaWhatsapp,
+    href: "https://wa.me/8801835926605",
+    label: "WhatsApp",
   },
 ];
 
@@ -21,7 +29,6 @@ const linkSections = [
       { name: "Home", href: "/" },
       { name: "About", href: "/about" },
       { name: "Latest Products", href: "#latestProducts" },
-     
     ],
   },
   {
@@ -35,15 +42,16 @@ const linkSections = [
 
 const Footer = () => {
   return (
-    <footer className="bg-accent text-accent-foreground mt-auto pt-10 pb-10">
+    <footer className="bg-accent text-accent-foreground mt-auto pt-10 pb-6 space-y-0.5 sm:space-y-0">
       {/* Top Section: Company + Social */}
       <div className="container mx-auto px-4 lg:px-0 flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-accent-foreground/10 pb-4 mb-6">
         {/* Company Info */}
         <div className="text-center sm:text-left max-w-4xl">
           <h2 className="text-xl uppercase font-bold mb-2">SunPlus Ltd.</h2>
           <p className="text-sm text-accent-foreground/80">
-            Leading provider of high-quality electrical and electronic solutions,
-            delivering innovation, safety, and reliability across Bangladesh.
+            Leading provider of high-quality electrical and electronic
+            solutions, delivering innovation, safety, and reliability across
+            Bangladesh.
           </p>
         </div>
 
@@ -72,25 +80,32 @@ const Footer = () => {
         <div className="flex-1 flex flex-col items-start gap-6">
           <Link to="/" aria-label="Go to homepage">
             <Avatar className="h-full w-full">
-              <AvatarImage src={logo} alt="SunPlus Logo" className="object-contain aspect-auto" />
+              <AvatarImage
+                src={logo}
+                alt="SunPlus Logo"
+                className="object-contain aspect-auto"
+              />
             </Avatar>
           </Link>
 
           <div className="space-y-2 text-sm text-accent-foreground/80">
             <p className="flex items-center gap-2">
-              <MapPin size={16} /> Kader tower electric market, Jubliee road, Chittagong, Bangladesh
+              <MapPin size={16} /> Kader tower electric market, Jubliee road,
+              Chittagong, Bangladesh
             </p>
-            <a  href="tel:+880835926605" className="flex items-center gap-2">
+            <a href="tel:+880835926605" className="flex items-center gap-2">
               <Phone size={16} /> +880 1835 926 605
             </a>
             <p className="flex items-center gap-2">
-              <Mail size={16} /> 
-              <a href="mailto:support@sunplusbd.com" className="hover:underline">
+              <Mail size={16} />
+              <a
+                href="mailto:support@sunplusbd.com"
+                className="hover:underline"
+              >
                 support@sunplusbd.com
               </a>
             </p>
           </div>
-
         </div>
 
         {/* Right: Links */}
@@ -118,15 +133,29 @@ const Footer = () => {
       </div>
 
       {/* Bottom Copyright */}
-      <div className="border-t container mx-auto px-4 lg:px-0 flex justify-between items-center border-accent-foreground/10 mt-6 pt-4 text-center">
+      <div className="border-t container mx-auto px-4 lg:px-0 flex flex-col sm:flex-row justify-between items-center border-accent-foreground/10 mt-6 pt-4 text-center">
         <p className="text-xs md:text-sm text-accent-foreground/70">
-          © {new Date().getFullYear()} <span className="font-semibold">SunPlus</span>. All rights reserved.
+          © {new Date().getFullYear()}{" "}
+          <span className="font-semibold">SunPlus</span>. All rights reserved.
         </p>
         <div className="flex flex-row gap-2 sm:gap-4 text-xs md:text-sm text-accent-foreground/70">
           <Link to="terms-and-conditions">Terms & Conditions</Link>
           <span className="hidden sm:flex">|</span>
           <Link to="privacy-policy">Privacy Policy</Link>
         </div>
+      </div>
+
+      {/* Made with love line */}
+      <div className="container mx-auto px-4 lg:px-0 text-center text-xs md:text-sm text-accent-foreground/60">
+        Made with <span className="text-primary">❤️</span> by{" "}
+        <a
+          href="http://github.com/aktherhosen"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium hover:underline hover:text-primary"
+        >
+          @aktherhosen
+        </a>
       </div>
     </footer>
   );
