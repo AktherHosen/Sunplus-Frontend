@@ -42,12 +42,12 @@ const linkSections = [
 
 const Footer = () => {
   return (
-    <footer className="bg-accent text-accent-foreground mt-auto pt-6 pb-6 space-y-1 sm:space-y-0">
+    <footer className="bg-accent text-accent-foreground mt-auto pt-10 pb-6 space-y-0.5 sm:space-y-0">
       {/* Top Section: Company + Social */}
-      <div className="container mx-auto px-4 lg:px-0 flex flex-col space-y-0.5 sm:flex-row justify-between items-center gap-4 border-b border-accent-foreground/10 pb-4">
+      <div className="container mx-auto px-4 lg:px-0 flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-accent-foreground/10 pb-4 mb-6">
         {/* Company Info */}
         <div className="text-center sm:text-left max-w-4xl">
-          <h2 className="text-xl uppercase text-primary font-bold mb-2">SunPlus GROUP</h2>
+          <h2 className="text-xl text-primary uppercase font-bold mb-2">SunPlus Group</h2>
           <p className="text-xs sm:text-sm text-accent-foreground/80">
             Leading provider of high-quality electrical and electronic
             solutions, delivering innovation, safety, and reliability across
@@ -120,7 +120,7 @@ const Footer = () => {
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="hover:text-primary hover:underline transition-colors duration-200"
+                      className="hover:text-accent-foreground/90 transition-colors duration-200"
                     >
                       {link.name}
                     </a>
@@ -139,20 +139,20 @@ const Footer = () => {
           <span className="font-semibold">SunPlus</span>. All rights reserved.
         </p>
         <div className="flex flex-row gap-2 sm:gap-4 text-xs md:text-sm text-accent-foreground/70">
-          <Link to="terms-and-conditions" className="hover:underline hover:text-primary">Terms & Conditions</Link>
+          <Link to="terms-and-conditions">Terms & Conditions</Link>
           <span>|</span>
-          <Link to="privacy-policy" className="hover:underline hover:text-primary">Privacy Policy</Link>
+          <Link to="privacy-policy">Privacy Policy</Link>
         </div>
       </div>
 
       {/* Made with love line */}
       <div className="container mx-auto px-4 lg:px-0 text-center text-xs md:text-sm text-accent-foreground/60">
-        Made with <span className="text-primary text-xs">❤️</span> by{" "}
+        Made with <span className="text-primary">❤️</span> by{" "}
         <a
           href="http://github.com/aktherhosen"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-medium hover:underline text-primary"
+          className="font-medium hover:underline hover:text-primary"
         >
           @aktherhosen
         </a>
