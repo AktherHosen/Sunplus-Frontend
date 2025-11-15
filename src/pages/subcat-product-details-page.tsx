@@ -1,5 +1,5 @@
 import { ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useParams } from "react-router";
@@ -39,6 +39,17 @@ const SubcatProductDetailsPage = () => {
     });
 
   const product = data?.data;
+
+  const watts =
+    product?.meta?.watt?.split(",").map((w: string) => w.trim()) || [];
+  const [selectedWatt, setSelectedWatt] = useState<string>(watts[0] || "");
+
+  useEffect(() => {
+    if (watts.length > 0 && !selectedWatt) {
+      setSelectedWatt(watts[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product, watts]);
 
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
@@ -110,28 +121,39 @@ const SubcatProductDetailsPage = () => {
           </h1>
 
           {/* Price Section */}
-          <div className="flex items-end gap-3">
+          {/* <div className="flex items-end gap-3">
             <span className="text-2xl font-bold text-primary">
               ৳{Number(product.price).toFixed(2)}
             </span>
-          </div>
+          </div> */}
 
           {/* Short Description */}
           {/* <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
             {product.description ||
               "Premium product built with precision and quality you can trust."}
           </p> */}
-          {product.meta?.watt && (
+          {watts.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-1">
-              {product.meta.watt.split(",").map((w: string, idx: number) => (
-                <Badge
-                  key={idx}
-                  variant="secondary"
-                  className="text-sm font-medium capitalize"
-                >
-                  {w.trim()}
-                </Badge>
-              ))}
+              {watts.map((w: string, idx: number) => {
+                const isActive = selectedWatt === w;
+
+                return (
+                  <Badge
+                    key={idx}
+                    onClick={() => setSelectedWatt(w)}
+                    className={`
+            text-sm font-medium capitalize cursor-pointer
+            ${
+              isActive
+                ? "bg-primary text-accent"
+                : "bg-secondary text-accent-foreground"
+            }
+          `}
+                  >
+                    {w}
+                  </Badge>
+                );
+              })}
             </div>
           )}
 
