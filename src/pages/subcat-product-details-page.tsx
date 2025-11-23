@@ -21,6 +21,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi";
 
+import ProductCard from "@/components/product/ProductCard";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -305,114 +306,120 @@ const SubcatProductDetailsPage = () => {
         </motion.div>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <Card className="p-4 shadow-none">
-          <Tabs defaultValue="descriptions" className="w-full mt-2">
-            <TabsList className="px-1 flex space-x-1">
-              {["descriptions", "specifications", "features", "gallery"].map(
-                (tab) => (
-                  <TabsTrigger key={tab} value={tab}>
-                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  </TabsTrigger>
-                )
-              )}
-            </TabsList>
-
-            <div className="px-2 pt-4 bg-background rounded-b-xl space-y-6">
-              <TabsContent value="descriptions">
-                {product.descriptions ? (
-                  <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-                    {product.descriptions}
-                  </p>
-                ) : (
-                  <p className="text-muted-foreground">
-                    No technical descriptions available.
-                  </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <Card className="p-4 shadow-none">
+            <Tabs defaultValue="descriptions" className="w-full mt-2">
+              <TabsList className="px-1 flex space-x-1">
+                {["descriptions", "specifications", "features", "gallery"].map(
+                  (tab) => (
+                    <TabsTrigger key={tab} value={tab}>
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </TabsTrigger>
+                  )
                 )}
-              </TabsContent>
-              <TabsContent value="specifications">
-                {product.meta?.specifications ||
-                product.meta?.voltage ||
-                product.meta?.current ? (
-                  <ul className="list-none space-y-1 text-foreground">
-                    {product.meta?.specifications &&
-                      product.meta.specifications
-                        .split(",")
+              </TabsList>
+
+              <div className="px-2 pt-4 bg-background rounded-b-xl space-y-6">
+                <TabsContent value="descriptions">
+                  {product.descriptions ? (
+                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                      {product.descriptions}
+                    </p>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      No technical descriptions available.
+                    </p>
+                  )}
+                </TabsContent>
+                <TabsContent value="specifications">
+                  {product.meta?.specifications ||
+                  product.meta?.voltage ||
+                  product.meta?.current ? (
+                    <ul className="list-none space-y-1 text-foreground">
+                      {product.meta?.specifications &&
+                        product.meta.specifications
+                          .split(",")
+                          .filter(Boolean)
+                          .map((feature: string, idx: number) => (
+                            <li key={`specifications-${idx}`}>
+                              {feature.trim()}
+                            </li>
+                          ))}
+
+                      {product.meta?.voltage && (
+                        <li>
+                          <strong>Voltage:</strong> {product.meta.voltage}
+                        </li>
+                      )}
+                      {product.meta?.current && (
+                        <li>
+                          <strong>Current:</strong> {product.meta.current}
+                        </li>
+                      )}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      No technical specifications available.
+                    </p>
+                  )}
+                </TabsContent>
+
+                {/* Features */}
+                <TabsContent value="features">
+                  {product.meta?.features ? (
+                    <ul className="list-disc pl-5 space-y-1 text-gray-700">
+                      {product.meta.features
+                        .split(" - ")
                         .filter(Boolean)
                         .map((feature: string, idx: number) => (
-                          <li key={`specifications-${idx}`}>
-                            {feature.trim()}
-                          </li>
+                          <li key={idx}>{feature}</li>
                         ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      No feature details available.
+                    </p>
+                  )}
+                </TabsContent>
 
-                    {product.meta?.voltage && (
-                      <li>
-                        <strong>Voltage:</strong> {product.meta.voltage}
-                      </li>
-                    )}
-                    {product.meta?.current && (
-                      <li>
-                        <strong>Current:</strong> {product.meta.current}
-                      </li>
-                    )}
-                  </ul>
-                ) : (
-                  <p className="text-muted-foreground">
-                    No technical specifications available.
-                  </p>
-                )}
-              </TabsContent>
+                {/* Gallery */}
+                <TabsContent value="gallery">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {galleryImages.map((img, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.4, delay: idx * 0.1 }}
+                      >
+                        <Zoom>
+                          <Avatar className="w-32 h-32 rounded-lg overflow-hidden">
+                            <AvatarImage
+                              src={`${import.meta.env.VITE_API_URL}${img}`}
+                              alt={`View ${idx + 1}`}
+                              className="object-cover w-full h-full"
+                            />
+                          </Avatar>
+                        </Zoom>
+                      </motion.div>
+                    ))}
+                  </div>
+                </TabsContent>
+              </div>
+            </Tabs>
+          </Card>
+        </motion.div>
 
-              {/* Features */}
-              <TabsContent value="features">
-                {product.meta?.features ? (
-                  <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                    {product.meta.features
-                      .split(" - ")
-                      .filter(Boolean)
-                      .map((feature: string, idx: number) => (
-                        <li key={idx}>{feature}</li>
-                      ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted-foreground">
-                    No feature details available.
-                  </p>
-                )}
-              </TabsContent>
-
-              {/* Gallery */}
-              <TabsContent value="gallery">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {galleryImages.map((img, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true, amount: 0.3 }}
-                      transition={{ duration: 0.4, delay: idx * 0.1 }}
-                    >
-                      <Zoom>
-                        <Avatar className="w-32 h-32 rounded-lg overflow-hidden">
-                          <AvatarImage
-                            src={`${import.meta.env.VITE_API_URL}${img}`}
-                            alt={`View ${idx + 1}`}
-                            className="object-cover w-full h-full"
-                          />
-                        </Avatar>
-                      </Zoom>
-                    </motion.div>
-                  ))}
-                </div>
-              </TabsContent>
-            </div>
-          </Tabs>
-        </Card>
-      </motion.div>
+        <div>
+          <ProductCard slug={product?.category_id?.slug} />
+        </div>
+      </div>
     </div>
   );
 };
