@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -21,12 +22,12 @@ import {
   useGetAllCategoriesQuery,
   useUpdateCategoryMutation,
 } from "@/redux/api/baseApi";
-import { Edit, Loader2, Save } from "lucide-react";
+import { Edit, ImageIcon, Loader2, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface CategoryFormProps {
-  category?: any; // Edit mode
+  category?: any;
   triggerText?: string;
   onSuccess?: () => void;
 }
@@ -54,10 +55,7 @@ export default function CategoryForm({
   useEffect(() => {
     if (category) {
       setName(category.name || "");
-
-      // FIX: parent._id if parent exists
       setParent(category.parent?._id || null);
-
       setImagePreview(
         category.image
           ? `${import.meta.env.VITE_API_URL}${category.image}`
@@ -71,29 +69,56 @@ export default function CategoryForm({
       );
       setBannerFiles([]);
     } else {
-      setName("");
-      setParent(null);
-      setImageFile(null);
-      setImagePreview(null);
-      setBannerFiles([]);
-      setBannerPreviews([]);
+      resetForm();
     }
-  }, [category]);
+  }, [category, open]);
+
+  const resetForm = () => {
+    setName("");
+    setParent(null);
+    setImageFile(null);
+    setImagePreview(null);
+    setBannerFiles([]);
+    setBannerPreviews([]);
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setImageFile(file);
-    if (file) setImagePreview(URL.createObjectURL(file));
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
   };
 
   const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     setBannerFiles(files);
-    setBannerPreviews(files.map((file) => URL.createObjectURL(file)));
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setBannerPreviews(previews);
+  };
+
+  const handleRemoveBanner = (index: number) => {
+    setBannerFiles((prev) => prev.filter((_, i) => i !== index));
+    setBannerPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!name.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -111,11 +136,14 @@ export default function CategoryForm({
       }
 
       setOpen(false);
+      resetForm();
       onSuccess?.();
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to save category");
     }
   };
+
+  const isSaving = isAdding || isUpdating;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -125,103 +153,209 @@ export default function CategoryForm({
           size={isEditMode ? "xs" : "sm"}
         >
           {isEditMode ? (
-            <Edit className="w-6 h-6" />
+            <Edit className="w-4 h-4" />
           ) : (
             triggerText || "+ Add Category"
           )}
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {isEditMode ? "Edit Category" : "Add Category"}
+          <DialogTitle className="text-xl font-semibold">
+            {isEditMode ? "Edit Category" : "Add New Category"}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Edit category details and optionally upload new images or banners."
-              : "Upload an image, banners, and create a new category or subcategory."}
+              ? "Update category details and manage images"
+              : "Create a new category or subcategory with images"}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          {/* Category Name */}
-          <div className="space-y-2">
-            <Label htmlFor="name">Category Name</Label>
-            <Input
-              id="name"
-              placeholder="e.g., Switches"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          {/* Parent Category */}
-          <div className="space-y-2">
-            <Label>Parent Category (optional)</Label>
-            <Select onValueChange={setParent} value={parent || ""}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select parent category (optional)" />
-              </SelectTrigger>
-              <SelectContent className="w-full">
-                {categories?.data
-                  ?.filter((cat: any) => cat._id !== category?._id)
-                  .map((cat: any) => (
-                    <SelectItem key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          </div>
-          {/* Main Image */}
-          <div className="space-y-2">
-            <Label htmlFor="image">Upload Main Image</Label>
-            <Input
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-16 h-16 object-cover rounded border"
-              />
-            )}
-          </div>
-
-          {/* Banner Images */}
-          <div className="space-y-2">
-            <Label htmlFor="banners">Upload Banners (multiple)</Label>
-            <Input
-              id="banners"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleBannerChange}
-            />
-            <div className="flex space-x-2 mt-2 flex-wrap">
-              {bannerPreviews.map((src, idx) => (
-                <img
-                  key={idx}
-                  src={src}
-                  alt={`Banner ${idx + 1}`}
-                  className="w-16 h-16 object-cover rounded border"
+        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+          {/* Basic Information Card */}
+          <Card className="border-none shadow-none py-0">
+            <CardContent className="p-0 space-y-4">
+              {/* Category Name */}
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-medium">
+                  Category Name <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="e.g., Switches, Sockets, LED Lights"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="h-11"
                 />
-              ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Main Image Card */}
+          <div className="grid grid-cols-2 gap-4">
+            <Card className="border-none shadow-none py-0">
+              <CardContent className="p-0">
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Category Image</Label>
+                  <div className="flex flex-col sm:flex-row gap-4 items-start">
+                    {/* Image Preview */}
+                    {imagePreview ? (
+                      <div className="relative group">
+                        <img
+                          src={imagePreview}
+                          alt="Category preview"
+                          className="w-32 h-32 object-cover rounded-lg border-2 border-border"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={handleRemoveImage}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="w-32 h-32 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted/50">
+                        <ImageIcon className="w-10 h-10 text-muted-foreground" />
+                      </div>
+                    )}
+
+                    {/* Upload Button */}
+                    <div className="flex-1 space-y-2">
+                      <Label
+                        htmlFor="image"
+                        className="flex items-center justify-center gap-2 h-11 px-4 rounded-md border-2 border-dashed border-border bg-muted/50 hover:bg-muted cursor-pointer transition-colors"
+                      >
+                        <Upload className="w-4 h-4" />
+                        <span className="text-sm font-medium">
+                          {imagePreview ? "Change Image" : "Upload Image"}
+                        </span>
+                      </Label>
+                      <Input
+                        id="image"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        PNG, JPG or WEBP (Max 5MB)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            {/* Parent Category */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Parent Category</Label>
+              <Select onValueChange={setParent} value={parent || ""}>
+                <SelectTrigger className="h-11 w-full">
+                  <SelectValue placeholder="Select parent category (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories?.data
+                    ?.filter((cat: any) => cat._id !== category?._id)
+                    .map((cat: any) => (
+                      <SelectItem key={cat._id} value={cat._id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          <div className="flex justify-end pt-2">
-            <Button type="submit" disabled={isAdding || isUpdating}>
-              {isLoading ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          {/* Banner Images Card */}
+          <Card className="border-none shadow-none py-0">
+            <CardContent className="p-0">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium">
+                    Banner Images (Optional)
+                  </Label>
+                  <span className="text-xs text-muted-foreground">
+                    Multiple images not allowed
+                  </span>
+                </div>
+
+                {/* Upload Area */}
+                <Label
+                  htmlFor="banners"
+                  className="flex flex-col items-center justify-center h-32 rounded-lg border-2 border-dashed border-border bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors"
+                >
+                  <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Click to upload banner images
+                  </span>
+                  <span className="text-xs text-muted-foreground mt-1">
+                    Recommended: 1920x400px
+                  </span>
+                </Label>
+                <Input
+                  id="banners"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleBannerChange}
+                  className="hidden"
+                />
+
+                {/* Banner Previews */}
+                {bannerPreviews.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
+                    {bannerPreviews.map((src, idx) => (
+                      <div key={idx} className="relative group">
+                        <img
+                          src={src}
+                          alt={`Banner ${idx + 1}`}
+                          className="w-full h-24 object-cover rounded-lg border-2 border-border"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => handleRemoveBanner(idx)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={isSaving}
+              className="h-11"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSaving || !name.trim()}
+              className="h-11 px-8"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
               ) : (
-                <Save className="w-4 h-4 mr-2" />
+                <>{isEditMode ? "Update Category" : "Create Category"}</>
               )}
-              Save
             </Button>
           </div>
         </form>

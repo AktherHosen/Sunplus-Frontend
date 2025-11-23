@@ -32,7 +32,7 @@ export const ProductForm = ({
   onCancel,
 }: ProductFormProps) => {
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [descriptions, setDescriptions] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
   const [category, setCategory] = useState<string | null>(null);
@@ -48,7 +48,7 @@ export const ProductForm = ({
   useEffect(() => {
     if (editingProduct) {
       setName(editingProduct.name || "");
-      setDescription(editingProduct.description || "");
+      setDescriptions(editingProduct.descriptions || "");
       setPrice(editingProduct.price || 0);
       setQuantity(editingProduct.quantity || 0);
       setCategory(editingProduct.category_id?._id || null);
@@ -86,7 +86,7 @@ export const ProductForm = ({
 
   const resetForm = () => {
     setName("");
-    setDescription("");
+    setDescriptions("");
     setPrice(0);
     setQuantity(0);
     setCategory(null);
@@ -141,7 +141,7 @@ export const ProductForm = ({
 
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("description", description);
+    formData.append("descriptions", descriptions);
     formData.append("price", price.toString());
     formData.append("quantity", quantity.toString());
     formData.append("category_id", category);
@@ -180,14 +180,14 @@ export const ProductForm = ({
 
             {/* Description */}
             <div className="space-y-2 row-span-2">
-              <Label htmlFor="description" className="text-sm font-medium">
+              <Label htmlFor="descriptions" className="text-sm font-medium">
                 Description
               </Label>
               <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Enter product description..."
+                id="descriptions"
+                value={descriptions}
+                onChange={(e) => setDescriptions(e.target.value)}
+                placeholder="Enter product descriptions..."
                 className="h-fit min-h-[125px] resize-none"
               />
             </div>

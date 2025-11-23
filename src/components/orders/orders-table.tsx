@@ -31,6 +31,7 @@ import type { IOrder, OrderStatus } from "@/types/order";
 import { Edit, RefreshCcw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Badge } from "../ui/badge";
 
 export const OrdersTable = () => {
   const { data: orders, isLoading, isError, refetch } = useGetAllOrdersQuery();
@@ -143,6 +144,7 @@ export const OrdersTable = () => {
               <TableHead>#</TableHead>
               <TableHead>Customer</TableHead>
               <TableHead>Product</TableHead>
+              <TableHead>Variant</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -156,7 +158,16 @@ export const OrdersTable = () => {
                   <TableCell>{idx + 1}</TableCell>
                   <TableCell>{order.name}</TableCell>
                   <TableCell>{order.item?.name || "—"}</TableCell>
-                  <TableCell>{order.quantity}</TableCell>
+                  <TableCell>
+                    {order.variant ? (
+                      <Badge>{order.variant}</Badge>
+                    ) : (
+                      <span className="text-muted-foreground text-sm"></span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Badge>{order.quantity}</Badge>
+                  </TableCell>
                   <TableCell>
                     <Select
                       defaultValue={order.status}
@@ -165,13 +176,25 @@ export const OrdersTable = () => {
                       }
                       disabled={isUpdating}
                     >
-                      <SelectTrigger className="">
-                        <SelectValue placeholder="Select status" />
+                      <SelectTrigger className="w-[140px] border-none bg-transparent p-0 h-auto">
+                        <SelectValue>
+                          {order.status ? (
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            <Badge variant={order.status as any}>
+                              {order.status.charAt(0).toUpperCase() +
+                                order.status.slice(1)}
+                            </Badge>
+                          ) : (
+                            <Badge variant="pending">Pending</Badge>
+                          )}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {allowedStatuses.map((status) => (
                           <SelectItem key={status} value={status}>
-                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                            <Badge variant={status as any}>
+                              {status.charAt(0).toUpperCase() + status.slice(1)}
+                            </Badge>
                           </SelectItem>
                         ))}
                       </SelectContent>

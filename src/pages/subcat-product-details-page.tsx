@@ -1,10 +1,9 @@
-import { ShoppingCart } from "lucide-react";
+import { Image, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useParams } from "react-router";
 
-import Placeholder from "@/assets/img/placeholder.png";
 import Loader from "@/components/loader";
 import OrderForm from "@/components/orders/order-form";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -24,7 +23,7 @@ import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion"; // <-- added
+import { motion } from "framer-motion";
 
 const SubcatProductDetailsPage = () => {
   const { categorySlug, subCategorySlug, productSlug } = useParams();
@@ -42,19 +41,30 @@ const SubcatProductDetailsPage = () => {
 
   const watts =
     product?.meta?.watt?.split(",").map((w: string) => w.trim()) || [];
-  const [selectedWatt, setSelectedWatt] = useState<string>(watts[0] || "");
+  const sizes =
+    product?.meta?.size?.split(",").map((s: string) => s.trim()) || [];
+
+  const [selectedWatt, setSelectedWatt] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<string>("");
 
   useEffect(() => {
     if (watts.length > 0 && !selectedWatt) {
       setSelectedWatt(watts[0]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product, watts]);
+    if (sizes.length > 0 && !selectedSize) {
+      setSelectedSize(sizes[0]);
+    }
+  }, [product, watts.length, sizes.length]);
 
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
 
   const galleryImages = product.image ? [product.image] : [];
+
+  // Build selected variants object
+  const selectedVariants: { watt?: string; size?: string } = {};
+  if (selectedWatt) selectedVariants.watt = selectedWatt;
+  if (selectedSize) selectedVariants.size = selectedSize;
 
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -66,22 +76,29 @@ const SubcatProductDetailsPage = () => {
         transition={{ duration: 0.8 }}
       >
         {/* Left: Main Image */}
-        <Card className="overflow-hidden shadow-none h-fit">
+        <Card className="overflow-hidden shadow-none py-0 h-fit">
           <Zoom>
-            <motion.img
-              src={
-                galleryImages[selectedImage]
-                  ? `${import.meta.env.VITE_API_URL}${
-                      galleryImages[selectedImage]
-                    }`
-                  : Placeholder
-              }
-              alt={product.name}
-              className="w-full h-[300px] object-contain p-4"
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            />
+            {galleryImages[selectedImage] ? (
+              <motion.img
+                src={`${import.meta.env.VITE_API_URL}${
+                  galleryImages[selectedImage]
+                }`}
+                alt={product.name}
+                className="w-full h-[300px] object-contain p-4"
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              />
+            ) : (
+              <motion.div
+                className="w-full h-[300px] flex items-center justify-center bg-muted/30"
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Image className="w-24 h-24 text-muted-foreground" />
+              </motion.div>
+            )}
           </Zoom>
 
           {galleryImages.length > 1 && (
@@ -110,7 +127,7 @@ const SubcatProductDetailsPage = () => {
 
         {/* Right: Info + Actions */}
         <motion.div
-          className="space-y-4 p-6 rounded-xl border bg-background/40 backdrop-blur-sm "
+          className="space-y-4 p-6 rounded-xl border bg-background/40 backdrop-blur-sm"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
@@ -121,39 +138,67 @@ const SubcatProductDetailsPage = () => {
           </h1>
 
           {/* Price Section */}
-          {/* <div className="flex items-end gap-3">
+          <div className="flex items-end gap-3">
             <span className="text-2xl font-bold text-primary">
               ৳{Number(product.price).toFixed(2)}
             </span>
-          </div> */}
+          </div>
 
-          {/* Short Description */}
-          {/* <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-            {product.description ||
-              "Premium product built with precision and quality you can trust."}
-          </p> */}
+          {/* Watt Selection */}
           {watts.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-1">
-              {watts.map((w: string, idx: number) => {
-                const isActive = selectedWatt === w;
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Select Watt
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {watts.map((w: string, idx: number) => {
+                  const isActive = selectedWatt === w;
 
-                return (
-                  <Badge
-                    key={idx}
-                    onClick={() => setSelectedWatt(w)}
-                    className={`
-            text-sm font-medium capitalize cursor-pointer
-            ${
-              isActive
-                ? "bg-primary text-accent"
-                : "bg-secondary text-accent-foreground"
-            }
-          `}
-                  >
-                    {w}
-                  </Badge>
-                );
-              })}
+                  return (
+                    <Badge
+                      key={idx}
+                      onClick={() => setSelectedWatt(w)}
+                      className={cn(
+                        "text-sm font-medium capitalize cursor-pointer transition-all",
+                        isActive
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      )}
+                    >
+                      {w}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Size Selection */}
+          {sizes.length > 0 && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Select Size
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {sizes.map((s: string, idx: number) => {
+                  const isActive = selectedSize === s;
+
+                  return (
+                    <Badge
+                      key={idx}
+                      onClick={() => setSelectedSize(s)}
+                      className={cn(
+                        "text-sm font-medium capitalize cursor-pointer transition-all",
+                        isActive
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      )}
+                    >
+                      {s}
+                    </Badge>
+                  );
+                })}
+              </div>
             </div>
           )}
 
@@ -215,10 +260,17 @@ const SubcatProductDetailsPage = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Place Your Order</DialogTitle>
+                  <DialogDescription>
+                    Fill in your details to complete the order
+                  </DialogDescription>
+                </DialogHeader>
                 <OrderForm
                   productId={product._id}
                   productName={product.name}
                   maxQuantity={Number(product.quantity)}
+                  selectedVariants={selectedVariants}
                   onSuccess={() => setIsDialogOpen(false)}
                 />
               </DialogContent>
@@ -259,27 +311,42 @@ const SubcatProductDetailsPage = () => {
         transition={{ duration: 0.8 }}
       >
         <Card className="p-4 shadow-none">
-          <Tabs defaultValue="specs" className="w-full mt-2">
+          <Tabs defaultValue="descriptions" className="w-full mt-2">
             <TabsList className="px-1 flex space-x-1">
-              {["specs", "features", "gallery", "support"].map((tab) => (
-                <TabsTrigger key={tab} value={tab}>
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </TabsTrigger>
-              ))}
+              {["descriptions", "specifications", "features", "gallery"].map(
+                (tab) => (
+                  <TabsTrigger key={tab} value={tab}>
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </TabsTrigger>
+                )
+              )}
             </TabsList>
 
             <div className="px-2 pt-4 bg-background rounded-b-xl space-y-6">
-              <TabsContent value="specs">
-                {product.meta?.specs ||
+              <TabsContent value="descriptions">
+                {product.descriptions ? (
+                  <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                    {product.descriptions}
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground">
+                    No technical descriptions available.
+                  </p>
+                )}
+              </TabsContent>
+              <TabsContent value="specifications">
+                {product.meta?.specifications ||
                 product.meta?.voltage ||
                 product.meta?.current ? (
                   <ul className="list-none space-y-1 text-foreground">
-                    {product.meta?.specs &&
-                      product.meta.specs
+                    {product.meta?.specifications &&
+                      product.meta.specifications
                         .split(",")
                         .filter(Boolean)
                         .map((feature: string, idx: number) => (
-                          <li key={`spec-${idx}`}>{feature.trim()}</li>
+                          <li key={`specifications-${idx}`}>
+                            {feature.trim()}
+                          </li>
                         ))}
 
                     {product.meta?.voltage && (
@@ -341,24 +408,6 @@ const SubcatProductDetailsPage = () => {
                     </motion.div>
                   ))}
                 </div>
-              </TabsContent>
-
-              {/* Support */}
-              <TabsContent value="support">
-                {product.meta?.supports ? (
-                  <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                    {product.meta.supports
-                      .split(" - ")
-                      .filter(Boolean)
-                      .map((feature: string, idx: number) => (
-                        <li key={idx}>{feature}</li>
-                      ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted-foreground">
-                    For support, contact customer service.
-                  </p>
-                )}
               </TabsContent>
             </div>
           </Tabs>

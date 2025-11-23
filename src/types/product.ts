@@ -13,6 +13,7 @@ export interface IProduct {
   price: number;
   quantity?: number;
   image?: string;
+  descriptions?: string;
   slug?: string;
   category_id?: ICategory | null;
   subcategories?: ICategory | null;
