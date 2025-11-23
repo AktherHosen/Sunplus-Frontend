@@ -291,8 +291,16 @@ const SubcatProductDetailsPage = () => {
                 <DialogHeader>
                   <DialogTitle>Contact Distributor</DialogTitle>
                   <DialogDescription>
-                    Call: <strong>01686691262</strong> or Toll-Free:{" "}
-                    <strong>08000016267</strong>
+                    <p className="flex gap-2">
+                      Call:{"  "}
+                      <a
+                        href="tel:+8801835926605"
+                        className="flex items-center gap-2 font-bold hover:text-primary transition"
+                      >
+                        +880 1835 926 605
+                      </a>
+                    </p>{" "}
+                    Or Toll-Free: <strong>08000016267</strong>
                   </DialogDescription>
                 </DialogHeader>
                 <div className="mt-4 flex justify-end">

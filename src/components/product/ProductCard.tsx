@@ -2,6 +2,7 @@ import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
 import { Check, Image, Package, X } from "lucide-react";
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
+import { Skeleton } from "../ui/skeleton";
 
 const ProductCard = ({ slug }) => {
   const { data, isLoading, isError, error } =
@@ -9,11 +10,26 @@ const ProductCard = ({ slug }) => {
 
   if (isLoading) {
     return (
-      <div className="w-full py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
+      <div className="w-full">
+        <div className="mb-4">
+          <Skeleton className="h-7 w-40" />
+        </div>
+        <div className="grid grid-cols-1 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="bg-background border rounded-lg overflow-hidden flex"
+            >
+              <Skeleton className="w-24 h-24 flex-shrink-0 rounded-md" />
+              <div className="py-2 px-4 flex-1 flex flex-col justify-between">
+                <Skeleton className="h-5 w-3/4" />
+                <div className="flex items-center justify-between border-t border-gray-100 pt-2">
+                  <Skeleton className="h-8 w-24" />
+                  <Skeleton className="h-6 w-20" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
