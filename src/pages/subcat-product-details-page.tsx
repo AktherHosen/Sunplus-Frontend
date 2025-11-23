@@ -259,7 +259,7 @@ const SubcatProductDetailsPage = () => {
                   Order Now
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
+              <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                   <DialogTitle>Place Your Order</DialogTitle>
                   <DialogDescription>
