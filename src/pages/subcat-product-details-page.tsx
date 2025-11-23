@@ -425,7 +425,7 @@ const SubcatProductDetailsPage = () => {
         </motion.div>
 
         <div>
-          <ProductCard slug={product?.category_id?.slug} />
+          <ProductCard slug={product!.category_id!.slug!} />
         </div>
       </div>
     </div>

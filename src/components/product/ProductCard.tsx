@@ -3,8 +3,11 @@ import { Check, Image, Package, X } from "lucide-react";
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
 import { Skeleton } from "../ui/skeleton";
+interface ProductCardProps {
+  slug: string;
+}
 
-const ProductCard = ({ slug }) => {
+const ProductCard = ({ slug }: ProductCardProps) => {
   const { data, isLoading, isError, error } =
     useGetProductsBySubcategorySlugQuery(slug);
 
@@ -40,7 +43,11 @@ const ProductCard = ({ slug }) => {
       <div className="w-full py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
-            Error loading products: {error?.message || "Something went wrong"}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {"message" in (error as any)
+              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (error as any).message
+              : "Something went wrong"}
           </div>
         </div>
       </div>
@@ -48,8 +55,6 @@ const ProductCard = ({ slug }) => {
   }
 
   const products = data?.data?.products || [];
-  const subcategoryName =
-    data?.data?.data?.subcategory?.name || "this category";
 
   if (products.length === 0) {
     return (

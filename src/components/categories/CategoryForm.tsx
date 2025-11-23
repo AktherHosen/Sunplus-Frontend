@@ -47,7 +47,7 @@ export default function CategoryForm({
 
   const isEditMode = Boolean(category);
 
-  const { data: categories, isLoading } = useGetAllCategoriesQuery(undefined);
+  const { data: categories } = useGetAllCategoriesQuery(undefined);
   const [addCategory, { isLoading: isAdding }] = useAddCategoryMutation();
   const [updateCategory, { isLoading: isUpdating }] =
     useUpdateCategoryMutation();
