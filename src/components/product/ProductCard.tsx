@@ -81,12 +81,20 @@ const ProductCard = ({ slug }) => {
             </div>
 
             {/* Product Info */}
-            <div className="py-2 px-4 flex-1 flex flex-col">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 pr-4">
-                  {product.name}
-                </h3>
+            <div className="py-2 px-4 flex-1 flex flex-col justify-between">
+              <h3 className="text-sm sm:text-lg font-semibold text-gray-900 pr-4">
+                {product.name}
+              </h3>
 
+              {/* Price Section */}
+              <div className="flex items-center justify-between border-t border-gray-100">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xl sm:text-2xl font-bold text-primary">
+                    <span className="text-lg">৳</span>
+                    {product.price.toFixed(2)}
+                  </span>
+                  <span className="text-sm text-gray-500">each</span>
+                </div>
                 <div
                   className={`flex items-center gap-1.5 text-sm font-medium whitespace-nowrap ${
                     Number(product.quantity) > 0
@@ -105,17 +113,6 @@ const ProductCard = ({ slug }) => {
                       <span>Out of Stock</span>
                     </Badge>
                   )}
-                </div>
-              </div>
-
-              {/* Price Section */}
-              <div className="flex items-center justify-between border-t border-gray-100">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold text-primary">
-                    <span className="text-lg">৳</span>
-                    {product.price.toFixed(2)}
-                  </span>
-                  <span className="text-sm text-gray-500">each</span>
                 </div>
               </div>
             </div>

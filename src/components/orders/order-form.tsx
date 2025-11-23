@@ -98,7 +98,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
       {selectedVariants && (selectedVariants.watt || selectedVariants.size) && (
         <div className="p-3 bg-muted/50 rounded-lg border">
           <label className="text-sm font-medium text-gray-700 mb-2 block">
-            Selected Options
+            Selected Variant
           </label>
           <div className="flex flex-wrap gap-2">
             {selectedVariants.watt && (

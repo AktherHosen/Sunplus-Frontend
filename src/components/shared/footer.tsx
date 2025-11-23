@@ -47,7 +47,6 @@ const Footer = () => {
       <div className="container mx-auto px-4 lg:px-0 flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-accent-foreground/10 pb-4 mb-6">
         {/* Company Info */}
         <div className="text-center sm:text-left max-w-4xl">
-          <h2 className="text-xl text-primary uppercase font-bold mb-2">SunPlus Group</h2>
           <p className="text-xs sm:text-sm text-accent-foreground/80">
             Leading provider of high-quality electrical and electronic
             solutions, delivering innovation, safety, and reliability across
