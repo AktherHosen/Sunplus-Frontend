@@ -13,6 +13,8 @@ export interface IProduct {
   price: number;
   quantity?: number;
   image?: string;
+  image2?: string;
+  image3?: string;
   descriptions?: string;
   slug?: string;
   category_id?: ICategory | null;

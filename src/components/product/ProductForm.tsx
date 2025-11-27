@@ -37,14 +37,22 @@ export const ProductForm = ({
   const [quantity, setQuantity] = useState<number>(0);
   const [category, setCategory] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
+
+  // Three images
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile2, setImageFile2] = useState<File | null>(null);
+  const [imagePreview2, setImagePreview2] = useState<string | null>(null);
+  const [imageFile3, setImageFile3] = useState<File | null>(null);
+  const [imagePreview3, setImagePreview3] = useState<string | null>(null);
+
+  // Meta fields
   const [metaFields, setMetaFields] = useState<MetaField[]>([
     { key: "", value: "" },
   ]);
+
   const [saving, setSaving] = useState(false);
 
-  // Load form when editing
   useEffect(() => {
     if (editingProduct) {
       setName(editingProduct.name || "");
@@ -53,7 +61,6 @@ export const ProductForm = ({
       setQuantity(editingProduct.quantity || 0);
       setCategory(editingProduct.category_id?._id || null);
 
-      // Parse subcategory
       if (Array.isArray(editingProduct.subcategories)) {
         setSubcategory(editingProduct.subcategories?.[0]?._id || "");
       } else if (typeof editingProduct.subcategories === "string") {
@@ -64,13 +71,20 @@ export const ProductForm = ({
         setSubcategory("");
       }
 
-      setImageFile(null);
-      setImagePreview(
-        editingProduct.image
-          ? `${import.meta.env.VITE_API_URL}${editingProduct.image}`
-          : null
+      const api = import.meta.env.VITE_API_URL;
+      setImagePreview(editingProduct.image ? api + editingProduct.image : null);
+      setImagePreview2(
+        editingProduct.image2 ? api + editingProduct.image2 : null
+      );
+      setImagePreview3(
+        editingProduct.image3 ? api + editingProduct.image3 : null
       );
 
+      setImageFile(null);
+      setImageFile2(null);
+      setImageFile3(null);
+
+      // Load meta fields
       if (editingProduct.meta && typeof editingProduct.meta === "object") {
         const metaArray = Object.entries(editingProduct.meta).map(
           ([key, value]) => ({ key, value: String(value) })
@@ -91,26 +105,39 @@ export const ProductForm = ({
     setQuantity(0);
     setCategory(null);
     setSubcategory(null);
+
     setImageFile(null);
     setImagePreview(null);
+
+    setImageFile2(null);
+    setImagePreview2(null);
+
+    setImageFile3(null);
+    setImagePreview3(null);
+
     setMetaFields([{ key: "", value: "" }]);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setterFile: (f: File | null) => void,
+    setterPreview: (s: string | null) => void
+  ) => {
+    const f = e.target.files?.[0];
+    if (f) {
+      setterFile(f);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      reader.onloadend = () => setterPreview(reader.result as string);
+      reader.readAsDataURL(f);
     }
   };
 
-  const handleRemoveImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
+  const handleRemoveImage = (
+    setterFile: (f: File | null) => void,
+    setterPreview: (s: string | null) => void
+  ) => {
+    setterFile(null);
+    setterPreview(null);
   };
 
   const handleAddMetaField = () =>
@@ -130,9 +157,7 @@ export const ProductForm = ({
   };
 
   const handleSubmit = async () => {
-    if (!name.trim() || !price || !category) {
-      return;
-    }
+    if (!name.trim() || !price || !category) return;
 
     const metaObject = metaFields.reduce((acc, { key, value }) => {
       if (key.trim()) acc[key.trim()] = value.trim();
@@ -146,7 +171,11 @@ export const ProductForm = ({
     formData.append("quantity", quantity.toString());
     formData.append("category_id", category);
     if (subcategory) formData.append("subcategories", subcategory);
+
     if (imageFile) formData.append("image", imageFile);
+    if (imageFile2) formData.append("image2", imageFile2);
+    if (imageFile3) formData.append("image3", imageFile3);
+
     formData.append("meta", JSON.stringify(metaObject));
 
     try {
@@ -158,168 +187,153 @@ export const ProductForm = ({
     }
   };
 
+  const renderImageUpload = (
+    preview: string | null,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    remove: () => void,
+    label: string
+  ) => (
+    <Card className="border-none shadow-none py-0">
+      <CardContent className="p-0">
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">{label}</Label>
+          <div className="flex flex-col sm:flex-row gap-4 items-start">
+            {preview ? (
+              <div className="relative group">
+                <img
+                  src={preview}
+                  className="w-32 h-32 object-cover rounded-lg border"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-2 -right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100"
+                  onClick={remove}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="w-32 h-32 rounded-lg border-2 border-dashed flex items-center justify-center">
+                <ImageIcon className="w-10 h-10 text-muted-foreground" />
+              </div>
+            )}
+
+            <div className="flex-1 space-y-2">
+              <Label className="flex items-center justify-center gap-2 h-11 px-4 rounded-md border-2 border-dashed bg-muted/50 hover:bg-muted cursor-pointer">
+                <Upload className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {preview ? "Change Image" : "Upload Image"}
+                </span>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={onChange}
+                />
+              </Label>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
-    <div className="space-y-2">
-      {/* Basic Information Card */}
+    <div className="space-y-6">
+      {/* Basic Inputs */}
       <Card className="border-none shadow-none py-0">
         <CardContent className="p-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Name */}
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="name" className="text-sm font-medium">
-                Product Name <span className="text-destructive">*</span>
-              </Label>
+              <Label>Product Name *</Label>
               <Input
-                id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g., iPhone 15 Pro Max"
-                className="h-11"
+                placeholder="iPhone 15 Pro Max"
               />
             </div>
 
-            {/* Description */}
             <div className="space-y-2 row-span-2">
-              <Label htmlFor="descriptions" className="text-sm font-medium">
-                Description
-              </Label>
+              <Label>Description</Label>
               <Textarea
-                id="descriptions"
                 value={descriptions}
                 onChange={(e) => setDescriptions(e.target.value)}
-                placeholder="Enter product descriptions..."
-                className="h-fit min-h-[125px] resize-none"
               />
             </div>
 
             <div className="space-y-2">
-              {/* Price */}
-              <Label htmlFor="price" className="text-sm font-medium">
-                Price (৳) <span className="text-destructive">*</span>
-              </Label>
+              <Label>Price *</Label>
               <Input
-                id="price"
                 type="number"
                 value={price || ""}
                 onChange={(e) => setPrice(Number(e.target.value))}
-                placeholder="0.00"
-                className="h-11"
-                min="0"
-                step="0.01"
               />
-              {/* Quantity */}
-              <Label htmlFor="quantity" className="text-sm font-medium">
-                Stock Quantity
-              </Label>
+              <Label>Quantity</Label>
               <Input
-                id="quantity"
                 type="number"
                 value={quantity || ""}
                 onChange={(e) => setQuantity(Number(e.target.value))}
-                placeholder="0"
-                className="h-11"
-                min="0"
               />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-2 gap-4">
-        {/* Image Upload Card */}
-        <Card className="border-none shadow-none py-0">
-          <CardContent className="p-0">
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">Product Image</Label>
-              <div className="flex flex-col sm:flex-row gap-4 items-start">
-                {/* Image Preview */}
-                {imagePreview ? (
-                  <div className="relative group">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="w-32 h-32 object-cover rounded-lg border-2 border-border"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute -top-2 -right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={handleRemoveImage}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="w-32 h-32 rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted/50">
-                    <ImageIcon className="w-10 h-10 text-muted-foreground" />
-                  </div>
-                )}
+      {/* Three Image Uploads */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {renderImageUpload(
+          imagePreview,
+          (e) => handleImageChange(e, setImageFile, setImagePreview),
+          () => handleRemoveImage(setImageFile, setImagePreview),
+          "Product Image 1"
+        )}
+        {renderImageUpload(
+          imagePreview2,
+          (e) => handleImageChange(e, setImageFile2, setImagePreview2),
+          () => handleRemoveImage(setImageFile2, setImagePreview2),
+          "Product Image 2"
+        )}
+        {renderImageUpload(
+          imagePreview3,
+          (e) => handleImageChange(e, setImageFile3, setImagePreview3),
+          () => handleRemoveImage(setImageFile3, setImagePreview3),
+          "Product Image 3"
+        )}
+      </div>
 
-                {/* Upload Button */}
-                <div className="flex-1 space-y-2">
-                  <Label
-                    htmlFor="image"
-                    className="flex items-center justify-center gap-2 h-11 px-4 rounded-md border-2 border-dashed border-border bg-muted/50 hover:bg-muted cursor-pointer transition-colors"
-                  >
-                    <Upload className="w-4 h-4" />
-                    <span className="text-sm font-medium">
-                      {imagePreview ? "Change Image" : "Upload Image"}
-                    </span>
-                  </Label>
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    PNG, JPG or WEBP (Max 5MB)
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        {/* Category */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">
-            Category <span className="text-destructive">*</span>
-          </Label>
+      {/* Category & Subcategory */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>Category *</Label>
           <Select onValueChange={setCategory} value={category || ""}>
-            <SelectTrigger className="w-full h-11">
+            <SelectTrigger className="h-11">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
-            <SelectContent
-              position="popper"
-              className="w-[var(--radix-select-trigger-width)]"
-            >
-              {categories.map((cat: any) => (
+            <SelectContent>
+              {categories.map((cat) => (
                 <SelectItem key={cat._id} value={cat._id}>
                   {cat.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-
-          {/* Subcategory */}
-          <Label className="text-sm font-medium">Subcategory</Label>
+        </div>
+        <div>
+          <Label>Subcategory</Label>
           <Select
             onValueChange={setSubcategory}
             value={subcategory || ""}
             disabled={!category}
           >
-            <SelectTrigger className="w-full h-11">
-              <SelectValue placeholder="Select subcategory (optional)" />
+            <SelectTrigger className="h-11">
+              <SelectValue placeholder="Select subcategory" />
             </SelectTrigger>
-            <SelectContent
-              position="popper"
-              className="w-[var(--radix-select-trigger-width)]"
-            >
+            <SelectContent>
               {categories
-                ?.find((c: any) => c._id === category)
-                ?.subcategories?.map((sub: any) => (
+                ?.find((c) => c._id === category)
+                ?.subcategories?.map((sub) => (
                   <SelectItem key={sub._id} value={sub._id}>
                     {sub.name}
                   </SelectItem>
@@ -329,54 +343,40 @@ export const ProductForm = ({
         </div>
       </div>
 
-      {/* Meta Fields Card */}
+      {/* Meta Fields */}
       <Card className="border-none shadow-none">
         <CardContent className="p-0">
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm font-medium">
-                Additional Attributes
-              </Label>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleAddMetaField}
-                className="h-9"
-              >
+            <div className="flex justify-between">
+              <Label>Additional Attributes</Label>
+              <Button variant="outline" size="sm" onClick={handleAddMetaField}>
                 + Add Field
               </Button>
             </div>
-
             <div className="space-y-3">
-              {metaFields.map((field, index) => (
+              {metaFields.map((f, i) => (
                 <div
-                  key={index}
+                  key={i}
                   className="flex flex-col sm:flex-row gap-3 p-3 rounded-lg border bg-muted/30"
                 >
                   <Input
-                    placeholder="Attribute name (e.g., Brand)"
-                    value={field.key}
-                    onChange={(e) =>
-                      handleMetaChange(index, "key", e.target.value)
-                    }
-                    className="h-10"
+                    placeholder="Attribute (Brand)"
+                    value={f.key}
+                    onChange={(e) => handleMetaChange(i, "key", e.target.value)}
                   />
                   <Input
-                    placeholder="Value (e.g., Apple)"
-                    value={field.value}
+                    placeholder="Value (Apple)"
+                    value={f.value}
                     onChange={(e) =>
-                      handleMetaChange(index, "value", e.target.value)
+                      handleMetaChange(i, "value", e.target.value)
                     }
-                    className="h-10"
                   />
                   {metaFields.length > 1 && (
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-10 w-10 shrink-0 hover:bg-destructive/10 hover:text-destructive"
-                      onClick={() => handleRemoveMetaField(index)}
+                      onClick={() => handleRemoveMetaField(i)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -389,32 +389,19 @@ export const ProductForm = ({
       </Card>
 
       {/* Action Buttons */}
-      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t">
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          className="sm:w-auto h-11 px-8"
-          onClick={onCancel}
-          disabled={saving}
-        >
+      <div className="flex justify-end gap-3 pt-4 border-t">
+        <Button variant="outline" onClick={onCancel} disabled={saving}>
           Cancel
         </Button>
         <Button
-          size="lg"
-          className="sm:w-auto h-11 px-8"
           onClick={handleSubmit}
           disabled={saving || !name.trim() || !price || !category}
         >
-          {saving ? (
-            <>
-              <span className="animate-pulse">Saving...</span>
-            </>
-          ) : editingProduct ? (
-            "Update Product"
-          ) : (
-            "Create Product"
-          )}
+          {saving
+            ? "Saving..."
+            : editingProduct
+            ? "Update Product"
+            : "Create Product"}
         </Button>
       </div>
     </div>

@@ -60,13 +60,18 @@ const SubcatProductDetailsPage = () => {
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
 
-  const galleryImages = product.image ? [product.image] : [];
+  const galleryImages = [
+    product?.image,
+    product?.image2,
+    product?.image3,
+  ].filter(Boolean);
 
   // Build selected variants object
   const selectedVariants: { watt?: string; size?: string } = {};
   if (selectedWatt) selectedVariants.watt = selectedWatt;
   if (selectedSize) selectedVariants.size = selectedSize;
 
+  console.log(galleryImages);
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       {/* --- Product Section --- */}
