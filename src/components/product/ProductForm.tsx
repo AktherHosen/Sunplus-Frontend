@@ -333,7 +333,7 @@ export const ProductForm = ({
             <SelectContent>
               {categories
                 ?.find((c) => c._id === category)
-                ?.subcategories?.map((sub) => (
+                ?.subcategories?.map((sub: any) => (
                   <SelectItem key={sub._id} value={sub._id}>
                     {sub.name}
                   </SelectItem>

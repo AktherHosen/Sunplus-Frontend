@@ -45,8 +45,12 @@ const SubcatProductDetailsPage = () => {
   const sizes =
     product?.meta?.size?.split(",").map((s: string) => s.trim()) || [];
 
+  const colors =
+    product?.meta?.color?.split(",").map((c: string) => c.trim()) || [];
+
   const [selectedWatt, setSelectedWatt] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("");
 
   useEffect(() => {
     if (watts.length > 0 && !selectedWatt) {
@@ -55,7 +59,8 @@ const SubcatProductDetailsPage = () => {
     if (sizes.length > 0 && !selectedSize) {
       setSelectedSize(sizes[0]);
     }
-  }, [product, watts.length, sizes.length]);
+    if (colors.length > 0 && !selectedColor) setSelectedColor(colors[0]);
+  }, [product, watts.length, sizes.length, colors.length]);
 
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
@@ -66,12 +71,15 @@ const SubcatProductDetailsPage = () => {
     product?.image3,
   ].filter(Boolean);
 
-  // Build selected variants object
-  const selectedVariants: { watt?: string; size?: string } = {};
+  const selectedVariants: {
+    color?: string;
+    watt?: string;
+    size?: string;
+  } = {};
   if (selectedWatt) selectedVariants.watt = selectedWatt;
   if (selectedSize) selectedVariants.size = selectedSize;
+  if (selectedColor) selectedVariants.color = selectedColor;
 
-  console.log(galleryImages);
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       {/* --- Product Section --- */}
@@ -208,6 +216,33 @@ const SubcatProductDetailsPage = () => {
             </div>
           )}
 
+          {colors.length > 0 && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Select Color
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {colors.map((c: string, idx: number) => {
+                  const isActive = selectedColor === c;
+                  return (
+                    <Badge
+                      key={idx}
+                      onClick={() => setSelectedColor(c)}
+                      className={cn(
+                        "text-sm font-medium capitalize cursor-pointer transition-all",
+                        isActive
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      )}
+                    >
+                      {c}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Stock + Category Info */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-3 border-y">
             <div>
@@ -276,7 +311,11 @@ const SubcatProductDetailsPage = () => {
                   productId={product._id}
                   productName={product.name}
                   maxQuantity={Number(product.quantity)}
-                  selectedVariants={selectedVariants}
+                  selectedVariants={{
+                    watt: selectedWatt || undefined,
+                    size: selectedSize || undefined,
+                    color: selectedColor || undefined,
+                  }}
                   onSuccess={() => setIsDialogOpen(false)}
                 />
               </DialogContent>
@@ -430,7 +469,11 @@ const SubcatProductDetailsPage = () => {
         </motion.div>
 
         <div>
-          <ProductCard slug={product!.category_id!.slug!} />
+          <ProductCard
+            slug={
+              product?.subcategories?.slug || product?.category_id?.slug || ""
+            }
+          />
         </div>
       </div>
     </div>

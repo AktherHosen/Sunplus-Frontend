@@ -12,6 +12,7 @@ interface OrderFormProps {
   selectedVariants?: {
     watt?: string;
     size?: string;
+    color?: string;
   };
   onSuccess?: () => void;
 }
@@ -111,6 +112,12 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
                 <span className="text-muted-foreground">Size:</span>
                 {selectedVariants.size}
+              </div>
+            )}
+            {selectedVariants.color && (
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
+                <span className="text-muted-foreground">Color:</span>
+                {selectedVariants.color}
               </div>
             )}
           </div>
