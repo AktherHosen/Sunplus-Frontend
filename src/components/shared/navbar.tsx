@@ -41,7 +41,7 @@ export default function Navbar() {
 
   const rightMenuItems: MenuItem[] = [
     { title: "Support", href: "/support", popover: true },
-    ...(user ? [] : [{ title: "Login", href: "/login" }]),
+    ...(user ? [] : [{ title: "Message", href: "/chairman-message" }]),
   ];
 
   const allMenuItems: MenuItem[] = [...leftMenuItems, ...rightMenuItems];
@@ -220,24 +220,23 @@ export default function Navbar() {
                         </p>
                         <div className="flex flex-col pl-3 space-y-2 text-sm text-muted-foreground">
                           <a
-                              href="tel:+8801835926605"
-                              className="flex items-center gap-2 hover:text-primary transition"
-                            >
-                              <Phone size={16} /> +880 1835 926 605
-                            </a>
-                            <a
-                              href="mailto:support@sunplus.com"
-                              className="flex items-center gap-2 hover:text-primary transition"
-                            >
-                              <Mail size={16} /> support@sunplusbd.com
-                            </a>
-                            <Link
-                              to="/contact"
-                              className="flex items-center gap-2 hover:text-primary transition"
-                            >
-                              <Headphones size={16} /> Service Centers
-                            </Link>
-                          
+                            href="tel:+8801835926605"
+                            className="flex items-center gap-2 hover:text-primary transition"
+                          >
+                            <Phone size={16} /> +880 1835 926 605
+                          </a>
+                          <a
+                            href="mailto:support@sunplus.com"
+                            className="flex items-center gap-2 hover:text-primary transition"
+                          >
+                            <Mail size={16} /> support@sunplusbd.com
+                          </a>
+                          <Link
+                            to="/contact"
+                            className="flex items-center gap-2 hover:text-primary transition"
+                          >
+                            <Headphones size={16} /> Service Centers
+                          </Link>
                         </div>
                       </div>
                     ) : (
