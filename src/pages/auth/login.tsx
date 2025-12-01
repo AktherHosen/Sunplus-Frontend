@@ -18,9 +18,9 @@ export default function LoginForm() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (err) {
-      console.error(err); 
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -36,10 +36,11 @@ export default function LoginForm() {
         />
       </Helmet>
 
-      <div className="min-h-[90vh] flex flex-col justify-center items-center bg-background px-4">
+      <div className="max-h-[90vh] flex flex-col justify-center items-center bg-background px-4 my-10">
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-sm p-8 bg-background border hover:border-primary transition rounded-lg border-border space-y-6 hover:transition-colors">
+          className="w-full max-w-sm p-8 bg-background border hover:border-primary transition rounded-lg border-border space-y-6 hover:transition-colors"
+        >
           <h2 className="text-2xl font-bold text-center text-foreground">
             Welcome Back
           </h2>
@@ -77,7 +78,8 @@ export default function LoginForm() {
           <Button
             type="submit"
             className="w-full py-2.5 bg-primary text-white font-semibold hover:bg-primary/90 transition-all rounded-lg"
-            disabled={loading}>
+            disabled={loading}
+          >
             {loading ? "Logging in..." : "Login"}
           </Button>
         </form>
