@@ -250,38 +250,6 @@ export default function Navbar() {
                       </Link>
                     )
                   )}
-
-                {/* Mobile User Section */}
-                {user ? (
-                  <div className="mt-6 flex flex-col gap-2">
-                    {user.role === "SUPER_ADMIN" && (
-                      <Link
-                        to="/dashboard"
-                        className="hover:text-primary"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Dashboard
-                      </Link>
-                    )}
-                    <button
-                      className="hover:text-primary text-left"
-                      onClick={() => {
-                        logout();
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      Logout
-                    </button>
-                  </div>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="hover:text-primary mt-6"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                )}
               </nav>
             </SheetContent>
           </Sheet>
