@@ -1,103 +1,121 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Quote } from "lucide-react";
 import { motion } from "framer-motion";
+import { Quote } from "lucide-react";
 
 export default function ChairmanMessagePage() {
+  const membersRow1 = [
+    {
+      name: "Nur Mohammad Modhu",
+      role: "Managing Director (MD)",
+      message:
+        "Our commitment to excellence drives SunPlus forward as we continue to innovate, grow, and deliver sustainable value.",
+    },
+  ];
+
+  const membersRow2 = [
+    {
+      name: "Anowar Hossain Manik",
+      role: "Deputy Managing Director (DMD)",
+      message: "Working together to build a stronger, smarter organization.",
+    },
+    {
+      name: "Shadat Hossain Sagor",
+      role: "Director",
+      message: "Dedicated to ensuring progress with integrity and vision.",
+    },
+    {
+      name: "Mohiuddin Turjo",
+      role: "General Manager (GM)",
+      message: "Leading teams to achieve operational excellence every day.",
+    },
+  ];
+
+  const membersRow3 = [
+    {
+      name: "Jane Alam",
+      role: "Senior Manager",
+      message: "Focused on delivering consistent quality and performance.",
+    },
+    {
+      name: "Minar Mishu",
+      role: "Senior HR Officer",
+      message: "Committed to building a motivated and empowered workforce.",
+    },
+  ];
+
+  const CardBox = ({ person, index }: any) => (
+    <motion.div
+      key={index}
+      initial={{ opacity: 0, y: 20, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, delay: index * 0.08 }}
+      className="w-full"
+    >
+      <Card className="rounded-xl py-0 border bg-white border-border shadow-none transition-all duration-300">
+        <CardContent className="p-6 flex flex-col items-center text-center space-y-3">
+          <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10">
+            <Quote className="text-primary w-6 h-6" />
+          </div>
+
+          <h2 className="text-lg font-semibold text-gray-900">{person.name}</h2>
+
+          <p className="text-primary font-medium text-sm">{person.role}</p>
+
+          {person.message && (
+            <p className="text-gray-600 text-sm leading-relaxed max-w-xs">
+              {person.message}
+            </p>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+
   return (
-    <section className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8">
+    <section className="min-h-screen bg-background py-14 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header Section */}
+        {/* Header */}
         <motion.div
-          className="text-center space-y-4 mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          className="text-center space-y-3 mb-12"
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.7 }}
         >
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
-            Message from Our{" "}
-            <span className="text-primary">Chairman</span>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            Leadership Team
           </h1>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            A word of inspiration and vision from our Chairman at SunPlus.
-            Empowering innovation, integrity, and excellence in everything we do.
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            The visionaries guiding{" "}
+            <span className="text-primary font-semibold">SunPlus</span> Group
+            toward innovation and excellence.
           </p>
         </motion.div>
 
-        {/* Chairman Card */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <Card className="overflow-hidden border-0  bg-white/90 backdrop-blur-sm rounded-3xl">
-            <div className="grid md:grid-cols-2 gap-0">
-              {/* Chairman Image */}
-              <motion.div
-                className="relative"
-                initial={{ x: -50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.8 }}
-              >
-                <img
-                  src="/images/chairman.jpg"
-                  alt="Chairman"
-                  className="h-full w-full object-cover rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none"></div>
-              </motion.div>
+        {/* Tree Layout */}
+        <div className="space-y-14">
+          {/* Row 1 */}
+          <div className="grid grid-cols-1 place-items-center">
+            {membersRow1.map((person, index) => (
+              <div className="w-full max-w-md" key={index}>
+                <CardBox person={person} index={index} />
+              </div>
+            ))}
+          </div>
 
-              {/* Message Content */}
-              <CardContent className="flex flex-col justify-center p-10 md:p-12 space-y-6">
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="flex items-center gap-3"
-                >
-                  <Quote className="text-primary w-6 h-6" />
-                  <h2 className="text-2xl font-semibold text-gray-800">
-                    A Vision for Tomorrow
-                  </h2>
-                </motion.div>
+          {/* Row 2 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {membersRow2.map((person, index) => (
+              <CardBox person={person} index={index} key={index} />
+            ))}
+          </div>
 
-                <Separator className="bg-primary/20" />
-
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="space-y-4 text-gray-600 text-base leading-relaxed"
-                >
-                  <p>
-                    At <span className="font-semibold text-primary">SunPlus</span>, our journey has
-                    always been about more than technology — it’s about transforming
-                    lives through innovation and sustainable progress. We strive to
-                    deliver excellence that empowers communities and creates lasting
-                    impact across generations.
-                  </p>
-                  <p>
-                    As we move forward, our mission remains clear — to be a global
-                    leader in energy-efficient and future-ready electrical solutions,
-                    built upon trust, quality, and human values.
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                  className="pt-6"
-                >
-                  <h3 className="text-lg font-bold text-gray-800">
-                    Engr. Md. Akther Hosen
-                  </h3>
-                  <p className="text-sm text-gray-500">Chairman, SunPlus Group</p>
-                </motion.div>
-              </CardContent>
-            </div>
-          </Card>
-        </motion.div>
+          {/* Row 3 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 place-content-center justify-center max-w-3xl mx-auto">
+            {membersRow3.map((person, index) => (
+              <CardBox person={person} index={index} key={index} />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
