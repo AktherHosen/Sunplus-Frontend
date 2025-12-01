@@ -51,24 +51,8 @@ export default function Navbar() {
       <div className="container mx-auto px-4 lg:px-0 py-2.5">
         {/* Desktop Navbar */}
         <div className="hidden md:flex items-center justify-between w-full">
-          {/* Left Menu */}
-          <NavigationMenu>
-            <NavigationMenuList className="flex gap-x-6">
-              {leftMenuItems.map((item) => (
-                <NavigationMenuItem key={item.title}>
-                  <NavigationMenuLink
-                    asChild
-                    className="uppercase font-semibold hover:text-primary transition-colors hover:bg-transparent"
-                  >
-                    <Link to={item.href}>{item.title}</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
-
           {/* Center Logo */}
-          <div className="flex-1 flex justify-center items-center h-12">
+          <div className="flex justify-center items-center h-12">
             <Link to="/" aria-label="Go to homepage">
               <Avatar className="h-full w-full">
                 <AvatarImage
