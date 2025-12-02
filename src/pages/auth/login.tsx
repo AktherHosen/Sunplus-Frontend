@@ -12,15 +12,19 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
       await login(email, password);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -36,50 +40,50 @@ export default function LoginForm() {
         />
       </Helmet>
 
-      <div className="max-h-[90vh] flex flex-col justify-center items-center bg-background px-4 my-10">
+      <div className="min-h-[70vh] flex flex-col justify-center items-center px-4 py-12 bg-background">
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-sm p-8 bg-background border hover:border-primary transition rounded-lg border-border space-y-6 hover:transition-colors"
+          className="w-full max-w-md p-8 bg-card border border-border rounded-2xl space-y-6"
         >
-          <h2 className="text-2xl font-bold text-center text-foreground">
+          <h2 className="text-3xl font-bold text-center text-foreground">
             Welcome Back
           </h2>
+          <p className="text-center text-sm text-muted-foreground">
+            Login to continue to your dashboard
+          </p>
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email" className="font-medium">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-              className="focus:ring-primary focus:border-primary rounded-md"
-            />
+          {error && (
+            <div className="text-red-600 text-sm font-medium text-center">
+              {error}
+            </div>
+          )}
+
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col space-y-1">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div className="flex flex-col space-y-1">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="********"
+                required
+              />
+            </div>
           </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="password" className="font-medium">
-              Password
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="********"
-              required
-              className="focus:ring-primary focus:border-primary rounded-md"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full py-2.5 bg-primary text-white font-semibold hover:bg-primary/90 transition-all rounded-lg"
-            disabled={loading}
-          >
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </Button>
         </form>
