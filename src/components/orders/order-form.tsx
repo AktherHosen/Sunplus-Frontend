@@ -44,9 +44,12 @@ const OrderForm: React.FC<OrderFormProps> = ({
     const formData = new FormData(e.currentTarget);
     const order = Object.fromEntries(formData.entries());
 
-    // Extract the variant value (watt or size)
-    const variant =
-      selectedVariants?.watt || selectedVariants?.size || undefined;
+    const variantArray = [
+      selectedVariants?.watt,
+      selectedVariants?.size,
+      selectedVariants?.color,
+    ].filter(Boolean);
+    const variant = variantArray.length > 0 ? variantArray.join(", ") : undefined;
 
     createOrder({
       item: { _id: productId } as any,
