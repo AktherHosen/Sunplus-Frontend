@@ -148,7 +148,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 lg:px-0 text-center text-xs md:text-sm text-accent-foreground/60">
         Made with <span className="text-primary">❤️</span> by{" "}
         <a
-          href="http://github.com/aktherhosen"
+          href="https://www.aktherhosen.com"
           target="_blank"
           rel="noopener noreferrer"
           className="font-medium hover:underline hover:text-primary"
