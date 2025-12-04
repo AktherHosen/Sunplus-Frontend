@@ -1,13 +1,6 @@
 import logo from "@/assets/logo.svg";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -136,43 +129,6 @@ export default function Navbar() {
                 )}
               </NavigationMenuList>
             </NavigationMenu>
-
-            {/* User Avatar */}
-            {user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="focus:outline-none">
-                    <Avatar className="w-10 h-10 rounded-full border border-border shadow-sm">
-                      <AvatarFallback className="bg-primary text-white flex items-center justify-center rounded-full">
-                        {user.name[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className=" bg-background border border-border shadow-lg rounded-lg p-2">
-                  <div className="px-2 py-1 text-sm text-muted-foreground">
-                    <p className="font-semibold text-foreground truncate">
-                      {user.name}
-                    </p>
-                    <p className="text-xs">{user.email}</p>
-                  </div>
-                  <DropdownMenuSeparator className="my-1" />
-                  {user.role === "SUPER_ADMIN" && (
-                    <DropdownMenuItem className="hover:bg-primary/10 rounded-md px-2 py-1">
-                      <Link to="/dashboard" className="w-full block">
-                        Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem
-                    onClick={logout}
-                    className="hover:bg-red-500/10 text-red-600 rounded-md px-2 py-1"
-                  >
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
           </div>
         </div>
 
