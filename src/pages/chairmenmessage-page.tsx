@@ -50,7 +50,7 @@ export default function ChairmanMessagePage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
     >
-      <Card className="rounded-2xl border-border shadow-none bg-white/60 backdrop-blur  hover:shadow-lg transition-all duration-300 p-0">
+      <Card className="rounded-2xl border-border shadow-none bg-white/60 backdrop-blur  hover:shadow-sm transition-all duration-300 p-0">
         <CardContent className="p-6 flex flex-col items-center text-center space-y-3">
           <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 shadow-sm">
             <Quote className="text-primary w-6 h-6" />
@@ -79,15 +79,15 @@ export default function ChairmanMessagePage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
-          className="text-center space-y-4 mb-12"
+          className="text-center space-y-2 mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <h1 className="text-2xl md:text-4xl font-extrabold text-primary tracking-tight drop-shadow-sm">
+          <h1 className="text-2xl md:text-4xl font-extrabold text-primary tracking-tight ">
             Leadership Team
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-muted-foreground text-sm max-w-2xl mx-auto leading-relaxed">
             The visionaries guiding{" "}
             <span className="text-primary font-semibold">SunPlus</span> Group
             toward innovation and excellence.
