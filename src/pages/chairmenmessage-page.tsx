@@ -1,11 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { motion } from "framer-motion";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, Quote } from "lucide-react";
-import { useState } from "react";
 
 export default function ChairmanMessagePage() {
-  const [imageError, setImageError] = useState<{ [key: string]: boolean }>({});
-
   const membersRow1 = [
     {
       name: "Nur Mohammad Modhu",
@@ -15,12 +12,12 @@ export default function ChairmanMessagePage() {
         "Our commitment to excellence drives SunPlus forward as we continue to innovate, grow, and deliver sustainable value.",
       activitiesTitle: "Key Positions & Activities",
       activities: [
-        "Managing Director – Sunplus Electrical Equipments Manufacturing Company Ltd.",
+        "Chairmen – MS Sunplus Electric Company Ltd.",
         "Co-Chairman – Electric and Electronics Merchandise Standing Committee (FBCCI)",
         "Co-Chairman – Bangladesh Kachamal Aratdar Malik Samity Standing Committee (FBCCI)",
         "Associate Member – Chattogram Chamber of Commerce and Industries",
         "Vice President – Bangladesh Dokan Malik Samity Central Committee, Dhaka",
-        "Ex-President – Chattogram Boiddutic Sorongham Bebosayee Group",
+        "Ex-President – Chattogram Boiddutic Soronghjam Bebosayee Group",
         "Director – Sea Food Export Buying Agent's Association of Bangladesh",
         "Member – Bangladesh Electrical Association, Nawabpur Road, Dhaka",
         "Vice President – Bangladesh Dokan Malik Samity, Chattogram City",
@@ -70,134 +67,87 @@ export default function ChairmanMessagePage() {
     },
   ];
 
-  const CardBox = ({ person, index, hasImage }: any) => (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.15 }}
-    >
-      <Card className="group h-full hover:shadow-lg border py-0 border-border overflow-hidden relative bg-background transition-all duration-500">
-        {/* Image Section */}
-        {hasImage && person.image && (
-          <div className="relative w-full overflow-hidden bg-muted  h-48 sm:h-56 md:h-64">
-            {!imageError[person.name] ? (
-              <img
-                src={person.image}
-                alt={person.name}
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                onError={() =>
-                  setImageError({ ...imageError, [person.name]: true })
-                }
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-primary/10">
-                <div className="text-center">
-                  <div className="w-20 h-20 mx-auto rounded-full bg-primary flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-lg">
-                    {person.name.charAt(0)}
-                  </div>
-                </div>
-              </div>
-            )}
+  const CardBox = ({ person, hasImage }: any) => (
+    <Card className="border shadow-sm hover:shadow-md transition bg-white pt-0">
+      {hasImage && (
+        <div className="relative h-52 w-full overflow-hidden bg-muted">
+          <Avatar className="w-full h-full rounded-none">
+            <AvatarImage
+              loading="lazy"
+              src={person.image}
+              className="object-cover w-full h-full"
+            />
+            <AvatarFallback className="text-4xl">
+              {person.name.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+        </div>
+      )}
+
+      <CardHeader className="pt-4 pb-2">
+        <CardTitle className="text-xl font-bold">{person.name}</CardTitle>
+        <div className="flex items-center gap-2 font-semibold text-primary">
+          <Briefcase className="w-4 h-4" /> {person.role}
+        </div>
+      </CardHeader>
+
+      <CardContent className="py-0!">
+        {person.activities ? (
+          <>
+            <h4 className="font-semibold mb-2">{person.activitiesTitle}</h4>
+            {/* <ScrollArea className="h-64 pr-2 border rounded-md p-3"> */}
+            <ul className="space-y-2 text-sm">
+              {person.activities.map((item: string, i: number) => (
+                <li key={i} className="flex gap-2">
+                  <span className="text-primary font-bold">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            {/* </ScrollArea> */}
+          </>
+        ) : (
+          <div className="p-4 bg-muted rounded-md relative">
+            <Quote className="absolute top-2 left-2 text-primary/30 w-5 h-5" />
+            <p className="italic pl-6">{person.message}</p>
+            <Quote className="absolute bottom-2 right-2 text-primary/30 w-5 h-5 rotate-180" />
           </div>
         )}
-
-        {/* Content */}
-        <CardContent className="p-4 sm:p-6 flex flex-col">
-          <div className="mb-4 sm:mb-6">
-            <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
-              {person.name}
-            </h3>
-            <div className="flex items-center gap-2 text-primary font-medium">
-              <Briefcase className="w-4 h-4" />
-              <span className="text-sm sm:text-base">{person.role}</span>
-            </div>
-          </div>
-
-          {person.activities ? (
-            <div className="flex-1">
-              <h4 className="text-sm sm:text-base font-semibold text-foreground mb-3 flex items-center gap-2 pb-2 border-b border-border">
-                📋 {person.activitiesTitle}
-              </h4>
-              <ul className="space-y-2 text-sm sm:text-base text-foreground/80 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
-                {person.activities.map((item: string, i: number) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: -15 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    className="flex items-start gap-2 hover:bg-primary/10 p-1 sm:p-2 rounded-md transition-colors duration-200"
-                  >
-                    <span className="text-primary mt-1 font-bold min-w-[6px]">
-                      •
-                    </span>
-                    <span>{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          ) : person.message ? (
-            <div className="flex-1">
-              <div className="relative p-4 sm:p-6 rounded-md bg-muted">
-                <Quote className="absolute -top-1 -left-1 w-6 h-6 text-primary/30" />
-                <p className="text-sm sm:text-base italic text-foreground/90 pl-4 sm:pl-6">
-                  "{person.message}"
-                </p>
-                <Quote className="absolute -bottom-1 -right-1 w-6 h-6 text-primary/30 rotate-180" />
-              </div>
-            </div>
-          ) : null}
-        </CardContent>
-      </Card>
-    </motion.div>
+      </CardContent>
+    </Card>
   );
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-primary to-primary/80 text-white">
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-extrabold"
-          >
-            Leadership Team
-          </motion.h1>
-          <p className="mt-4 text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto text-white/90">
-            The visionaries guiding{" "}
-            <span className="font-bold">SunPlus Group</span> toward innovation
-            and excellence.
-          </p>
-        </div>
+      <div className="bg-primary/90 text-white py-16 text-center">
+        <h1 className="text-4xl font-extrabold tracking-wide">
+          Leadership Team
+        </h1>
+        <p className="text-lg mt-2">
+          The visionaries guiding{" "}
+          <span className="font-bold">SunPlus Group</span>
+        </p>
       </div>
 
-      {/* Leadership Grids */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 space-y-12">
-        {/* Managing Director */}
-        <div className="max-w-5xl mx-auto">
-          {membersRow1.map((person, index) => (
-            <CardBox key={index} person={person} index={index} hasImage />
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 py-12 space-y-12">
+        {/* MD */}
+        <div className="max-w-4xl mx-auto">
+          <CardBox person={membersRow1[0]} hasImage />
+        </div>
+
+        {/* Row 2 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {membersRow2.map((person, i) => (
+            <CardBox key={i} person={person} hasImage />
           ))}
         </div>
 
-        {/* Deputy MD, Director, GM */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {membersRow2.map((person, index) => (
-            <CardBox key={index} person={person} index={index} hasImage />
-          ))}
-        </div>
-
-        {/* Senior Managers */}
+        {/* Row 3 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {membersRow3.map((person, index) => (
-            <CardBox
-              key={index}
-              person={person}
-              index={index}
-              hasImage={false}
-            />
+          {membersRow3.map((person, i) => (
+            <CardBox key={i} person={person} hasImage={false} />
           ))}
         </div>
       </div>

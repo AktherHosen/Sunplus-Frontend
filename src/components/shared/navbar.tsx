@@ -13,13 +13,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useAuth } from "@/context/auth-context";
 import { Headphones, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
 
   type MenuItem = {
     title: string;
@@ -34,7 +32,7 @@ export default function Navbar() {
 
   const rightMenuItems: MenuItem[] = [
     { title: "Support", href: "/support", popover: true },
-    ...(user ? [] : [{ title: "Message", href: "/chairman-message" }]),
+    { title: "Message", href: "/chairman-message" },
   ];
 
   const allMenuItems: MenuItem[] = [...leftMenuItems, ...rightMenuItems];
