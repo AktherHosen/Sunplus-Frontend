@@ -1,13 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, Quote } from "lucide-react";
-
+import MD from "@/assets/img/md.jpeg"
+import GM from "@/assets/img/gm.jpeg"
+import DMD from "@/assets/img/dmd.jpeg"
+import SM from "@/assets/img/srm.jpeg"
 export default function ChairmanMessagePage() {
   const membersRow1 = [
     {
       name: "Nur Mohammad Modhu",
       role: "Managing Director (MD)",
-      image: "/images/nur-mohammad-modhu.jpg",
+      image: MD,
       message:
         "Our commitment to excellence drives SunPlus forward as we continue to innovate, grow, and deliver sustainable value.",
       activitiesTitle: "Key Positions & Activities",
@@ -37,19 +40,19 @@ export default function ChairmanMessagePage() {
     {
       name: "Anowar Hossain Manik",
       role: "Deputy Managing Director (DMD)",
-      image: "/images/anowar-hossain-manik.jpg",
+      image: DMD,
       message: "Working together to build a stronger, smarter organization.",
     },
     {
       name: "Shadat Hossain Sagor",
       role: "Director",
-      image: "/images/shadat-hossain-sagor.jpg",
+      image: "dummy",
       message: "Dedicated to ensuring progress with integrity and vision.",
     },
     {
       name: "Mohiuddin Turjo",
       role: "General Manager (GM)",
-      image: "/images/mohiuddin-turjo.jpg",
+      image: GM,
       message: "Leading teams to achieve operational excellence every day.",
     },
   ];
@@ -57,32 +60,36 @@ export default function ChairmanMessagePage() {
   const membersRow3 = [
     {
       name: "Jane Alam",
+      image: SM,
       role: "Senior Manager",
       message: "Focused on delivering consistent quality and performance.",
     },
     {
       name: "Minar Mishu",
+      image: 'dummy',
       role: "Senior HR Officer",
       message: "Committed to building a motivated and empowered workforce.",
     },
   ];
 
   const CardBox = ({ person, hasImage }: any) => (
+    
     <Card className="border shadow-sm hover:shadow-md transition bg-white pt-0">
       {hasImage && (
-        <div className="relative h-52 w-full overflow-hidden bg-muted">
-          <Avatar className="w-full h-full rounded-none">
-            <AvatarImage
-              loading="lazy"
-              src={person.image}
-              className="object-cover w-full h-full"
-            />
-            <AvatarFallback className="text-4xl">
-              {person.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-        </div>
-      )}
+  <div className="flex justify-center items-center pt-6">
+    <Avatar className="w-40 h-40 border-4 border-white shadow-lg">
+      <AvatarImage
+        loading="lazy"
+        src={person.image}
+        className=" w-full h-full"
+        alt={person.name}
+      />
+      <AvatarFallback className="text-4xl bg-primary/20">
+        {person.name.charAt(0)}
+      </AvatarFallback>
+    </Avatar>
+  </div>
+)}
 
       <CardHeader className="pt-4 pb-2">
         <CardTitle className="text-xl font-bold">{person.name}</CardTitle>
@@ -147,7 +154,7 @@ export default function ChairmanMessagePage() {
         {/* Row 3 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {membersRow3.map((person, i) => (
-            <CardBox key={i} person={person} hasImage={false} />
+            <CardBox key={i} person={person} hasImage />
           ))}
         </div>
       </div>

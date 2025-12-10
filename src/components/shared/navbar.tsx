@@ -32,7 +32,7 @@ export default function Navbar() {
 
   const rightMenuItems: MenuItem[] = [
     { title: "Support", href: "/support", popover: true },
-    { title: "Message", href: "/chairman-message" },
+    { title: "Management Team", href: "/chairman-message" },
   ];
 
   const allMenuItems: MenuItem[] = [...leftMenuItems, ...rightMenuItems];
