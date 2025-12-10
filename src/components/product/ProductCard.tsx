@@ -1,8 +1,9 @@
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
-import { Check, Image, Package, X } from "lucide-react";
+import { Check, Package, X } from "lucide-react";
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
 import { Skeleton } from "../ui/skeleton";
+
 interface ProductCardProps {
   slug: string;
 }
@@ -43,10 +44,8 @@ const ProductCard = ({ slug }: ProductCardProps) => {
       <div className="w-full py-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             {"message" in (error as any)
-              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (error as any).message
+              ? (error as any).message
               : "Something went wrong"}
           </div>
         </div>
@@ -68,6 +67,7 @@ const ProductCard = ({ slug }: ProductCardProps) => {
       </div>
     );
   }
+
   const topProducts = products.slice(0, 4);
 
   return (
@@ -83,20 +83,23 @@ const ProductCard = ({ slug }: ProductCardProps) => {
           <Link
             to={`/product/${product.category_id?.slug}/${product.subcategories?.slug}/${product.slug}`}
             key={product._id}
-            className="bg-background border rounded-lg  overflow-hidden  transition-shadow duration-300 flex hover:border-primary"
+            className="bg-background border rounded-lg overflow-hidden transition-shadow duration-300 flex hover:border-primary"
           >
-            {/* Product Image */}
-            <div className="w-24 h-24 bg-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-md">
-              {product.image ? (
-                <img
-                  src={`${import.meta.env.VITE_API_URL}${product.image}`}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="flex items-center justify-center w-full h-full bg-gray-100">
-                  <Image className="w-12 h-12 text-gray-400" />
+            {/* Product Image with blurry overlay */}
+            <div className="w-24 h-24 relative flex-shrink-0 overflow-hidden rounded-md">
+              <img
+                src={`${import.meta.env.VITE_API_URL}${product.image}`}
+                alt={product.name}
+                className="w-full h-full object-cover transition duration-300"
+                loading="lazy"
+              />
+
+              {/* Blurry overlay */}
+              {product.meta?.new_arrival === "true" && (
+                <div className="absolute inset-0  backdrop-blur-xs flex items-center justify-center">
+                  <span className="px-2 py-1 bg-primary text-white text-xs font-semibold rounded">
+                    Coming Soon
+                  </span>
                 </div>
               )}
             </div>
@@ -107,7 +110,6 @@ const ProductCard = ({ slug }: ProductCardProps) => {
                 {product.name}
               </h3>
 
-              {/* Price Section */}
               <div className="flex items-center justify-between border-t border-gray-100">
                 <div className="flex items-baseline gap-2">
                   <span className="text-xl sm:text-2xl font-bold text-primary">
@@ -116,6 +118,7 @@ const ProductCard = ({ slug }: ProductCardProps) => {
                   </span>
                   <span className="text-sm text-gray-500">each</span>
                 </div>
+
                 <div
                   className={`flex items-center gap-1.5 text-sm font-medium whitespace-nowrap ${
                     Number(product.quantity) > 0

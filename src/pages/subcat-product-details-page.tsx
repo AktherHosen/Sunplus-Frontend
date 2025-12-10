@@ -1,5 +1,5 @@
 import { Image, ShoppingCart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useParams } from "react-router";
@@ -38,48 +38,78 @@ const SubcatProductDetailsPage = () => {
       productSlug: productSlug!,
     });
 
-  const product = data?.data;
+  const product = data?.data ?? null;
 
-  const watts =
-    product?.meta?.watt?.split(",").map((w: string) => w.trim()) || [];
-  const additionalWatts =
-    product?.meta?.additional_watt?.split(",").map((w: string) => w.trim()) ||
-    [];
+  // Helper to treat both boolean true and string "true"
+  const isComingSoon = useMemo(() => {
+    const v = product?.meta?.new_arrival;
+    return v === true || v === "true";
+  }, [product?.meta?.new_arrival]);
 
-  const colors =
-    product?.meta?.color?.split(",").map((c: string) => c.trim()) || [];
-  const additionalColors =
-    product?.meta?.additional_color?.split(",").map((c: string) => c.trim()) ||
-    [];
+  // --- parse variant strings safely ---
+  const parseCSV = (value?: string) =>
+    value
+      ? value
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
 
-  const sizes =
-    product?.meta?.size?.split(",").map((s: string) => s.trim()) || [];
+  const watts = parseCSV(product?.meta?.watt);
+  const additionalWatts = parseCSV(product?.meta?.additional_watt);
+  const colors = parseCSV(product?.meta?.color);
+  const additionalColors = parseCSV(product?.meta?.additional_color);
+  const sizes = parseCSV(product?.meta?.size);
 
   // States
   const [selectedWatt, setSelectedWatt] = useState<string | null>(null);
-  const [selectedAdditionalWatt, setSelectedAdditionalWatt] = useState<string | null>(null);
+  const [selectedAdditionalWatt, setSelectedAdditionalWatt] = useState<
+    string | null
+  >(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [selectedAdditionalColor, setSelectedAdditionalColor] = useState<string | null>(null);
+  const [selectedAdditionalColor, setSelectedAdditionalColor] = useState<
+    string | null
+  >(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-  // Set defaults on product load
+  // Set defaults on product load (only when product changes)
   useEffect(() => {
-    if (!selectedWatt && watts.length > 0) setSelectedWatt(watts[0]);
-    if (!selectedColor && colors.length > 0) setSelectedColor(colors[0]);
+    // choose primary values first, fallback to additional arrays
+    if (!selectedWatt) {
+      if (watts.length > 0) setSelectedWatt(watts[0]);
+      else if (additionalWatts.length > 0)
+        setSelectedAdditionalWatt(additionalWatts[0]);
+    }
+    if (!selectedColor) {
+      if (colors.length > 0) setSelectedColor(colors[0]);
+      else if (additionalColors.length > 0)
+        setSelectedAdditionalColor(additionalColors[0]);
+    }
     if (!selectedSize && sizes.length > 0) setSelectedSize(sizes[0]);
-  }, [product]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product]); // run when product changes
 
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
 
-  const galleryImages = [product?.image, product?.image2, product?.image3].filter(Boolean);
+  const galleryImages: string[] = [
+    product?.image,
+    product?.image2,
+    product?.image3,
+  ].filter((img): img is string => typeof img === "string");
 
+  // Compose selectedVariants object to pass to OrderForm
   const selectedVariants: { watt?: string; size?: string; color?: string } = {};
   if (selectedWatt || selectedAdditionalWatt)
     selectedVariants.watt = selectedWatt || selectedAdditionalWatt || undefined;
   if (selectedSize) selectedVariants.size = selectedSize;
   if (selectedColor || selectedAdditionalColor)
-    selectedVariants.color = selectedColor || selectedAdditionalColor || undefined;
+    selectedVariants.color =
+      selectedColor || selectedAdditionalColor || undefined;
+
+  // Controls whether order button should be disabled
+  const outOfStock = Number(product.quantity) <= 0;
+  const disableOrder = isComingSoon || outOfStock;
 
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -91,47 +121,74 @@ const SubcatProductDetailsPage = () => {
         transition={{ duration: 0.8 }}
       >
         {/* Left: Main Image */}
-        <Card className="overflow-hidden shadow-none py-0 h-fit">
-          <Zoom>
-            {galleryImages[selectedImage] ? (
-              <motion.img
-                src={`${import.meta.env.VITE_API_URL}${galleryImages[selectedImage]}`}
-                alt={product.name}
-                className="w-full h-[300px] object-contain p-4"
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              />
-            ) : (
-              <motion.div
-                className="w-full h-[300px] flex items-center justify-center bg-muted/30"
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Image className="w-24 h-24 text-muted-foreground" />
-              </motion.div>
-            )}
-          </Zoom>
+        <Card className="overflow-hidden shadow-none py-0 h-fit relative">
+          <div className="relative">
+            <Zoom>
+              {galleryImages[selectedImage] ? (
+                <motion.img
+                  src={`${import.meta.env.VITE_API_URL}${
+                    galleryImages[selectedImage]
+                  }`}
+                  alt={product.name}
+                  className={cn(
+                    "w-full h-[300px] object-contain p-4 transition duration-300",
+                    isComingSoon ? "blur-sm opacity-60" : ""
+                  )}
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                />
+              ) : (
+                <motion.div
+                  className="w-full h-[300px] flex items-center justify-center bg-muted/30"
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Image className="w-24 h-24 text-muted-foreground" />
+                </motion.div>
+              )}
+            </Zoom>
 
+            {/* Coming Soon overlay on main image */}
+            {isComingSoon && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <span className="px-4 py-2 text-base font-semibold bg-primary text-white rounded-lg backdrop-blur">
+                  Coming Soon
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Thumbnails */}
           {galleryImages.length > 1 && (
             <div className="flex gap-2 overflow-x-auto p-2">
-              {galleryImages.map((img, idx) => (
+              {galleryImages.map((img: string, idx: number) => (
                 <motion.button
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
-                  className={`w-20 h-20 rounded-lg border-2 overflow-hidden transition ${
+                  className={cn(
+                    "relative w-20 h-20 rounded-lg border-2 overflow-hidden transition",
                     selectedImage === idx
                       ? "border-blue-600 ring-1 ring-blue-300"
                       : "border-gray-200 hover:border-gray-300"
-                  }`}
+                  )}
                   whileHover={{ scale: 1.05 }}
                 >
                   <img
                     src={`${import.meta.env.VITE_API_URL}${img}`}
                     alt={`${product.name} view ${idx + 1}`}
-                    className="w-full h-full object-cover"
+                    className={cn(
+                      "w-full h-full object-cover transition",
+                      isComingSoon ? "blur-[1px] opacity-60" : ""
+                    )}
                   />
+
+                  {isComingSoon && (
+                    <div className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold bg-black/50 text-white">
+                      Coming Soon
+                    </div>
+                  )}
                 </motion.button>
               ))}
             </div>
@@ -145,62 +202,49 @@ const SubcatProductDetailsPage = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-2xl md:text-3xl font-semibold text-foreground leading-tight">{product.name}</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold text-foreground leading-tight">
+            {product.name}
+          </h1>
 
           <div className="flex items-end gap-3">
-            <span className="text-2xl font-bold text-primary">৳{Number(product.price).toFixed(2)}</span>
+            {isComingSoon ? (
+              <span className="text-2xl font-bold text-gray-500">
+                Coming Soon
+              </span>
+            ) : (
+              <span className="text-2xl font-bold text-primary">
+                ৳{Number(product.price).toFixed(2)}
+              </span>
+            )}
           </div>
 
           {/* --- VARIANTS --- */}
           {/* Watt */}
           {watts.length > 0 && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Select Watt</label>
+              <label className="text-sm font-medium text-muted-foreground">
+                Select Watt
+              </label>
               <div className="flex flex-wrap gap-2">
-                {watts.map((w: string, idx:number) => {
+                {watts.map((w: string, idx: number) => {
                   const isActive = selectedWatt === w;
                   return (
                     <Badge
                       key={idx}
                       onClick={() => {
-                        if (selectedAdditionalWatt === w) setSelectedAdditionalWatt(null);
+                        // clear additional if selecting primary and vice versa
+                        if (selectedAdditionalWatt === w)
+                          setSelectedAdditionalWatt(null);
                         setSelectedWatt(isActive ? null : w);
                       }}
                       className={cn(
                         "cursor-pointer transition",
-                        isActive ? "bg-primary text-white" : "bg-secondary text-black"
+                        isActive
+                          ? "bg-primary text-white"
+                          : "bg-secondary text-black"
                       )}
                     >
                       {w}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          
-
-          {/* Color */}
-          {colors.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Select Color</label>
-              <div className="flex flex-wrap gap-2">
-                {colors.map((c:string, idx:number) => {
-                  const isActive = selectedColor === c;
-                  return (
-                    <Badge
-                      key={idx}
-                      onClick={() => {
-                        if (selectedAdditionalColor === c) setSelectedAdditionalColor(null);
-                        setSelectedColor(isActive ? null : c);
-                      }}
-                      className={cn(
-                        "cursor-pointer transition",
-                        isActive ? "bg-primary text-white" : "bg-secondary text-black"
-                      )}
-                    >
-                      {c}
                     </Badge>
                   );
                 })}
@@ -213,7 +257,7 @@ const SubcatProductDetailsPage = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium">Additional Watt</label>
               <div className="flex flex-wrap gap-2">
-                {additionalWatts.map((w:string, idx:number) => {
+                {additionalWatts.map((w: string, idx: number) => {
                   const isActive = selectedAdditionalWatt === w;
                   return (
                     <Badge
@@ -224,7 +268,9 @@ const SubcatProductDetailsPage = () => {
                       }}
                       className={cn(
                         "cursor-pointer transition",
-                        isActive ? "bg-primary text-white" : "bg-secondary text-black"
+                        isActive
+                          ? "bg-primary text-white"
+                          : "bg-secondary text-black"
                       )}
                     >
                       {w}
@@ -235,12 +281,46 @@ const SubcatProductDetailsPage = () => {
             </div>
           )}
 
+          {/* Color */}
+          {colors.length > 0 && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
+                Select Color
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {colors.map((c: string, idx: number) => {
+                  const isActive = selectedColor === c;
+                  return (
+                    <Badge
+                      key={idx}
+                      onClick={() => {
+                        if (selectedAdditionalColor === c)
+                          setSelectedAdditionalColor(null);
+                        setSelectedColor(isActive ? null : c);
+                      }}
+                      className={cn(
+                        "cursor-pointer transition",
+                        isActive
+                          ? "bg-primary text-white"
+                          : "bg-secondary text-black"
+                      )}
+                    >
+                      {c}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Additional Color */}
           {additionalColors.length > 0 && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Additional Color</label>
+              <label className="text-sm font-medium text-muted-foreground">
+                Additional Color
+              </label>
               <div className="flex flex-wrap gap-2">
-                {additionalColors.map((c: string, idx:number) => {
+                {additionalColors.map((c: string, idx: number) => {
                   const isActive = selectedAdditionalColor === c;
                   return (
                     <Badge
@@ -251,7 +331,9 @@ const SubcatProductDetailsPage = () => {
                       }}
                       className={cn(
                         "cursor-pointer transition",
-                        isActive ? "bg-primary text-white" : "bg-secondary text-black"
+                        isActive
+                          ? "bg-primary text-white"
+                          : "bg-secondary text-black"
                       )}
                     >
                       {c}
@@ -265,9 +347,11 @@ const SubcatProductDetailsPage = () => {
           {/* Size */}
           {sizes.length > 0 && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">Select Size</label>
+              <label className="text-sm font-medium text-muted-foreground">
+                Select Size
+              </label>
               <div className="flex flex-wrap gap-2">
-                {sizes.map((s: string, idx:number) => {
+                {sizes.map((s: string, idx: number) => {
                   const isActive = selectedSize === s;
                   return (
                     <Badge
@@ -275,7 +359,9 @@ const SubcatProductDetailsPage = () => {
                       onClick={() => setSelectedSize(isActive ? null : s)}
                       className={cn(
                         "cursor-pointer transition",
-                        isActive ? "bg-primary text-white" : "bg-secondary text-black"
+                        isActive
+                          ? "bg-primary text-white"
+                          : "bg-secondary text-black"
                       )}
                     >
                       {s}
@@ -290,40 +376,65 @@ const SubcatProductDetailsPage = () => {
           {/* Stock + Category Info */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-3 border-y">
             <div>
-              <dt className="text-xs uppercase tracking-wide text-muted-foreground font-medium">Stock</dt>
+              <dt className="text-xs uppercase tracking-wide text-muted-foreground font-medium">
+                Stock
+              </dt>
               <dd
                 className={cn(
                   "font-semibold mt-1 flex items-center gap-1",
-                  Number(product.quantity) > 0 ? "text-green-600" : "text-red-600"
+                  !outOfStock ? "text-green-600" : "text-red-600"
                 )}
               >
                 <span className="text-lg">●</span>
-                {Number(product.quantity) > 0 ? "In Stock" : "Out of Stock"}
+                {!outOfStock ? "In Stock" : "Out of Stock"}
               </dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-muted-foreground font-medium">Category</dt>
-              <dd className="font-semibold mt-1 text-foreground">{product.category_id?.name || "N/A"}</dd>
+              <dt className="text-xs uppercase tracking-wide text-muted-foreground font-medium">
+                Category
+              </dt>
+              <dd className="font-semibold mt-1 text-foreground">
+                {product.category_id?.name || "N/A"}
+              </dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-muted-foreground font-medium">Subcategory</dt>
-              <dd className="font-semibold mt-1 text-foreground">{product.subcategories?.name || "N/A"}</dd>
+              <dt className="text-xs uppercase tracking-wide text-muted-foreground font-medium">
+                Subcategory
+              </dt>
+              <dd className="font-semibold mt-1 text-foreground">
+                {product.subcategories?.name || "N/A"}
+              </dd>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <motion.div className="flex flex-row gap-3 pt-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.6 }}>
+          <motion.div
+            className="flex flex-row gap-3 pt-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
             {/* Order Button */}
             <Dialog>
               <DialogTrigger asChild>
-                <Button size="lg" disabled={Number(product.quantity) <= 0} className="flex-1 text-base font-medium gap-2">
-                  <ShoppingCart className="w-5 h-5" /> Order Now
+                <Button
+                  size="lg"
+                  disabled={disableOrder}
+                  className={cn(
+                    "flex-1 text-base font-medium gap-2",
+                    disableOrder ? "opacity-60 cursor-not-allowed" : ""
+                  )}
+                >
+                  <ShoppingCart className="w-5 h-5" />{" "}
+                  {isComingSoon ? "Coming Soon" : "Order Now"}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                   <DialogTitle>Place Your Order</DialogTitle>
-                  <DialogDescription>Fill in your details to complete the order</DialogDescription>
+                  <DialogDescription>
+                    Fill in your details to complete the order
+                  </DialogDescription>
                 </DialogHeader>
                 <OrderForm
                   productId={product._id}
@@ -337,7 +448,11 @@ const SubcatProductDetailsPage = () => {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="lg" className="flex-1 text-base font-medium gap-2">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="flex-1 text-base font-medium gap-2"
+                >
                   Contact Distributor
                 </Button>
               </DialogTrigger>
@@ -347,7 +462,10 @@ const SubcatProductDetailsPage = () => {
                   <DialogDescription>
                     <p className="flex gap-2">
                       Call:{" "}
-                      <a href="tel:+8801835926605" className="flex items-center gap-2 font-bold hover:text-primary transition">
+                      <a
+                        href="tel:+8801835926605"
+                        className="flex items-center gap-2 font-bold hover:text-primary transition"
+                      >
                         +880 1835 926 605
                       </a>
                     </p>{" "}
@@ -367,51 +485,85 @@ const SubcatProductDetailsPage = () => {
 
       {/* Bottom Section: Tabs + Related Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-10">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <Card className="p-4 shadow-none">
             <Tabs defaultValue="descriptions" className="w-full mt-2">
               <TabsList className="px-1 flex flex-wrap sm:space-x-1">
-                {["descriptions", "specifications", "features", "gallery"].map(tab => (
-                  <TabsTrigger key={tab} value={tab}>
-                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  </TabsTrigger>
-                ))}
+                {["descriptions", "specifications", "features", "gallery"].map(
+                  (tab) => (
+                    <TabsTrigger key={tab} value={tab}>
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </TabsTrigger>
+                  )
+                )}
               </TabsList>
 
               <div className="px-2 pt-4 bg-background rounded-b-xl space-y-6">
                 <TabsContent value="descriptions">
                   {product.descriptions ? (
-                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{product.descriptions}</p>
+                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                      {product.descriptions}
+                    </p>
                   ) : (
-                    <p className="text-muted-foreground">No technical descriptions available.</p>
+                    <p className="text-muted-foreground">
+                      No technical descriptions available.
+                    </p>
                   )}
                 </TabsContent>
 
                 <TabsContent value="specifications">
-                  {product.meta?.specifications || product.meta?.voltage || product.meta?.current ? (
+                  {product.meta?.specifications ||
+                  product.meta?.voltage ||
+                  product.meta?.current ? (
                     <ul className="list-none space-y-1 text-foreground">
-                      {product.meta?.specifications?.split(",").filter(Boolean).map((f:string, idx:number) => <li key={idx}>{f.trim()}</li>)}
-                      {product.meta?.voltage && <li><strong>Voltage:</strong> {product.meta.voltage}</li>}
-                      {product.meta?.current && <li><strong>Current:</strong> {product.meta.current}</li>}
+                      {product.meta?.specifications
+                        ?.split(",")
+                        .filter(Boolean)
+                        .map((f: string, idx: number) => (
+                          <li key={idx}>{f.trim()}</li>
+                        ))}
+                      {product.meta?.voltage && (
+                        <li>
+                          <strong>Voltage:</strong> {product.meta.voltage}
+                        </li>
+                      )}
+                      {product.meta?.current && (
+                        <li>
+                          <strong>Current:</strong> {product.meta.current}
+                        </li>
+                      )}
                     </ul>
                   ) : (
-                    <p className="text-muted-foreground">No technical specifications available.</p>
+                    <p className="text-muted-foreground">
+                      No technical specifications available.
+                    </p>
                   )}
                 </TabsContent>
 
                 <TabsContent value="features">
                   {product.meta?.features ? (
                     <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                      {product.meta.features.split(" - ").filter(Boolean).map((f:string, idx:number) => <li key={idx}>{f}</li>)}
+                      {product.meta.features
+                        .split(" - ")
+                        .filter(Boolean)
+                        .map((f: string, idx: number) => (
+                          <li key={idx}>{f}</li>
+                        ))}
                     </ul>
                   ) : (
-                    <p className="text-muted-foreground">No feature details available.</p>
+                    <p className="text-muted-foreground">
+                      No feature details available.
+                    </p>
                   )}
                 </TabsContent>
 
                 <TabsContent value="gallery">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {galleryImages.map((img, idx) => (
+                    {galleryImages.map((img: string, idx: number) => (
                       <motion.div
                         key={idx}
                         initial={{ opacity: 0, scale: 0.95 }}
@@ -420,8 +572,20 @@ const SubcatProductDetailsPage = () => {
                         transition={{ duration: 0.4, delay: idx * 0.1 }}
                       >
                         <Zoom>
-                          <Avatar className="w-32 h-32 rounded-lg overflow-hidden">
-                            <AvatarImage src={`${import.meta.env.VITE_API_URL}${img}`} alt={`View ${idx + 1}`} className="object-cover w-full h-full" />
+                          <Avatar className="w-32 h-32 rounded-lg overflow-hidden relative">
+                            <AvatarImage
+                              src={`${import.meta.env.VITE_API_URL}${img}`}
+                              alt={`View ${idx + 1}`}
+                              className={cn(
+                                "object-cover w-full h-full",
+                                isComingSoon ? "blur-[1px] opacity-60" : ""
+                              )}
+                            />
+                            {isComingSoon && (
+                              <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold bg-black/40 text-white">
+                                Coming Soon
+                              </div>
+                            )}
                           </Avatar>
                         </Zoom>
                       </motion.div>
@@ -434,7 +598,11 @@ const SubcatProductDetailsPage = () => {
         </motion.div>
 
         <div>
-          <ProductCard slug={product?.subcategories?.slug || product?.category_id?.slug || ""} />
+          <ProductCard
+            slug={
+              product?.subcategories?.slug || product?.category_id?.slug || ""
+            }
+          />
         </div>
       </div>
     </div>
