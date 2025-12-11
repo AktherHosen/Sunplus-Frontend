@@ -44,6 +44,7 @@ export default function CategoryForm({
   const [bannerFiles, setBannerFiles] = useState<File[]>([]);
   const [bannerPreviews, setBannerPreviews] = useState<string[]>([]);
   const [parent, setParent] = useState<string | null>(null);
+  const [newArrival, setNewArrival] = useState(false);
 
   const isEditMode = Boolean(category);
 
@@ -68,6 +69,7 @@ export default function CategoryForm({
         ) || []
       );
       setBannerFiles([]);
+      setNewArrival(Boolean(category?.new_arrival));
     } else {
       resetForm();
     }
@@ -80,6 +82,7 @@ export default function CategoryForm({
     setImagePreview(null);
     setBannerFiles([]);
     setBannerPreviews([]);
+    setNewArrival(false);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,6 +126,7 @@ export default function CategoryForm({
       const formData = new FormData();
       formData.append("name", name);
       formData.append("parent", parent || "");
+      formData.append("new_arrival", newArrival ? "true" : "false");
 
       if (imageFile) formData.append("image", imageFile);
       bannerFiles.forEach((file) => formData.append("banners", file));
@@ -267,6 +271,23 @@ export default function CategoryForm({
                     ))}
                 </SelectContent>
               </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Flags</Label>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="newArrival"
+                checked={newArrival}
+                onChange={(e) => setNewArrival(e.target.checked)}
+                className="h-4 w-4 cursor-pointer"
+              />
+              <Label htmlFor="newArrival" className="cursor-pointer">
+                New Arrival
+              </Label>
             </div>
           </div>
 
