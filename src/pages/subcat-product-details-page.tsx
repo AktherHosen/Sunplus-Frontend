@@ -548,7 +548,7 @@ const SubcatProductDetailsPage = () => {
                   {product.meta?.features ? (
                     <ul className="list-disc pl-5 space-y-1 text-gray-700">
                       {product.meta.features
-                        .split(" - ")
+                        .split(",")
                         .filter(Boolean)
                         .map((f: string, idx: number) => (
                           <li key={idx}>{f}</li>
