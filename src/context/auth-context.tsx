@@ -75,21 +75,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  useEffect(() => {
-  const loadUser = async () => {
-    try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/auth/me`, {
-        withCredentials: true,
-      });
-      setUser(res.data.data);
-    } catch {
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-  loadUser();
- }, []);
 
   return (
     <AuthContext.Provider
