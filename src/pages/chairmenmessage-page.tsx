@@ -5,11 +5,15 @@ import MD from "@/assets/img/md.jpeg"
 import GM from "@/assets/img/gm.jpeg"
 import DMD from "@/assets/img/dmd.jpeg"
 import SM from "@/assets/img/srm.jpeg"
+import DIRECTOR from "@/assets/img/director.jpeg"
+import HR from "@/assets/img/hr.jpeg"
+import MDZ from "@/assets/img/MDZ.jpeg"
+import HRDZ from "@/assets/img/hrdz.jpeg"
 export default function ChairmanMessagePage() {
   const membersRow1 = [
     {
       name: "Nur Mohammad Modhu",
-      role: "Managing Director (MD)",
+      role: "Chairman",
       image: MD,
       message:
         "Our commitment to excellence drives SunPlus forward as we continue to innovate, grow, and deliver sustainable value.",
@@ -39,36 +43,48 @@ export default function ChairmanMessagePage() {
   const membersRow2 = [
     {
       name: "Anowar Hossain Manik",
-      role: "Deputy Managing Director (DMD)",
+      role: "Managing Director",
       image: DMD,
-      message: "Working together to build a stronger, smarter organization.",
+      message: "Driving strategic initiatives and overseeing company-wide growth objectives.",
     },
     {
       name: "Shadat Hossain Sagor",
-      role: "Director",
-      image: "dummy",
-      message: "Dedicated to ensuring progress with integrity and vision.",
+      role: "Director & CEO",
+      image: DIRECTOR,
+      message: "Providing visionary leadership and guiding long-term business development.",
     },
     {
-      name: "Mohiuddin Turjo",
-      role: "General Manager (GM)",
+      name: "MD. Mohiuddin Turja",
+      role: "General Manager",
       image: GM,
-      message: "Leading teams to achieve operational excellence every day.",
+      message: "Managing daily operations and ensuring consistent quality and efficiency.",
     },
   ];
-
+  
   const membersRow3 = [
     {
       name: "Jane Alam",
       image: SM,
       role: "Senior Manager",
-      message: "Focused on delivering consistent quality and performance.",
+      message: "Leading teams to achieve performance targets and operational excellence.",
     },
     {
       name: "Minar Mishu",
-      image: 'dummy',
-      role: "Senior HR Officer",
-      message: "Committed to building a motivated and empowered workforce.",
+      image: HR,
+      role: "Senior HR (Head Office)",
+      message: "Developing talent and fostering a positive organizational culture.",
+    },
+    {
+      name: "Abdul Gaffar Badsha",
+      image: MDZ,
+      role: "Manager Dhaka Zone",
+      message: "Overseeing regional operations and building strong client relationships.",
+    },
+    {
+      name: "Abdul Hamid Efti",
+      image: HRDZ,
+      role: "HR Dhaka Zone",
+      message: "Managing recruitment and HR functions for the Dhaka operations zone.",
     },
   ];
 
@@ -152,7 +168,7 @@ export default function ChairmanMessagePage() {
         </div>
 
         {/* Row 3 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
           {membersRow3.map((person, i) => (
             <CardBox key={i} person={person} hasImage />
           ))}
