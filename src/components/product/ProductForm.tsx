@@ -354,13 +354,25 @@ export const ProductForm = ({
               </Button>
             </div>
             <div className="space-y-3">
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span>Useful meta fields:</span>
+                <span className="px-2 py-1 rounded bg-muted">
+                  specification
+                </span>
+                <span className="px-2 py-1 rounded bg-muted">features</span>
+                <span className="px-2 py-1 rounded bg-muted">voltage</span>
+                <span className="px-2 py-1 rounded bg-muted">current</span>
+                <span className="px-2 py-1 rounded bg-muted">new_arrival</span>
+                <span className="px-2 py-1 rounded bg-muted">size</span>
+                <span className="px-2 py-1 rounded bg-muted">color</span>
+              </div>
               {metaFields.map((f, i) => (
                 <div
                   key={i}
                   className="flex flex-col sm:flex-row gap-3 p-3 rounded-lg border bg-muted/30"
                 >
                   <Input
-                    placeholder="Attribute (Brand)"
+                    placeholder="Attribute ()"
                     value={f.key}
                     onChange={(e) => handleMetaChange(i, "key", e.target.value)}
                   />
