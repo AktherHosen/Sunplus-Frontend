@@ -453,7 +453,7 @@ const SubcatProductDetailsPage = () => {
                   size="lg"
                   className="flex-1 text-base font-medium gap-2"
                 >
-                  Contact Distributor
+                  Distributor
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">

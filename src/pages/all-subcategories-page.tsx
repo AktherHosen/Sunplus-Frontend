@@ -90,15 +90,15 @@ const AllSubcategoriesPage = () => {
                   </h3>
                 </CardHeader>
 
-                <CardContent className="!p-0 !px-8">
+                <CardContent className="!p-0 !px-4">
                   <div className="w-full aspect-square overflow-hidden rounded-lg relative mb-3">
                     {sub.image ? (
                       <motion.img
                         src={`${import.meta.env.VITE_API_URL}${sub.image}`}
                         alt={sub.name}
                         className={`w-full h-full object-cover transition-transform duration-300
-        ${sub?.new_arrival ? "blur-xs opacity-80" : "hover:scale-105"}
-      `}
+                            ${sub?.new_arrival ? "blur-xs opacity-80" : "hover:scale-105"}
+                          `}
                         loading="lazy"
                         whileHover={{
                           scale: sub?.new_arrival ? 1 : 1.01,
@@ -113,7 +113,7 @@ const AllSubcategoriesPage = () => {
                     {/* Coming Soon overlay */}
                     {sub?.new_arrival && (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="px-4 py-2 text-xs sm:text-sm font-semibold bg-primary text-white rounded-lg backdrop-blur">
+                        <span className="px-2.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold bg-primary text-white rounded-lg backdrop-blur">
                           Coming Soon
                         </span>
                       </div>

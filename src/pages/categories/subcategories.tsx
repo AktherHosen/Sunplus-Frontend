@@ -22,7 +22,6 @@ export default function Subcategories() {
 
   const subcategories = data?.data || [];
 
-  // ✅ Delete subcategory with toast confirmation
   const handleDelete = (sub: any) => {
     toast.warning(`Delete "${sub.name}"?`, {
       description: "This action cannot be undone.",
