@@ -6,12 +6,10 @@ import {
   resetPassword,
 } from "@/lib/api";
 import type { IUser } from "@/types/user";
-import axios from "axios";
 import {
   createContext,
   type ReactNode,
   useContext,
-  useEffect,
   useState,
 } from "react";
 import { toast } from "sonner";
@@ -30,7 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading] = useState(true);
   
   const login = async (email: string, password: string) => {
     try {
