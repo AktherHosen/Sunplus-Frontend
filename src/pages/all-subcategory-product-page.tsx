@@ -2,6 +2,7 @@ import Loader from "@/components/loader";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import SectionTitle from "@/components/ui/section-title";
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
+import type { IVariant } from "@/types/product";
 import { motion } from "framer-motion";
 import { Check, Image, X } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
@@ -80,19 +81,40 @@ const AllSubcategoryProductPage = () => {
               <Card className="border gap-0 border-border hover:border-primary hover:rounded-lg transition-colors duration-300 rounded-lg p-0">
                 <CardContent className="p-2">
                   <div className="w-full aspect-square overflow-hidden rounded-lg">
-                    {product.image ? (
-                      <motion.img
-                        src={`${import.meta.env.VITE_API_URL}${product.image}`}
-                        alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                        loading="lazy"
-                        whileHover={{ scale: 1.01 }}
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center w-full h-full bg-gray-100">
-                        <Image className="w-12 h-12 text-gray-400" />
-                      </div>
-                    )}
+                    <div className="w-full aspect-square overflow-hidden rounded-lg relative">
+                      {product.image ? (
+                        <motion.img
+                          src={`${import.meta.env.VITE_API_URL}${
+                            product.image
+                          }`}
+                          alt={product.name}
+                          className={`w-full h-full object-cover transition-transform duration-300 
+                            ${
+                              product?.meta?.new_arrival
+                                ? "blur-xs opacity-80"
+                                : "hover:scale-105"
+                            }
+                          `}
+                          loading="lazy"
+                          whileHover={{
+                            scale: product?.meta?.new_arrival ? 1 : 1.01,
+                          }}
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                          <Image className="w-12 h-12 text-gray-400" />
+                        </div>
+                      )}
+
+                      {/* Coming Soon overlay */}
+                      {product?.meta?.new_arrival && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="px-4 py-2 text-xs sm:text-sm font-semibold bg-primary text-white rounded-lg backdrop-blur">
+                            Coming Soon
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
 
@@ -103,7 +125,22 @@ const AllSubcategoryProductPage = () => {
                       {product.name}
                     </p>
                     <p className="text-lg font-bold text-primary">
-                      Tk. {product.price.toLocaleString()}
+                      {product.variants && product.variants.length > 0 ? (
+                        <>
+                          Tk.{" "}
+                          {Math.min(
+                            ...product.variants.map((v: IVariant) => v.price)
+                          ).toLocaleString()}
+                          {" - "}
+                          {Math.max(
+                            ...product.variants.map((v: IVariant) => v.price)
+                          ).toLocaleString()}
+                        </>
+                      ) : product.price ? (
+                        `Tk. ${product.price.toLocaleString()}`
+                      ) : (
+                        "Price on request"
+                      )}
                     </p>
                   </div>
 
