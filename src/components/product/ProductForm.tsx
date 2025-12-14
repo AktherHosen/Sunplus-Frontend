@@ -10,7 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ImageIcon, Upload, X } from "lucide-react";
+import type { ICategory, IProduct, IVariant } from "@/types/product";
+import { ImageIcon, Plus, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface MetaField {
@@ -19,8 +20,8 @@ interface MetaField {
 }
 
 interface ProductFormProps {
-  editingProduct: any;
-  categories: any[];
+  editingProduct: IProduct | null;
+  categories: ICategory[];
   onSave: (formData: FormData) => Promise<void>;
   onCancel: () => void;
 }
@@ -37,6 +38,10 @@ export const ProductForm = ({
   const [quantity, setQuantity] = useState<number>(0);
   const [category, setCategory] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
+
+  // Variant management
+  const [useVariants, setUseVariants] = useState(false);
+  const [variants, setVariants] = useState<IVariant[]>([]);
 
   // Three images
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -60,6 +65,19 @@ export const ProductForm = ({
       setPrice(editingProduct.price || 0);
       setQuantity(editingProduct.quantity || 0);
       setCategory(editingProduct.category_id?._id || null);
+
+      // Check if product has variants
+      if (
+        editingProduct.variants &&
+        Array.isArray(editingProduct.variants) &&
+        editingProduct.variants.length > 0
+      ) {
+        setUseVariants(true);
+        setVariants(editingProduct.variants);
+      } else {
+        setUseVariants(false);
+        setVariants([]);
+      }
 
       if (Array.isArray(editingProduct.subcategories)) {
         setSubcategory(editingProduct.subcategories?.[0]?._id || "");
@@ -105,6 +123,8 @@ export const ProductForm = ({
     setQuantity(0);
     setCategory(null);
     setSubcategory(null);
+    setUseVariants(false);
+    setVariants([]);
 
     setImageFile(null);
     setImagePreview(null);
@@ -156,19 +176,64 @@ export const ProductForm = ({
     setMetaFields(updated);
   };
 
+  // Variant handlers
+  const handleAddVariant = () => {
+    setVariants([
+      ...variants,
+      { name: "", price: 0, quantity: 0, sku: "", attributes: {} },
+    ]);
+  };
+
+  const handleRemoveVariant = (index: number) => {
+    setVariants(variants.filter((_, i) => i !== index));
+  };
+
+  const handleVariantChange = (
+    index: number,
+    field: keyof IVariant,
+    value: string | number
+  ) => {
+    const updated = [...variants];
+    updated[index] = { ...updated[index], [field]: value };
+    setVariants(updated);
+  };
+
   const handleSubmit = async () => {
-    if (!name.trim() || !price || !category) return;
+    if (!name.trim() || !category) return;
+
+    // Validate: either price or variants must be provided
+    if (!useVariants && !price) {
+      return;
+    }
+    if (
+      useVariants &&
+      (!variants.length || variants.some((v) => !v.name || !v.price))
+    ) {
+      return;
+    }
 
     const metaObject = metaFields.reduce((acc, { key, value }) => {
       if (key.trim()) acc[key.trim()] = value.trim();
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, string>);
 
     const formData = new FormData();
     formData.append("name", name);
     formData.append("descriptions", descriptions);
-    formData.append("price", price.toString());
-    formData.append("quantity", quantity.toString());
+
+    if (useVariants) {
+      // Send variants as JSON string
+      formData.append("variants", JSON.stringify(variants));
+      // Calculate total quantity from variants if not set
+      const totalQty = variants.reduce((sum, v) => sum + (v.quantity || 0), 0);
+      if (totalQty > 0) {
+        formData.append("quantity", totalQty.toString());
+      }
+    } else {
+      formData.append("price", price.toString());
+      formData.append("quantity", quantity.toString());
+    }
+
     formData.append("category_id", category);
     if (subcategory) formData.append("subcategories", subcategory);
 
@@ -264,18 +329,142 @@ export const ProductForm = ({
             </div>
 
             <div className="space-y-2">
-              <Label>Price *</Label>
-              <Input
-                type="number"
-                value={price || ""}
-                onChange={(e) => setPrice(Number(e.target.value))}
-              />
-              <Label>Quantity</Label>
-              <Input
-                type="number"
-                value={quantity || ""}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-              />
+              <div className="flex items-center gap-2 mb-2">
+                <input
+                  type="checkbox"
+                  id="useVariants"
+                  checked={useVariants}
+                  onChange={(e) => {
+                    setUseVariants(e.target.checked);
+                    if (e.target.checked) {
+                      setPrice(0);
+                    }
+                  }}
+                  className="w-4 h-4"
+                />
+                <Label htmlFor="useVariants" className="cursor-pointer">
+                  Use Variants (Multiple Prices)
+                </Label>
+              </div>
+
+              {useVariants ? (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <Label>Product Variants *</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddVariant}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add Variant
+                    </Button>
+                  </div>
+                  {variants.length === 0 ? (
+                    <div className="text-sm text-muted-foreground p-4 border rounded-lg text-center">
+                      No variants added. Click "Add Variant" to create one.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {variants.map((variant, index) => (
+                        <Card key={index} className="p-4 border">
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <Label className="text-sm font-semibold">
+                                Variant {index + 1}
+                              </Label>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleRemoveVariant(index)}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="space-y-1">
+                                <Label className="text-xs">Name *</Label>
+                                <Input
+                                  placeholder="e.g., Small - Red"
+                                  value={variant.name}
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      index,
+                                      "name",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">Price *</Label>
+                                <Input
+                                  type="number"
+                                  placeholder="0.00"
+                                  value={variant.price || ""}
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      index,
+                                      "price",
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">Quantity</Label>
+                                <Input
+                                  type="number"
+                                  placeholder="0"
+                                  value={variant.quantity || ""}
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      index,
+                                      "quantity",
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs">SKU</Label>
+                                <Input
+                                  placeholder="SKU-001"
+                                  value={variant.sku || ""}
+                                  onChange={(e) =>
+                                    handleVariantChange(
+                                      index,
+                                      "sku",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Label>Price *</Label>
+                  <Input
+                    type="number"
+                    value={price || ""}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                  />
+                  <Label>Quantity</Label>
+                  <Input
+                    type="number"
+                    value={quantity || ""}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                  />
+                </>
+              )}
             </div>
           </div>
         </CardContent>
@@ -333,7 +522,7 @@ export const ProductForm = ({
             <SelectContent>
               {categories
                 ?.find((c) => c._id === category)
-                ?.subcategories?.map((sub: any) => (
+                ?.subcategories?.map((sub: ICategory) => (
                   <SelectItem key={sub._id} value={sub._id}>
                     {sub.name}
                   </SelectItem>
@@ -404,7 +593,14 @@ export const ProductForm = ({
         </Button>
         <Button
           onClick={handleSubmit}
-          disabled={saving || !name.trim() || !price || !category}
+          disabled={
+            saving ||
+            !name.trim() ||
+            !category ||
+            (!useVariants && !price) ||
+            (useVariants &&
+              (!variants.length || variants.some((v) => !v.name || !v.price)))
+          }
         >
           {saving
             ? "Saving..."

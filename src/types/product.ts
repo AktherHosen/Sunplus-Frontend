@@ -5,12 +5,24 @@ export interface ICategory {
   image?: string;
   banners: string[];
   parent?: string | null;
+  subcategories?: ICategory[];
+}
+
+export interface IVariant {
+  _id?: string;
+  name: string; // e.g., "Small - Red", "Large - Blue"
+  price: number;
+  quantity?: number;
+  sku?: string;
+  attributes?: Record<string, any>; // e.g., { size: "S", color: "Red" }
+  image?: string;
 }
 
 export interface IProduct {
   _id: string;
   name: string;
-  price: number;
+  price?: number; // Base price (optional, for backward compatibility)
+  variants?: IVariant[]; // Array of variants with different prices
   quantity?: number;
   image?: string;
   image2?: string;
