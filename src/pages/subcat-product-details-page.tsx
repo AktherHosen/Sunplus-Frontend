@@ -632,7 +632,7 @@ const SubcatProductDetailsPage = () => {
                   {product.meta?.specifications ||
                   product.meta?.voltage ||
                   product.meta?.current ? (
-                    <ul className="space-y-1 text-foreground">
+                    <ul className="list-disc pl-5 space-y-1 text-foreground">
                       {product.meta?.specifications
                         ?.split(",")
                         .filter(Boolean)
