@@ -24,6 +24,7 @@ import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi
 import ProductCard from "@/components/product/ProductCard";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import type { IVariant } from "@/types/product";
 import { motion } from "framer-motion";
 
 const SubcatProductDetailsPage = () => {
@@ -40,11 +41,20 @@ const SubcatProductDetailsPage = () => {
 
   const product = data?.data;
 
+  // Check if product has variants
+  const hasVariants =
+    product?.variants &&
+    Array.isArray(product.variants) &&
+    product.variants.length > 0;
+
+  // Variant-based selection
+  const [selectedVariant, setSelectedVariant] = useState<IVariant | null>(null);
+
+  // Meta-based selection (for backward compatibility)
   const watts =
     product?.meta?.watt?.split(",").map((w: string) => w.trim()) || [];
   const sizes =
     product?.meta?.size?.split(",").map((s: string) => s.trim()) || [];
-
   const colors =
     product?.meta?.color?.split(",").map((c: string) => c.trim()) || [];
 
@@ -52,15 +62,25 @@ const SubcatProductDetailsPage = () => {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
 
+  // Initialize selected variant or meta selections
   useEffect(() => {
-    if (watts.length > 0 && !selectedWatt) {
-      setSelectedWatt(watts[0]);
+    if (hasVariants && product?.variants) {
+      // Set first variant as default
+      if (!selectedVariant && product.variants.length > 0) {
+        setSelectedVariant(product.variants[0]);
+      }
+    } else {
+      // Use meta-based selections for backward compatibility
+      if (watts.length > 0 && !selectedWatt) {
+        setSelectedWatt(watts[0]);
+      }
+      if (sizes.length > 0 && !selectedSize) {
+        setSelectedSize(sizes[0]);
+      }
+      if (colors.length > 0 && !selectedColor) setSelectedColor(colors[0]);
     }
-    if (sizes.length > 0 && !selectedSize) {
-      setSelectedSize(sizes[0]);
-    }
-    if (colors.length > 0 && !selectedColor) setSelectedColor(colors[0]);
-  }, [product, watts.length, sizes.length, colors.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product, hasVariants]);
 
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
@@ -154,32 +174,49 @@ const SubcatProductDetailsPage = () => {
           {/* Price Section */}
           <div className="flex items-end gap-3">
             <span className="text-2xl font-bold text-primary">
-              ৳{Number(product.price).toFixed(2)}
+              ৳
+              {hasVariants && selectedVariant
+                ? Number(selectedVariant.price).toFixed(2)
+                : Number(product.price || 0).toFixed(2)}
             </span>
+            {hasVariants && product.variants && product.variants.length > 1 && (
+              <span className="text-sm text-muted-foreground">
+                ({product.variants.length} variants available)
+              </span>
+            )}
           </div>
 
-          {/* Watt Selection */}
-          {watts.length > 0 && (
+          {/* Variant Selection (New System) */}
+          {hasVariants && product.variants && (
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">
-                Select Watt
+                Select Variant *
               </label>
               <div className="flex flex-wrap gap-2">
-                {watts.map((w: string, idx: number) => {
-                  const isActive = selectedWatt === w;
+                {product.variants.map((variant: IVariant, idx: number) => {
+                  const isActive =
+                    selectedVariant?._id === variant._id ||
+                    (selectedVariant &&
+                      !variant._id &&
+                      selectedVariant.name === variant.name);
 
                   return (
                     <Badge
                       key={idx}
-                      onClick={() => setSelectedWatt(w)}
+                      onClick={() => setSelectedVariant(variant)}
                       className={cn(
-                        "text-sm font-medium capitalize cursor-pointer transition-all",
+                        "text-sm font-medium cursor-pointer transition-all px-3 py-1.5",
                         isActive
                           ? "bg-primary text-primary-foreground hover:bg-primary/90"
                           : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                       )}
                     >
-                      {w}
+                      <div className="flex flex-col items-start">
+                        <span>{variant.name}</span>
+                        <span className="text-xs opacity-90">
+                          ৳{Number(variant.price).toFixed(2)}
+                        </span>
+                      </div>
                     </Badge>
                   );
                 })}
@@ -187,60 +224,94 @@ const SubcatProductDetailsPage = () => {
             </div>
           )}
 
-          {/* Size Selection */}
-          {sizes.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
-                Select Size
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {sizes.map((s: string, idx: number) => {
-                  const isActive = selectedSize === s;
+          {/* Meta-based Selection (Backward Compatibility) */}
+          {!hasVariants && (
+            <>
+              {/* Watt Selection */}
+              {watts.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Select Watt
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {watts.map((w: string, idx: number) => {
+                      const isActive = selectedWatt === w;
 
-                  return (
-                    <Badge
-                      key={idx}
-                      onClick={() => setSelectedSize(s)}
-                      className={cn(
-                        "text-sm font-medium capitalize cursor-pointer transition-all",
-                        isActive
-                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                      )}
-                    >
-                      {s}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+                      return (
+                        <Badge
+                          key={idx}
+                          onClick={() => setSelectedWatt(w)}
+                          className={cn(
+                            "text-sm font-medium capitalize cursor-pointer transition-all",
+                            isActive
+                              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                          )}
+                        >
+                          {w}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
-          {colors.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
-                Select Color
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {colors.map((c: string, idx: number) => {
-                  const isActive = selectedColor === c;
-                  return (
-                    <Badge
-                      key={idx}
-                      onClick={() => setSelectedColor(c)}
-                      className={cn(
-                        "text-sm font-medium capitalize cursor-pointer transition-all",
-                        isActive
-                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                      )}
-                    >
-                      {c}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
+              {/* Size Selection */}
+              {sizes.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Select Size
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {sizes.map((s: string, idx: number) => {
+                      const isActive = selectedSize === s;
+
+                      return (
+                        <Badge
+                          key={idx}
+                          onClick={() => setSelectedSize(s)}
+                          className={cn(
+                            "text-sm font-medium capitalize cursor-pointer transition-all",
+                            isActive
+                              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                          )}
+                        >
+                          {s}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {colors.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Select Color
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {colors.map((c: string, idx: number) => {
+                      const isActive = selectedColor === c;
+                      return (
+                        <Badge
+                          key={idx}
+                          onClick={() => setSelectedColor(c)}
+                          className={cn(
+                            "text-sm font-medium capitalize cursor-pointer transition-all",
+                            isActive
+                              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                          )}
+                        >
+                          {c}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* Stock + Category Info */}
@@ -252,13 +323,21 @@ const SubcatProductDetailsPage = () => {
               <dd
                 className={cn(
                   "font-semibold mt-1 flex items-center gap-1",
-                  Number(product.quantity) > 0
+                  (hasVariants && selectedVariant
+                    ? Number(selectedVariant.quantity || 0)
+                    : Number(product.quantity || 0)) > 0
                     ? "text-green-600"
                     : "text-red-600"
                 )}
               >
                 <span className="text-lg">●</span>
-                {Number(product.quantity) > 0 ? "In Stock" : "Out of Stock"}
+                {hasVariants && selectedVariant
+                  ? Number(selectedVariant.quantity || 0) > 0
+                    ? `In Stock (${selectedVariant.quantity})`
+                    : "Out of Stock"
+                  : Number(product.quantity || 0) > 0
+                  ? "In Stock"
+                  : "Out of Stock"}
               </dd>
             </div>
 
@@ -293,7 +372,11 @@ const SubcatProductDetailsPage = () => {
               <DialogTrigger asChild>
                 <Button
                   size="lg"
-                  disabled={Number(product.quantity) <= 0}
+                  disabled={
+                    hasVariants && selectedVariant
+                      ? Number(selectedVariant.quantity || 0) <= 0
+                      : Number(product.quantity || 0) <= 0
+                  }
                   className="flex-1 text-base font-medium gap-2"
                 >
                   <ShoppingCart className="w-5 h-5" />
@@ -310,12 +393,25 @@ const SubcatProductDetailsPage = () => {
                 <OrderForm
                   productId={product._id}
                   productName={product.name}
-                  maxQuantity={Number(product.quantity)}
-                  selectedVariants={{
-                    watt: selectedWatt || undefined,
-                    size: selectedSize || undefined,
-                    color: selectedColor || undefined,
-                  }}
+                  maxQuantity={
+                    hasVariants && selectedVariant
+                      ? Number(selectedVariant.quantity || 0)
+                      : Number(product.quantity || 0)
+                  }
+                  selectedVariant={
+                    hasVariants && selectedVariant
+                      ? selectedVariant.name
+                      : undefined
+                  }
+                  selectedVariants={
+                    !hasVariants
+                      ? {
+                          watt: selectedWatt || undefined,
+                          size: selectedSize || undefined,
+                          color: selectedColor || undefined,
+                        }
+                      : undefined
+                  }
                   onSuccess={() => setIsDialogOpen(false)}
                 />
               </DialogContent>

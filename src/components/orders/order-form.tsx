@@ -9,17 +9,19 @@ interface OrderFormProps {
   productId: string;
   productName: string;
   maxQuantity: number;
+  selectedVariant?: string; // Variant name from new variant system
   selectedVariants?: {
     watt?: string;
     size?: string;
     color?: string;
-  };
+  }; // Meta-based variants (backward compatibility)
   onSuccess?: () => void;
 }
 
 const OrderForm: React.FC<OrderFormProps> = ({
   productId,
   maxQuantity,
+  selectedVariant,
   selectedVariants,
   onSuccess,
 }) => {
@@ -44,9 +46,12 @@ const OrderForm: React.FC<OrderFormProps> = ({
     const formData = new FormData(e.currentTarget);
     const order = Object.fromEntries(formData.entries());
 
-    // Extract the variant value (watt or size)
+    // Extract the variant value - prioritize new variant system over meta-based
     const variant =
-      selectedVariants?.watt || selectedVariants?.size || undefined;
+      selectedVariant ||
+      selectedVariants?.watt ||
+      selectedVariants?.size ||
+      undefined;
 
     createOrder({
       item: { _id: productId } as any,
@@ -95,34 +100,49 @@ const OrderForm: React.FC<OrderFormProps> = ({
         />
       </div>
 
-      {/* Display Selected Variants */}
-      {selectedVariants && (selectedVariants.watt || selectedVariants.size) && (
+      {/* Display Selected Variant (New System) */}
+      {selectedVariant && (
         <div className="p-3 bg-muted/50 rounded-lg border">
           <label className="text-sm font-medium text-gray-700 mb-2 block">
             Selected Variant
           </label>
-          <div className="flex flex-wrap gap-2">
-            {selectedVariants.watt && (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
-                <span className="text-muted-foreground">Watt:</span>
-                {selectedVariants.watt}
-              </div>
-            )}
-            {selectedVariants.size && (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
-                <span className="text-muted-foreground">Size:</span>
-                {selectedVariants.size}
-              </div>
-            )}
-            {selectedVariants.color && (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
-                <span className="text-muted-foreground">Color:</span>
-                {selectedVariants.color}
-              </div>
-            )}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
+            <span className="text-muted-foreground">Variant:</span>
+            {selectedVariant}
           </div>
         </div>
       )}
+
+      {/* Display Selected Variants (Meta-based - Backward Compatibility) */}
+      {!selectedVariant &&
+        selectedVariants &&
+        (selectedVariants.watt || selectedVariants.size) && (
+          <div className="p-3 bg-muted/50 rounded-lg border">
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Selected Variant
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {selectedVariants.watt && (
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
+                  <span className="text-muted-foreground">Watt:</span>
+                  {selectedVariants.watt}
+                </div>
+              )}
+              {selectedVariants.size && (
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
+                  <span className="text-muted-foreground">Size:</span>
+                  {selectedVariants.size}
+                </div>
+              )}
+              {selectedVariants.color && (
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
+                  <span className="text-muted-foreground">Color:</span>
+                  {selectedVariants.color}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
       <div>
         <label className="text-sm font-medium text-gray-700">Address</label>
