@@ -1,3 +1,4 @@
+import Car12 from "@/assets/carousel/circuitbreaker.png";
 import Car5 from "@/assets/carousel/crowngrey.png";
 import Car6 from "@/assets/carousel/crownwhite.png";
 import Car9 from "@/assets/carousel/deluxcoffee.png";
@@ -5,6 +6,7 @@ import Car10 from "@/assets/carousel/deluxgold.png";
 import Car2 from "@/assets/carousel/flora.png";
 import Car3 from "@/assets/carousel/floracoffee.png";
 import Car8 from "@/assets/carousel/goldplatinum.png";
+import Car13 from "@/assets/carousel/ips.png";
 import Car1 from "@/assets/carousel/mk.png";
 import Car7 from "@/assets/carousel/platinum.png";
 import Car4 from "@/assets/carousel/ultrathin.png";
@@ -101,6 +103,20 @@ export default function Banner() {
           <img
             src={Car11}
             alt="Banner 11"
+            className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
+          />
+        </CarouselItem>
+        <CarouselItem className="flex-shrink-0 w-full ml-0 pl-0">
+          <img
+            src={Car12}
+            alt="Banner 12"
+            className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
+          />
+        </CarouselItem>
+        <CarouselItem className="flex-shrink-0 w-full ml-0 pl-0">
+          <img
+            src={Car13}
+            alt="Banner 13"
             className="w-full max:h-[400px] object-cover rounded-lg transition-transform duration-700 ease-in-out"
           />
         </CarouselItem>
