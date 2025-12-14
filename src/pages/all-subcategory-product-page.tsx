@@ -2,6 +2,7 @@ import Loader from "@/components/loader";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import SectionTitle from "@/components/ui/section-title";
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
+import type { IVariant } from "@/types/product";
 import { motion } from "framer-motion";
 import { Check, Image, X } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
@@ -124,7 +125,22 @@ const AllSubcategoryProductPage = () => {
                       {product.name}
                     </p>
                     <p className="text-lg font-bold text-primary">
-                      Tk. {product.price.toLocaleString()}
+                      {product.variants && product.variants.length > 0 ? (
+                        <>
+                          Tk.{" "}
+                          {Math.min(
+                            ...product.variants.map((v: IVariant) => v.price)
+                          ).toLocaleString()}
+                          {" - "}
+                          {Math.max(
+                            ...product.variants.map((v: IVariant) => v.price)
+                          ).toLocaleString()}
+                        </>
+                      ) : product.price ? (
+                        `Tk. ${product.price.toLocaleString()}`
+                      ) : (
+                        "Price on request"
+                      )}
                     </p>
                   </div>
 

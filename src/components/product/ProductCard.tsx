@@ -1,5 +1,6 @@
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
-import { Check, Package, X } from "lucide-react";
+import type { IVariant } from "@/types/product";
+import { Check, Image, Package, X } from "lucide-react";
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
 import { Skeleton } from "../ui/skeleton";
@@ -87,12 +88,16 @@ const ProductCard = ({ slug }: ProductCardProps) => {
           >
             {/* Product Image with blurry overlay */}
             <div className="w-24 h-24 relative flex-shrink-0 overflow-hidden rounded-md">
-              <img
-                src={`${import.meta.env.VITE_API_URL}${product.image}`}
-                alt={product.name}
-                className="w-full h-full object-cover transition duration-300"
-                loading="lazy"
-              />
+              {product.image ? (
+                <img
+                  src={`${import.meta.env.VITE_API_URL}${product.image}`}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition duration-300"
+                  loading="lazy"
+                />
+              ) : (
+                <Image className="w-24 h-24 text-muted-foreground" />
+              )}
 
               {/* Blurry overlay */}
               {product.meta?.new_arrival === "true" && (
@@ -114,7 +119,21 @@ const ProductCard = ({ slug }: ProductCardProps) => {
                 <div className="flex items-baseline gap-2">
                   <span className="text-xl sm:text-2xl font-bold text-primary">
                     <span className="text-lg">৳</span>
-                    {product.price.toFixed(2)}
+                    {product.variants && product.variants.length > 0 ? (
+                      <>
+                        {Math.min(
+                          ...product.variants.map((v: IVariant) => v.price)
+                        ).toFixed(2)}
+                        {" - "}
+                        {Math.max(
+                          ...product.variants.map((v: IVariant) => v.price)
+                        ).toFixed(2)}
+                      </>
+                    ) : product.price ? (
+                      product.price.toFixed(2)
+                    ) : (
+                      "N/A"
+                    )}
                   </span>
                   <span className="text-sm text-gray-500">each</span>
                 </div>

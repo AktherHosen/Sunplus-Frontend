@@ -24,6 +24,7 @@ import { useGetProductsByCategoryAndSubcategoryQuery } from "@/redux/api/baseApi
 import ProductCard from "@/components/product/ProductCard";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import type { IVariant } from "@/types/product";
 import { motion } from "framer-motion";
 
 const SubcatProductDetailsPage = () => {
@@ -39,6 +40,15 @@ const SubcatProductDetailsPage = () => {
     });
 
   const product = data?.data ?? null;
+
+  // Check if product has variants (new variant system)
+  const hasVariants =
+    product?.variants &&
+    Array.isArray(product.variants) &&
+    product.variants.length > 0;
+
+  // Variant-based selection state
+  const [selectedVariant, setSelectedVariant] = useState<IVariant | null>(null);
 
   // Helper to treat both boolean true and string "true"
   const isComingSoon = useMemo(() => {
@@ -74,20 +84,27 @@ const SubcatProductDetailsPage = () => {
 
   // Set defaults on product load (only when product changes)
   useEffect(() => {
-    // choose primary values first, fallback to additional arrays
-    if (!selectedWatt) {
-      if (watts.length > 0) setSelectedWatt(watts[0]);
-      else if (additionalWatts.length > 0)
-        setSelectedAdditionalWatt(additionalWatts[0]);
+    if (hasVariants && product?.variants) {
+      // Set first variant as default for variant-based products
+      if (!selectedVariant && product.variants.length > 0) {
+        setSelectedVariant(product.variants[0]);
+      }
+    } else {
+      // Use meta-based selections for backward compatibility
+      if (!selectedWatt) {
+        if (watts.length > 0) setSelectedWatt(watts[0]);
+        else if (additionalWatts.length > 0)
+          setSelectedAdditionalWatt(additionalWatts[0]);
+      }
+      if (!selectedColor) {
+        if (colors.length > 0) setSelectedColor(colors[0]);
+        else if (additionalColors.length > 0)
+          setSelectedAdditionalColor(additionalColors[0]);
+      }
+      if (!selectedSize && sizes.length > 0) setSelectedSize(sizes[0]);
     }
-    if (!selectedColor) {
-      if (colors.length > 0) setSelectedColor(colors[0]);
-      else if (additionalColors.length > 0)
-        setSelectedAdditionalColor(additionalColors[0]);
-    }
-    if (!selectedSize && sizes.length > 0) setSelectedSize(sizes[0]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product]); // run when product changes
+  }, [product, hasVariants]); // run when product changes
 
   if (isLoading) return <Loader />;
   if (isError || !product) return <div>Product not found</div>;
@@ -100,15 +117,41 @@ const SubcatProductDetailsPage = () => {
 
   // Compose selectedVariants object to pass to OrderForm
   const selectedVariants: { watt?: string; size?: string; color?: string } = {};
-  if (selectedWatt || selectedAdditionalWatt)
-    selectedVariants.watt = selectedWatt || selectedAdditionalWatt || undefined;
-  if (selectedSize) selectedVariants.size = selectedSize;
-  if (selectedColor || selectedAdditionalColor)
-    selectedVariants.color =
-      selectedColor || selectedAdditionalColor || undefined;
+
+  if (hasVariants && selectedVariant) {
+    // Extract attributes from variant if available, otherwise use variant name
+    if (selectedVariant.attributes) {
+      selectedVariants.size = selectedVariant.attributes.size;
+      selectedVariants.color = selectedVariant.attributes.color;
+      selectedVariants.watt = selectedVariant.attributes.watt;
+    } else {
+      // If no attributes, use variant name as a fallback
+      // Try to extract info from variant name (e.g., "Small - Red" -> size: "Small", color: "Red")
+      const nameParts = selectedVariant.name.split(" - ");
+      if (nameParts.length >= 2) {
+        selectedVariants.size = nameParts[0];
+        selectedVariants.color = nameParts[1];
+      } else {
+        // If can't parse, use the whole name as size
+        selectedVariants.size = selectedVariant.name;
+      }
+    }
+  } else {
+    // Meta-based selections (backward compatibility)
+    if (selectedWatt || selectedAdditionalWatt)
+      selectedVariants.watt =
+        selectedWatt || selectedAdditionalWatt || undefined;
+    if (selectedSize) selectedVariants.size = selectedSize;
+    if (selectedColor || selectedAdditionalColor)
+      selectedVariants.color =
+        selectedColor || selectedAdditionalColor || undefined;
+  }
 
   // Controls whether order button should be disabled
-  const outOfStock = Number(product.quantity) <= 0;
+  const outOfStock =
+    hasVariants && selectedVariant
+      ? Number(selectedVariant.quantity || 0) <= 0
+      : Number(product.quantity || 0) <= 0;
   const disableOrder = isComingSoon || outOfStock;
 
   return (
@@ -212,39 +255,56 @@ const SubcatProductDetailsPage = () => {
                 Coming Soon
               </span>
             ) : (
-              <span className="text-2xl font-bold text-primary">
-                ৳{Number(product.price).toFixed(2)}
-              </span>
+              <>
+                <span className="text-2xl font-bold text-primary">
+                  ৳
+                  {hasVariants && selectedVariant
+                    ? Number(selectedVariant.price).toFixed(2)
+                    : Number(product.price || 0).toFixed(2)}
+                </span>
+                {hasVariants &&
+                  product.variants &&
+                  product.variants.length > 1 && (
+                    <span className="text-sm text-muted-foreground">
+                      ({product.variants.length} variants available)
+                    </span>
+                  )}
+              </>
             )}
           </div>
 
           {/* --- VARIANTS --- */}
-          {/* Watt */}
-          {watts.length > 0 && (
+          {/* Variant Selection (New System) */}
+          {hasVariants && product.variants && (
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">
-                Select Watt
+                Select Variant *
               </label>
               <div className="flex flex-wrap gap-2">
-                {watts.map((w: string, idx: number) => {
-                  const isActive = selectedWatt === w;
+                {product.variants.map((variant: IVariant, idx: number) => {
+                  const isActive =
+                    selectedVariant?._id === variant._id ||
+                    (selectedVariant &&
+                      !variant._id &&
+                      selectedVariant.name === variant.name);
+
                   return (
                     <Badge
                       key={idx}
-                      onClick={() => {
-                        // clear additional if selecting primary and vice versa
-                        if (selectedAdditionalWatt === w)
-                          setSelectedAdditionalWatt(null);
-                        setSelectedWatt(isActive ? null : w);
-                      }}
+                      onClick={() => setSelectedVariant(variant)}
                       className={cn(
-                        "cursor-pointer transition",
+                        "text-sm font-medium cursor-pointer transition-all px-3 py-1.5",
                         isActive
-                          ? "bg-primary text-white"
-                          : "bg-secondary text-black"
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                       )}
                     >
-                      {w}
+                      <div className="flex flex-col items-start">
+                        <span>{variant.name}</span>
+                        <span className="text-xs opacity-90">
+                          ৳{Number(variant.price).toFixed(2)}
+                        </span>
+                      </div>
                     </Badge>
                   );
                 })}
@@ -252,124 +312,162 @@ const SubcatProductDetailsPage = () => {
             </div>
           )}
 
-          {/* Additional Watt */}
-          {additionalWatts.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Additional Watt</label>
-              <div className="flex flex-wrap gap-2">
-                {additionalWatts.map((w: string, idx: number) => {
-                  const isActive = selectedAdditionalWatt === w;
-                  return (
-                    <Badge
-                      key={idx}
-                      onClick={() => {
-                        if (selectedWatt === w) setSelectedWatt(null);
-                        setSelectedAdditionalWatt(isActive ? null : w);
-                      }}
-                      className={cn(
-                        "cursor-pointer transition",
-                        isActive
-                          ? "bg-primary text-white"
-                          : "bg-secondary text-black"
-                      )}
-                    >
-                      {w}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          {/* Meta-based Selection (Backward Compatibility) */}
+          {!hasVariants && (
+            <>
+              {/* Watt */}
+              {watts.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Select Watt
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {watts.map((w: string, idx: number) => {
+                      const isActive = selectedWatt === w;
+                      return (
+                        <Badge
+                          key={idx}
+                          onClick={() => {
+                            // clear additional if selecting primary and vice versa
+                            if (selectedAdditionalWatt === w)
+                              setSelectedAdditionalWatt(null);
+                            setSelectedWatt(isActive ? null : w);
+                          }}
+                          className={cn(
+                            "cursor-pointer transition",
+                            isActive
+                              ? "bg-primary text-white"
+                              : "bg-secondary text-black"
+                          )}
+                        >
+                          {w}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
-          {/* Color */}
-          {colors.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
-                Select Color
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {colors.map((c: string, idx: number) => {
-                  const isActive = selectedColor === c;
-                  return (
-                    <Badge
-                      key={idx}
-                      onClick={() => {
-                        if (selectedAdditionalColor === c)
-                          setSelectedAdditionalColor(null);
-                        setSelectedColor(isActive ? null : c);
-                      }}
-                      className={cn(
-                        "cursor-pointer transition",
-                        isActive
-                          ? "bg-primary text-white"
-                          : "bg-secondary text-black"
-                      )}
-                    >
-                      {c}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+              {/* Additional Watt */}
+              {additionalWatts.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Additional Watt</label>
+                  <div className="flex flex-wrap gap-2">
+                    {additionalWatts.map((w: string, idx: number) => {
+                      const isActive = selectedAdditionalWatt === w;
+                      return (
+                        <Badge
+                          key={idx}
+                          onClick={() => {
+                            if (selectedWatt === w) setSelectedWatt(null);
+                            setSelectedAdditionalWatt(isActive ? null : w);
+                          }}
+                          className={cn(
+                            "cursor-pointer transition",
+                            isActive
+                              ? "bg-primary text-white"
+                              : "bg-secondary text-black"
+                          )}
+                        >
+                          {w}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
-          {/* Additional Color */}
-          {additionalColors.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
-                Additional Color
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {additionalColors.map((c: string, idx: number) => {
-                  const isActive = selectedAdditionalColor === c;
-                  return (
-                    <Badge
-                      key={idx}
-                      onClick={() => {
-                        if (selectedColor === c) setSelectedColor(null);
-                        setSelectedAdditionalColor(isActive ? null : c);
-                      }}
-                      className={cn(
-                        "cursor-pointer transition",
-                        isActive
-                          ? "bg-primary text-white"
-                          : "bg-secondary text-black"
-                      )}
-                    >
-                      {c}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+              {/* Color */}
+              {colors.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Select Color
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {colors.map((c: string, idx: number) => {
+                      const isActive = selectedColor === c;
+                      return (
+                        <Badge
+                          key={idx}
+                          onClick={() => {
+                            if (selectedAdditionalColor === c)
+                              setSelectedAdditionalColor(null);
+                            setSelectedColor(isActive ? null : c);
+                          }}
+                          className={cn(
+                            "cursor-pointer transition",
+                            isActive
+                              ? "bg-primary text-white"
+                              : "bg-secondary text-black"
+                          )}
+                        >
+                          {c}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
-          {/* Size */}
-          {sizes.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-muted-foreground">
-                Select Size
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {sizes.map((s: string, idx: number) => {
-                  const isActive = selectedSize === s;
-                  return (
-                    <Badge
-                      key={idx}
-                      onClick={() => setSelectedSize(isActive ? null : s)}
-                      className={cn(
-                        "cursor-pointer transition",
-                        isActive
-                          ? "bg-primary text-white"
-                          : "bg-secondary text-black"
-                      )}
-                    >
-                      {s}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
+              {/* Additional Color */}
+              {additionalColors.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Additional Color
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {additionalColors.map((c: string, idx: number) => {
+                      const isActive = selectedAdditionalColor === c;
+                      return (
+                        <Badge
+                          key={idx}
+                          onClick={() => {
+                            if (selectedColor === c) setSelectedColor(null);
+                            setSelectedAdditionalColor(isActive ? null : c);
+                          }}
+                          className={cn(
+                            "cursor-pointer transition",
+                            isActive
+                              ? "bg-primary text-white"
+                              : "bg-secondary text-black"
+                          )}
+                        >
+                          {c}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Size */}
+              {sizes.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Select Size
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {sizes.map((s: string, idx: number) => {
+                      const isActive = selectedSize === s;
+                      return (
+                        <Badge
+                          key={idx}
+                          onClick={() => setSelectedSize(isActive ? null : s)}
+                          className={cn(
+                            "cursor-pointer transition",
+                            isActive
+                              ? "bg-primary text-white"
+                              : "bg-secondary text-black"
+                          )}
+                        >
+                          {s}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </>
           )}
           {/* --- END VARIANTS --- */}
 
@@ -386,7 +484,13 @@ const SubcatProductDetailsPage = () => {
                 )}
               >
                 <span className="text-lg">●</span>
-                {!outOfStock ? "In Stock" : "Out of Stock"}
+                {hasVariants && selectedVariant
+                  ? !outOfStock
+                    ? `In Stock (${selectedVariant.quantity || 0})`
+                    : "Out of Stock"
+                  : !outOfStock
+                  ? "In Stock"
+                  : "Out of Stock"}
               </dd>
             </div>
             <div>
@@ -439,7 +543,11 @@ const SubcatProductDetailsPage = () => {
                 <OrderForm
                   productId={product._id}
                   productName={product.name}
-                  maxQuantity={Number(product.quantity)}
+                  maxQuantity={
+                    hasVariants && selectedVariant
+                      ? Number(selectedVariant.quantity || 0)
+                      : Number(product.quantity || 0)
+                  }
                   selectedVariants={selectedVariants}
                   onSuccess={() => setIsDialogOpen(false)}
                 />
