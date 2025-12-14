@@ -56,7 +56,6 @@ const SubcatProductDetailsPage = () => {
     return v === true || v === "true";
   }, [product?.meta?.new_arrival]);
 
-  // --- parse variant strings safely ---
   const parseCSV = (value?: string) =>
     value
       ? value
@@ -82,7 +81,6 @@ const SubcatProductDetailsPage = () => {
   >(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-  // Set defaults on product load (only when product changes)
   useEffect(() => {
     if (hasVariants && product?.variants) {
       // Set first variant as default for variant-based products
@@ -156,7 +154,6 @@ const SubcatProductDetailsPage = () => {
 
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-      {/* --- Product Section --- */}
       <motion.div
         className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-10"
         initial={{ opacity: 0, y: 20 }}
@@ -193,7 +190,6 @@ const SubcatProductDetailsPage = () => {
               )}
             </Zoom>
 
-            {/* Coming Soon overlay on main image */}
             {isComingSoon && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <span className="px-4 py-2 text-base font-semibold bg-primary text-white rounded-lg backdrop-blur">
@@ -627,7 +623,7 @@ const SubcatProductDetailsPage = () => {
                   {product.meta?.specifications ||
                   product.meta?.voltage ||
                   product.meta?.current ? (
-                    <ul className="list-none space-y-1 text-foreground">
+                    <ul className="space-y-1 text-foreground">
                       {product.meta?.specifications
                         ?.split(",")
                         .filter(Boolean)
