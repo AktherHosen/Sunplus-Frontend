@@ -255,38 +255,39 @@ export default function CategoryForm({
               </CardContent>
             </Card>
             {/* Parent Category */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Parent Category</Label>
-              <Select onValueChange={setParent} value={parent || ""}>
-                <SelectTrigger className="h-11 w-full">
-                  <SelectValue placeholder="Select parent category (optional)" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories?.data
-                    ?.filter((cat: any) => cat._id !== category?._id)
-                    .map((cat: any) => (
-                      <SelectItem key={cat._id} value={cat._id}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Parent Category</Label>
+                <Select onValueChange={setParent} value={parent || ""}>
+                  <SelectTrigger className="h-11 w-full">
+                    <SelectValue placeholder="Select parent category (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories?.data
+                      ?.filter((cat: any) => cat._id !== category?._id)
+                      .map((cat: any) => (
+                        <SelectItem key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Flags</Label>
 
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Flags</Label>
-
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="newArrival"
-                  checked={newArrival}
-                  onChange={(e) => setNewArrival(e.target.checked)}
-                  className="h-4 w-4 cursor-pointer"
-                />
-                <Label htmlFor="newArrival" className="cursor-pointer">
-                  New Arrival
-                </Label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="newArrival"
+                    checked={newArrival}
+                    onChange={(e) => setNewArrival(e.target.checked)}
+                    className="h-4 w-4 cursor-pointer"
+                  />
+                  <Label htmlFor="newArrival" className="cursor-pointer">
+                    New Arrival
+                  </Label>
+                </div>
               </div>
             </div>
           </div>
