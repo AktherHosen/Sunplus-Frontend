@@ -13,6 +13,7 @@ interface OrderFormProps {
     watt?: string;
     size?: string;
     color?: string;
+    variantName?: string;
   };
   onSuccess?: () => void;
 }
@@ -45,6 +46,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
     const order = Object.fromEntries(formData.entries());
 
     const variantArray = [
+      selectedVariants?.variantName,
       selectedVariants?.watt,
       selectedVariants?.size,
       selectedVariants?.color,
@@ -99,12 +101,18 @@ const OrderForm: React.FC<OrderFormProps> = ({
       </div>
 
       {/* Display Selected Variants */}
-      {selectedVariants && (selectedVariants.watt || selectedVariants.size) && (
+      {selectedVariants && (selectedVariants.variantName || selectedVariants.watt || selectedVariants.size || selectedVariants.color) && (
         <div className="p-3 bg-muted/50 rounded-lg border">
           <label className="text-sm font-medium text-gray-700 mb-2 block">
             Selected Variant
           </label>
           <div className="flex flex-wrap gap-2">
+            {selectedVariants.variantName && (
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
+                <span className="text-muted-foreground">Variant:</span>
+                {selectedVariants.variantName}
+              </div>
+            )}
             {selectedVariants.watt && (
               <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-sm font-medium">
                 <span className="text-muted-foreground">Watt:</span>
