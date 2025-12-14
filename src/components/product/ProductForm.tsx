@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,7 +11,15 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { ICategory, IProduct, IVariant } from "@/types/product";
-import { ImageIcon, Plus, Upload, X } from "lucide-react";
+import {
+  DollarSign,
+  ImageIcon,
+  Package,
+  Plus,
+  Tag,
+  Upload,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface MetaField {
@@ -258,323 +266,422 @@ export const ProductForm = ({
     remove: () => void,
     label: string
   ) => (
-    <Card className="border-none shadow-none py-0">
-      <CardContent className="p-0">
-        <div className="space-y-3">
-          <Label className="text-sm font-medium">{label}</Label>
-          <div className="flex flex-col sm:flex-row gap-4 items-start">
-            {preview ? (
-              <div className="relative group">
-                <img
-                  src={preview}
-                  className="w-32 h-32 object-cover rounded-lg border"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute -top-2 -right-2 h-7 w-7 rounded-full opacity-0 group-hover:opacity-100"
-                  onClick={remove}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ) : (
-              <div className="w-32 h-32 rounded-lg border-2 border-dashed flex items-center justify-center">
-                <ImageIcon className="w-10 h-10 text-muted-foreground" />
-              </div>
-            )}
-
-            <div className="flex-1 space-y-2">
-              <Label className="flex items-center justify-center gap-2 h-11 px-4 rounded-md border-2 border-dashed bg-muted/50 hover:bg-muted cursor-pointer">
-                <Upload className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  {preview ? "Change Image" : "Upload Image"}
-                </span>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={onChange}
-                />
-              </Label>
+    <div className="space-y-2">
+      <Label className="text-sm font-medium text-foreground">{label}</Label>
+      <div className="flex items-center gap-4">
+        {preview ? (
+          <div className="relative group">
+            <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-border bg-muted/50">
+              <img
+                src={preview}
+                alt={label}
+                className="w-full h-full object-cover"
+              />
             </div>
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="absolute -top-2 -right-2 h-6 w-6 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={remove}
+            >
+              <X className="h-3 w-3" />
+            </Button>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        ) : (
+          <div className="w-24 h-24 rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center bg-muted/30">
+            <ImageIcon className="w-8 h-8 text-muted-foreground/50" />
+          </div>
+        )}
+        <Label className="flex-1 flex items-center justify-center gap-2 h-11 px-4 rounded-md border border-dashed border-muted-foreground/25 bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors">
+          <Upload className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground">
+            {preview ? "Change" : "Upload"}
+          </span>
+          <Input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={onChange}
+          />
+        </Label>
+      </div>
+    </div>
   );
 
   return (
-    <div className="space-y-6">
-      {/* Basic Inputs */}
-      <Card className="border-none shadow-none py-0">
-        <CardContent className="p-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="space-y-2 md:col-span-2">
-              <Label>Product Name *</Label>
-              <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="iPhone 15 Pro Max"
-              />
-            </div>
+    <div className="space-y-8">
+      {/* Basic Information */}
+      <Card className="shadow-none">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold">
+            Basic Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-sm font-medium">
+              Product Name <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g., iPhone 15 Pro Max"
+              className="h-11"
+            />
+          </div>
 
-            <div className="space-y-2 row-span-2">
-              <Label>Description</Label>
-              <Textarea
-                value={descriptions}
-                onChange={(e) => setDescriptions(e.target.value)}
-              />
+          <div className="space-y-2">
+            <Label htmlFor="description" className="text-sm font-medium">
+              Description
+            </Label>
+            <Textarea
+              id="description"
+              className="min-h-[120px] resize-none"
+              value={descriptions}
+              onChange={(e) => setDescriptions(e.target.value)}
+              placeholder="Enter product description..."
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="category" className="text-sm font-medium">
+                Category <span className="text-destructive">*</span>
+              </Label>
+              <Select onValueChange={setCategory} value={category || ""}>
+                <SelectTrigger id="category" className="h-11">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center gap-2 mb-2">
-                <input
-                  type="checkbox"
-                  id="useVariants"
-                  checked={useVariants}
-                  onChange={(e) => {
-                    setUseVariants(e.target.checked);
-                    if (e.target.checked) {
-                      setPrice(0);
-                    }
-                  }}
-                  className="w-4 h-4"
-                />
-                <Label htmlFor="useVariants" className="cursor-pointer">
-                  Use Variants (Multiple Prices)
-                </Label>
-              </div>
-
-              {useVariants ? (
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <Label>Product Variants *</Label>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleAddVariant}
-                    >
-                      <Plus className="w-4 h-4 mr-1" />
-                      Add Variant
-                    </Button>
-                  </div>
-                  {variants.length === 0 ? (
-                    <div className="text-sm text-muted-foreground p-4 border rounded-lg text-center">
-                      No variants added. Click "Add Variant" to create one.
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {variants.map((variant, index) => (
-                        <Card key={index} className="p-4 border">
-                          <div className="space-y-3">
-                            <div className="flex justify-between items-center">
-                              <Label className="text-sm font-semibold">
-                                Variant {index + 1}
-                              </Label>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleRemoveVariant(index)}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div className="space-y-1">
-                                <Label className="text-xs">Name *</Label>
-                                <Input
-                                  placeholder="e.g., Small - Red"
-                                  value={variant.name}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "name",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label className="text-xs">Price *</Label>
-                                <Input
-                                  type="number"
-                                  placeholder="0.00"
-                                  value={variant.price || ""}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "price",
-                                      Number(e.target.value)
-                                    )
-                                  }
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label className="text-xs">Quantity</Label>
-                                <Input
-                                  type="number"
-                                  placeholder="0"
-                                  value={variant.quantity || ""}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "quantity",
-                                      Number(e.target.value)
-                                    )
-                                  }
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <Label className="text-xs">SKU</Label>
-                                <Input
-                                  placeholder="SKU-001"
-                                  value={variant.sku || ""}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "sku",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <Label>Price *</Label>
-                  <Input
-                    type="number"
-                    value={price || ""}
-                    onChange={(e) => setPrice(Number(e.target.value))}
-                  />
-                  <Label>Quantity</Label>
-                  <Input
-                    type="number"
-                    value={quantity || ""}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                  />
-                </>
-              )}
+              <Label htmlFor="subcategory" className="text-sm font-medium">
+                Subcategory
+              </Label>
+              <Select
+                onValueChange={setSubcategory}
+                value={subcategory || ""}
+                disabled={!category}
+              >
+                <SelectTrigger id="subcategory" className="h-11">
+                  <SelectValue placeholder="Select subcategory" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories
+                    ?.find((c) => c._id === category)
+                    ?.subcategories?.map((sub: ICategory) => (
+                      <SelectItem key={sub._id} value={sub._id}>
+                        {sub.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Three Image Uploads */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {renderImageUpload(
-          imagePreview,
-          (e) => handleImageChange(e, setImageFile, setImagePreview),
-          () => handleRemoveImage(setImageFile, setImagePreview),
-          "Product Image 1"
-        )}
-        {renderImageUpload(
-          imagePreview2,
-          (e) => handleImageChange(e, setImageFile2, setImagePreview2),
-          () => handleRemoveImage(setImageFile2, setImagePreview2),
-          "Product Image 2"
-        )}
-        {renderImageUpload(
-          imagePreview3,
-          (e) => handleImageChange(e, setImageFile3, setImagePreview3),
-          () => handleRemoveImage(setImageFile3, setImagePreview3),
-          "Product Image 3"
-        )}
-      </div>
+      {/* Product Images */}
+      <Card className="shadow-none">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <ImageIcon className="w-5 h-5" />
+            Product Images
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {renderImageUpload(
+              imagePreview,
+              (e) => handleImageChange(e, setImageFile, setImagePreview),
+              () => handleRemoveImage(setImageFile, setImagePreview),
+              "Image 1"
+            )}
+            {renderImageUpload(
+              imagePreview2,
+              (e) => handleImageChange(e, setImageFile2, setImagePreview2),
+              () => handleRemoveImage(setImageFile2, setImagePreview2),
+              "Image 2"
+            )}
+            {renderImageUpload(
+              imagePreview3,
+              (e) => handleImageChange(e, setImageFile3, setImagePreview3),
+              () => handleRemoveImage(setImageFile3, setImagePreview3),
+              "Image 3"
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Category & Subcategory */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label>Category *</Label>
-          <Select onValueChange={setCategory} value={category || ""}>
-            <SelectTrigger className="h-11">
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((cat) => (
-                <SelectItem key={cat._id} value={cat._id}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label>Subcategory</Label>
-          <Select
-            onValueChange={setSubcategory}
-            value={subcategory || ""}
-            disabled={!category}
-          >
-            <SelectTrigger className="h-11">
-              <SelectValue placeholder="Select subcategory" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories
-                ?.find((c) => c._id === category)
-                ?.subcategories?.map((sub: ICategory) => (
-                  <SelectItem key={sub._id} value={sub._id}>
-                    {sub.name}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      {/* Pricing & Inventory */}
+      <Card className="shadow-none">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <DollarSign className="w-5 h-5" />
+            Pricing & Inventory
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center space-x-3 p-4 rounded-lg border bg-muted/30">
+            <input
+              type="checkbox"
+              id="useVariants"
+              checked={useVariants}
+              onChange={(e) => {
+                setUseVariants(e.target.checked);
+                if (e.target.checked) {
+                  setPrice(0);
+                }
+              }}
+              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 cursor-pointer"
+            />
+            <Label
+              htmlFor="useVariants"
+              className="text-sm font-medium cursor-pointer flex-1"
+            >
+              Use product variants (multiple prices and options)
+            </Label>
+          </div>
 
-      {/* Meta Fields */}
-      <Card className="border-none shadow-none">
-        <CardContent className="p-0">
-          <div className="space-y-4">
-            <div className="flex justify-between">
-              <Label>Additional Attributes</Label>
-              <Button variant="outline" size="sm" onClick={handleAddMetaField}>
-                + Add Field
-              </Button>
+          {useVariants ? (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <Label className="text-sm font-medium">
+                  Product Variants <span className="text-destructive">*</span>
+                </Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddVariant}
+                  className="gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Variant
+                </Button>
+              </div>
+              {variants.length === 0 ? (
+                <div className="text-sm text-muted-foreground p-8 border-2 border-dashed rounded-lg text-center bg-muted/30">
+                  <Package className="w-8 h-8 mx-auto mb-2 text-muted-foreground/50" />
+                  <p>No variants added yet.</p>
+                  <p className="text-xs mt-1">
+                    Click "Add Variant" to create one.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {variants.map((variant, index) => (
+                    <Card key={index} className="border-2 shadow-none">
+                      <CardContent className="p-4">
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center pb-2 border-b">
+                            <div className="flex items-center gap-2">
+                              <Package className="w-4 h-4 text-muted-foreground" />
+                              <Label className="text-sm font-semibold">
+                                Variant {index + 1}
+                              </Label>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleRemoveVariant(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-xs font-medium">
+                                Name <span className="text-destructive">*</span>
+                              </Label>
+                              <Input
+                                placeholder="e.g., Small - Red"
+                                value={variant.name}
+                                onChange={(e) =>
+                                  handleVariantChange(
+                                    index,
+                                    "name",
+                                    e.target.value
+                                  )
+                                }
+                                className="h-10"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs font-medium">
+                                Price{" "}
+                                <span className="text-destructive">*</span>
+                              </Label>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                placeholder="0.00"
+                                value={variant.price || ""}
+                                onChange={(e) =>
+                                  handleVariantChange(
+                                    index,
+                                    "price",
+                                    Number(e.target.value)
+                                  )
+                                }
+                                className="h-10"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs font-medium">
+                                Quantity
+                              </Label>
+                              <Input
+                                type="number"
+                                placeholder="0"
+                                value={variant.quantity || ""}
+                                onChange={(e) =>
+                                  handleVariantChange(
+                                    index,
+                                    "quantity",
+                                    Number(e.target.value)
+                                  )
+                                }
+                                className="h-10"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-xs font-medium">SKU</Label>
+                              <Input
+                                placeholder="SKU-001"
+                                value={variant.sku || ""}
+                                onChange={(e) =>
+                                  handleVariantChange(
+                                    index,
+                                    "sku",
+                                    e.target.value
+                                  )
+                                }
+                                className="h-10"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="space-y-3">
-              <div className="flex flex-wrap gap-2 text-xs font-semibold text-primary">
-                <span className="px-2 py-1 rounded bg-muted">
-                  specification
-                </span>
-                <span className="px-2 py-1 rounded bg-muted">features</span>
-                <span className="px-2 py-1 rounded bg-muted">voltage</span>
-                <span className="px-2 py-1 rounded bg-muted">current</span>
-                <span className="px-2 py-1 rounded bg-muted">new_arrival</span>
-                <span className="px-2 py-1 rounded bg-muted">size</span>
-                <span className="px-2 py-1 rounded bg-muted">color</span>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="price" className="text-sm font-medium">
+                  Price <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="price"
+                  type="number"
+                  step="0.01"
+                  value={price || ""}
+                  onChange={(e) => setPrice(Number(e.target.value))}
+                  placeholder="0.00"
+                  className="h-11"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="quantity" className="text-sm font-medium">
+                  Quantity
+                </Label>
+                <Input
+                  id="quantity"
+                  type="number"
+                  value={quantity || ""}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  placeholder="0"
+                  className="h-11"
+                />
               </div>
             </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Additional Attributes */}
+      <Card className="shadow-none">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <Tag className="w-5 h-5" />
+            Additional Attributes
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-muted-foreground">
+              Add custom attributes to your product
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleAddMetaField}
+              className="gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add Field
+            </Button>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold text-muted-foreground mr-2">
+              Suggested:
+            </span>
+            {[
+              "specifications",
+              "features",
+              "voltage",
+              "current",
+              "new_arrival",
+              "size",
+              "color",
+            ].map((tag) => (
+              <span
+                key={tag}
+                className="px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary border border-primary/20"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+          <div className="space-y-3">
             {metaFields.map((f, i) => (
               <div
                 key={i}
-                className="flex flex-col sm:flex-row gap-3 p-3 rounded-lg border bg-muted/30"
+                className="flex flex-col sm:flex-row gap-3 p-4 rounded-lg border bg-muted/30"
               >
                 <Input
-                  placeholder="Attribute like above"
+                  placeholder="Attribute name (e.g., specification)"
                   value={f.key}
                   onChange={(e) => handleMetaChange(i, "key", e.target.value)}
+                  className="h-10"
                 />
                 <Input
-                  placeholder="Value with comma separated"
+                  placeholder="Value (comma separated)"
                   value={f.value}
                   onChange={(e) => handleMetaChange(i, "value", e.target.value)}
+                  className="h-10"
                 />
                 {metaFields.length > 1 && (
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
+                    className="h-10 w-10 shrink-0"
                     onClick={() => handleRemoveMetaField(i)}
                   >
                     <X className="h-4 w-4" />
@@ -587,8 +694,13 @@ export const ProductForm = ({
       </Card>
 
       {/* Action Buttons */}
-      <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button variant="outline" onClick={onCancel} disabled={saving}>
+      <div className="flex justify-end gap-3 pt-6 border-t">
+        <Button
+          variant="outline"
+          onClick={onCancel}
+          disabled={saving}
+          className="min-w-[100px]"
+        >
           Cancel
         </Button>
         <Button
@@ -601,6 +713,7 @@ export const ProductForm = ({
             (useVariants &&
               (!variants.length || variants.some((v) => !v.name || !v.price)))
           }
+          className="min-w-[140px]"
         >
           {saving
             ? "Saving..."

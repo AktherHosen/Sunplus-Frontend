@@ -222,7 +222,7 @@ const ProductPage = () => {
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={handleCloseDialog}>
-        <DialogContent className="max-w-full sm:max-w-4xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-full sm:max-w-6xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto">
           <DialogHeader className="space-y-1">
             <DialogTitle className="text-xl md:text-2xl font-semibold">
               {editingProduct ? "Edit Product" : "Add Product"}
