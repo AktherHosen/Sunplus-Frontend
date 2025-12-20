@@ -1,19 +1,19 @@
-import Car1 from "@/assets/carousel/mk.png";
-import Car2 from "@/assets/carousel/flora.png";
-import Car3 from "@/assets/carousel/floracoffee.png";
-import Car4 from "@/assets/carousel/ultrathin.png";
+import Car12 from "@/assets/carousel/circuitbreaker.png";
 import Car5 from "@/assets/carousel/crowngrey.png";
 import Car6 from "@/assets/carousel/crownwhite.png";
-import Car7 from "@/assets/carousel/platinum.png";
-import Car8 from "@/assets/carousel/goldplatinum.png";
+import Car15 from "@/assets/carousel/dbbox.png";
 import Car9 from "@/assets/carousel/deluxcoffee.png";
 import Car10 from "@/assets/carousel/deluxgold.png";
-import Car11 from "@/assets/carousel/whitevip.png";
-import Car12 from "@/assets/carousel/circuitbreaker.png";
-import Car13 from "@/assets/carousel/ips.png";
 import Car14 from "@/assets/carousel/diamondled.png";
-import Car15 from "@/assets/carousel/dbbox.png";
 import Car16 from "@/assets/carousel/fan.png";
+import Car2 from "@/assets/carousel/flora.png";
+import Car3 from "@/assets/carousel/floracoffee.png";
+import Car8 from "@/assets/carousel/goldplatinum.png";
+import Car13 from "@/assets/carousel/ips.png";
+import Car1 from "@/assets/carousel/mk.png";
+import Car7 from "@/assets/carousel/platinum.png";
+import Car4 from "@/assets/carousel/ultrathin.png";
+import Car11 from "@/assets/carousel/whitevip.png";
 
 import {
   Carousel,
@@ -47,7 +47,8 @@ export default function Banner() {
   return (
     <Carousel
       className="w-full overflow-hidden rounded-lg"
-      plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}>
+      plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
+    >
       <CarouselContent className="flex w-full ml-0 gap-0">
         {images.map((img, index) => (
           <CarouselItem key={index} className="flex-shrink-0 w-full ml-0 pl-0">
