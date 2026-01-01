@@ -1,6 +1,6 @@
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
-import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { Facebook,Mail, MapPin, Phone } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Link } from "react-router";
 import { Avatar, AvatarImage } from "../ui/avatar";
@@ -9,11 +9,6 @@ const socialLinks = [
     icon: Facebook,
     href: "https://www.facebook.com/share/1BGFTvK7kz",
     label: "Facebook",
-  },
-  {
-    icon: Instagram,
-    href: "https://instagram.com/sunplus",
-    label: "Instagram",
   },
   {
     icon: FaWhatsapp,
