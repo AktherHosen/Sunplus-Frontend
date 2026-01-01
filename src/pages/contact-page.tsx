@@ -1,12 +1,5 @@
-import {
-  MapPin,
-  Phone,
-  Mail,
-  Headphones,
-  Facebook,
-  Instagram,
-} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Facebook, Headphones, Mail, MapPin, Phone } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 
 export default function ContactPage() {
@@ -54,13 +47,15 @@ export default function ContactPage() {
                 <>
                   <a
                     href="mailto:support@sunplusbd.com"
-                    className="text-primary hover:underline">
+                    className="text-primary hover:underline"
+                  >
                     support@sunplusbd.com
                   </a>
                   <br />
                   <a
                     href="mailto:info@sunplusbd.com"
-                    className="text-primary hover:underline">
+                    className="text-primary hover:underline"
+                  >
                     info@sunplusbd.com
                   </a>
                 </>
@@ -69,7 +64,8 @@ export default function ContactPage() {
           ].map(({ icon: Icon, title, text }) => (
             <Card
               key={title}
-              className="border border-border shadow-none  transition-all rounded-lg p-6 flex flex-col items-start">
+              className="border border-border shadow-none  transition-all rounded-lg p-6 flex flex-col items-start"
+            >
               <CardHeader className="flex items-center gap-3 mb-3 p-0">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <Icon className="text-primary" size={24} />
@@ -120,11 +116,6 @@ export default function ContactPage() {
                   label: "Facebook",
                 },
                 {
-                  icon: Instagram,
-                  href: "https://instagram.com/sunplus",
-                  label: "Instagram",
-                },
-                {
                   icon: FaWhatsapp,
                   href: "https://wa.me/8801835926605",
                   label: "WhatsApp",
@@ -134,7 +125,8 @@ export default function ContactPage() {
                   key={label}
                   href={href}
                   target="_blank"
-                  className="flex items-center gap-2 text-gray-600 hover:text-primary transition">
+                  className="flex items-center gap-2 text-gray-600 hover:text-primary transition"
+                >
                   <Icon size={20} /> <span>{label}</span>
                 </a>
               ))}
