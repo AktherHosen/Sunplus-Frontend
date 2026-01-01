@@ -11,11 +11,6 @@ const socialLinks = [
     label: "Facebook",
   },
   {
-    icon: Instagram,
-    href: "https://instagram.com/sunplus",
-    label: "Instagram",
-  },
-  {
     icon: FaWhatsapp,
     href: "https://wa.me/8801835926605",
     label: "WhatsApp",
