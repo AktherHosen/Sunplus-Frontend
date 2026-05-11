@@ -582,7 +582,6 @@ const SubcatProductDetailsPage = () => {
                         +880 1835 926 605
                       </a>
                     </p>{" "}
-                    Or Toll-Free: <strong>08000016267</strong>
                   </DialogDescription>
                 </DialogHeader>
                 <div className="mt-4 flex justify-end">

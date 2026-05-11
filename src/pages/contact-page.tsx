@@ -25,9 +25,8 @@ export default function ContactPage() {
               title: "Head Office",
               text: (
                 <>
-                  Kader tower electric market, <br />
-                  Jubliee road, <br />
-                  Chittagong, Bangladesh
+                  Chittagong, Bangladesh <br />
+                  Dhaka, Bangladesh
                 </>
               ),
             },
