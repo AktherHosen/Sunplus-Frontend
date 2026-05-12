@@ -84,8 +84,9 @@ const Footer = () => {
 
           <div className="space-y-2 text-sm text-accent-foreground/80">
             <p className="flex items-center gap-2">
-              <MapPin size={16} /> Kader tower electric market, Jubliee road,
-              Chittagong, Bangladesh
+              <MapPin size={16} />
+              Chittagong, Bangladesh <br />
+              Dhaka, Bangladesh
             </p>
             <a href="tel:+880835926605" className="flex items-center gap-2">
               <Phone size={16} /> +880 1835 926 605
