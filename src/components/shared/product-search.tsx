@@ -26,7 +26,7 @@ export default function ProductSearch() {
 
     const query = searchQuery.toLowerCase().trim();
     return products.filter((product: IProduct) =>
-      product.name?.toLowerCase().includes(query)
+      product.name?.toLowerCase().includes(query),
     );
   }, [searchQuery, products]);
 
@@ -59,26 +59,26 @@ export default function ProductSearch() {
   };
 
   // Helper function to get display price for a product
-  const getDisplayPrice = (product: IProduct): number | null => {
-    // If product has variants, use variant prices
-    if (product.variants && product.variants.length > 0) {
-      const variantPrices = product.variants
-        .map((v) => v.price)
-        .filter((price) => price > 0);
+  // const getDisplayPrice = (product: IProduct): number | null => {
+  //   // If product has variants, use variant prices
+  //   if (product.variants && product.variants.length > 0) {
+  //     const variantPrices = product.variants
+  //       .map((v) => v.price)
+  //       .filter((price) => price > 0);
 
-      if (variantPrices.length > 0) {
-        // Return the minimum variant price
-        return Math.min(...variantPrices);
-      }
-    }
+  //     if (variantPrices.length > 0) {
+  //       // Return the minimum variant price
+  //       return Math.min(...variantPrices);
+  //     }
+  //   }
 
-    // Fall back to base price if it exists and is greater than 0
-    if (product.price && product.price > 0) {
-      return product.price;
-    }
+  //   // Fall back to base price if it exists and is greater than 0
+  //   if (product.price && product.price > 0) {
+  //     return product.price;
+  //   }
 
-    return null;
-  };
+  //   return null;
+  // };
 
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -153,7 +153,7 @@ export default function ProductSearch() {
             // Prevent closing when clicking on the input or inside popover content
             const target = e.target as HTMLElement;
             const popoverContent = target.closest(
-              "[data-radix-popover-content]"
+              "[data-radix-popover-content]",
             );
 
             // Don't close if clicking inside popover content (product items)
@@ -211,7 +211,7 @@ export default function ProductSearch() {
                     <p className="text-xs sm:text-sm font-medium text-foreground truncate">
                       {product.name}
                     </p>
-                    {(() => {
+                    {/* {(() => {
                       const displayPrice = getDisplayPrice(product);
                       const hasVariants =
                         product.variants && product.variants.length > 0;
@@ -253,7 +253,7 @@ export default function ProductSearch() {
                         }
                       }
                       return null;
-                    })()}
+                    })()} */}
                   </div>
                 </button>
               ))}

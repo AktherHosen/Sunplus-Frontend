@@ -1,5 +1,4 @@
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
-import type { IVariant } from "@/types/product";
 import { Check, Image, Package, X } from "lucide-react";
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
@@ -116,7 +115,7 @@ const ProductCard = ({ slug }: ProductCardProps) => {
               </h3>
 
               <div className="flex items-center justify-between border-t border-gray-100">
-                <div className="flex items-baseline gap-2">
+                {/* <div className="flex items-baseline gap-2">
                   <span className="text-xl sm:text-2xl font-bold text-primary">
                     <span className="text-lg">৳</span>
                     {product.variants && product.variants.length > 0 ? (
@@ -136,7 +135,7 @@ const ProductCard = ({ slug }: ProductCardProps) => {
                     )}
                   </span>
                   <span className="text-sm text-gray-500">each</span>
-                </div>
+                </div> */}
 
                 <div
                   className={`flex items-center gap-1.5 text-sm font-medium whitespace-nowrap ${

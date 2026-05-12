@@ -183,7 +183,7 @@ const SubcatProductDetailsPage = () => {
                   alt={product.name}
                   className={cn(
                     "w-full h-[300px] object-contain p-4 transition duration-300",
-                    isComingSoon ? "blur-sm opacity-60" : ""
+                    isComingSoon ? "blur-sm opacity-60" : "",
                   )}
                   initial={{ scale: 0.95, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -221,7 +221,7 @@ const SubcatProductDetailsPage = () => {
                     "relative w-20 h-20 rounded-lg border-2 overflow-hidden transition",
                     selectedImage === idx
                       ? "border-blue-600 ring-1 ring-blue-300"
-                      : "border-gray-200 hover:border-gray-300"
+                      : "border-gray-200 hover:border-gray-300",
                   )}
                   whileHover={{ scale: 1.05 }}
                 >
@@ -230,7 +230,7 @@ const SubcatProductDetailsPage = () => {
                     alt={`${product.name} view ${idx + 1}`}
                     className={cn(
                       "w-full h-full object-cover transition",
-                      isComingSoon ? "blur-[1px] opacity-60" : ""
+                      isComingSoon ? "blur-[1px] opacity-60" : "",
                     )}
                   />
 
@@ -263,12 +263,12 @@ const SubcatProductDetailsPage = () => {
               </span>
             ) : (
               <>
-                <span className="text-2xl font-bold text-primary">
+                {/* <span className="text-2xl font-bold text-primary">
                   ৳
                   {hasVariants && selectedVariant
                     ? Number(selectedVariant.price).toFixed(2)
                     : Number(product.price || 0).toFixed(2)}
-                </span>
+                </span> */}
                 {hasVariants &&
                   product.variants &&
                   product.variants.length > 1 && (
@@ -303,14 +303,14 @@ const SubcatProductDetailsPage = () => {
                         "text-sm font-medium cursor-pointer transition-all px-3 py-1.5",
                         isActive
                           ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
                       )}
                     >
                       <div className="flex flex-col items-start">
                         <span>{variant.name}</span>
-                        <span className="text-xs opacity-90">
+                        {/* <span className="text-xs opacity-90">
                           ৳{Number(variant.price).toFixed(2)}
-                        </span>
+                        </span> */}
                       </div>
                     </Badge>
                   );
@@ -343,7 +343,7 @@ const SubcatProductDetailsPage = () => {
                           "cursor-pointer transition",
                           isActive
                             ? "bg-primary text-white"
-                            : "bg-secondary text-black"
+                            : "bg-secondary text-black",
                         )}
                       >
                         {w}
@@ -372,7 +372,7 @@ const SubcatProductDetailsPage = () => {
                           "cursor-pointer transition",
                           isActive
                             ? "bg-primary text-white"
-                            : "bg-secondary text-black"
+                            : "bg-secondary text-black",
                         )}
                       >
                         {w}
@@ -404,7 +404,7 @@ const SubcatProductDetailsPage = () => {
                           "cursor-pointer transition",
                           isActive
                             ? "bg-primary text-white"
-                            : "bg-secondary text-black"
+                            : "bg-secondary text-black",
                         )}
                       >
                         {c}
@@ -435,7 +435,7 @@ const SubcatProductDetailsPage = () => {
                           "cursor-pointer transition",
                           isActive
                             ? "bg-primary text-white"
-                            : "bg-secondary text-black"
+                            : "bg-secondary text-black",
                         )}
                       >
                         {c}
@@ -463,7 +463,7 @@ const SubcatProductDetailsPage = () => {
                           "cursor-pointer transition",
                           isActive
                             ? "bg-primary text-white"
-                            : "bg-secondary text-black"
+                            : "bg-secondary text-black",
                         )}
                       >
                         {s}
@@ -485,7 +485,7 @@ const SubcatProductDetailsPage = () => {
               <dd
                 className={cn(
                   "font-semibold mt-1 flex items-center gap-1",
-                  !outOfStock ? "text-green-600" : "text-red-600"
+                  !outOfStock ? "text-green-600" : "text-red-600",
                 )}
               >
                 <span className="text-lg">●</span>
@@ -494,8 +494,8 @@ const SubcatProductDetailsPage = () => {
                     ? `In Stock (${selectedVariant.quantity || 0})`
                     : "Out of Stock"
                   : !outOfStock
-                  ? "In Stock"
-                  : "Out of Stock"}
+                    ? "In Stock"
+                    : "Out of Stock"}
               </dd>
             </div>
             <div>
@@ -531,7 +531,7 @@ const SubcatProductDetailsPage = () => {
                   disabled={disableOrder}
                   className={cn(
                     "flex-1 text-base font-medium gap-2",
-                    disableOrder ? "opacity-60 cursor-not-allowed" : ""
+                    disableOrder ? "opacity-60 cursor-not-allowed" : "",
                   )}
                 >
                   <ShoppingCart className="w-5 h-5" />{" "}
@@ -610,7 +610,7 @@ const SubcatProductDetailsPage = () => {
                     <TabsTrigger key={tab} value={tab}>
                       {tab.charAt(0).toUpperCase() + tab.slice(1)}
                     </TabsTrigger>
-                  )
+                  ),
                 )}
               </TabsList>
 
@@ -690,7 +690,7 @@ const SubcatProductDetailsPage = () => {
                               alt={`View ${idx + 1}`}
                               className={cn(
                                 "object-cover w-full h-full",
-                                isComingSoon ? "blur-[1px] opacity-60" : ""
+                                isComingSoon ? "blur-[1px] opacity-60" : "",
                               )}
                             />
                             {isComingSoon && (

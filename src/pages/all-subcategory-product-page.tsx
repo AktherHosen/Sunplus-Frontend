@@ -2,7 +2,6 @@ import Loader from "@/components/loader";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import SectionTitle from "@/components/ui/section-title";
 import { useGetProductsBySubcategorySlugQuery } from "@/redux/api/baseApi";
-import type { IVariant } from "@/types/product";
 import { motion } from "framer-motion";
 import { Check, Image, X } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
@@ -11,7 +10,7 @@ const AllSubcategoryProductPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError } = useGetProductsBySubcategorySlugQuery(
-    slug!
+    slug!,
   );
 
   if (isLoading) return <Loader />;
@@ -124,7 +123,7 @@ const AllSubcategoryProductPage = () => {
                     <p className="text-base font-semibold text-foreground line-clamp-1">
                       {product.name}
                     </p>
-                    <p className="text-lg font-bold text-primary">
+                    {/* <p className="text-lg font-bold text-primary">
                       {product.variants && product.variants.length > 0 ? (
                         <>
                           Tk.{" "}
@@ -141,7 +140,7 @@ const AllSubcategoryProductPage = () => {
                       ) : (
                         "Price on request"
                       )}
-                    </p>
+                    </p> */}
                   </div>
 
                   <div
@@ -170,7 +169,7 @@ const AllSubcategoryProductPage = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         navigate(
-                          `/product/${product.category_id?.slug}/${product.subcategories?.slug}/${product.slug}`
+                          `/product/${product.category_id?.slug}/${product.subcategories?.slug}/${product.slug}`,
                         );
                       }}
                       className="
