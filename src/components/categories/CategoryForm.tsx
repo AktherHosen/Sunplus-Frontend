@@ -52,7 +52,6 @@ export default function CategoryForm({
   const [addCategory, { isLoading: isAdding }] = useAddCategoryMutation();
   const [updateCategory, { isLoading: isUpdating }] =
     useUpdateCategoryMutation();
-  const [newArrival, setNewArrival] = useState(false);
 
   useEffect(() => {
     if (category) {
@@ -71,7 +70,6 @@ export default function CategoryForm({
         ) || []
       );
       setBannerFiles([]);
-      setNewArrival(Boolean(category?.new_arrival));
     } else {
       resetForm();
     }
@@ -291,23 +289,6 @@ export default function CategoryForm({
                   </Label>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Flags</Label>
-
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="newArrival"
-                checked={newArrival}
-                onChange={(e) => setNewArrival(e.target.checked)}
-                className="h-4 w-4 cursor-pointer"
-              />
-              <Label htmlFor="newArrival" className="cursor-pointer">
-                New Arrival
-              </Label>
             </div>
           </div>
 
