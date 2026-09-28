@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Bot, Settings2, SquareTerminal } from "lucide-react";
+import { BookOpen, Bot, Settings2, SquareTerminal, Image } from "lucide-react";
 import * as React from "react";
 
 import {
@@ -44,6 +44,12 @@ const data = {
       url: "/dashboard/products",
       icon: Bot,
       items: [{ title: "Products", url: "/dashboard/products" }],
+    },
+    {
+      title: "Banners",
+      url: "/dashboard/banners",
+      icon: Image,
+      items: [{ title: "Home Banners", url: "/dashboard/banners" }],
     },
     {
       title: "Category",

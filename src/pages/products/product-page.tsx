@@ -27,6 +27,13 @@ import {
 } from "@/redux/api/baseApi";
 import type { IVariant } from "@/types/product";
 import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -206,18 +213,22 @@ const ProductPage = () => {
         
         <div className="flex flex-wrap items-center gap-2">
           {/* Category Filter Dropdown */}
-          <select
+          <Select
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="border border-input bg-background rounded-md px-3 py-1.5 text-sm h-9 focus:outline-none focus:ring-2 focus:ring-primary"
+            onValueChange={setSelectedCategory}
           >
-            <option value="ALL">All Categories</option>
-            {categories.map((cat: any) => (
-              <option key={cat._id} value={cat._id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-[180px] h-9">
+              <SelectValue placeholder="All Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Categories</SelectItem>
+              {categories.map((cat: any) => (
+                <SelectItem key={cat._id} value={cat._id}>
+                  {cat.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           <Button size="sm" onClick={() => handleOpenDialog()}>
             + Add Product

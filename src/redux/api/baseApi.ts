@@ -16,7 +16,7 @@ export const baseApi = createApi({
     credentials: "include",
   }),
 
-  tagTypes: ["products", "categories", "orders", "auth", "users"],
+  tagTypes: ["products", "categories", "orders", "auth", "users", "banners"],
   endpoints: (builder) => ({
     // -------------------- Categories --------------------
     getAllCategories: builder.query({
@@ -227,6 +227,35 @@ export const baseApi = createApi({
       invalidatesTags: ["users"],
     }),
 
+    // -------------------- Banners --------------------
+    getAllBanners: builder.query({
+      query: () => "/banner",
+      providesTags: ["banners"],
+    }),
+    addBanner: builder.mutation({
+      query: (formData: FormData) => ({
+        url: "/banner/create",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["banners"],
+    }),
+    deleteBanner: builder.mutation({
+      query: (id: string) => ({
+        url: `/banner/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["banners"],
+    }),
+    reorderBanners: builder.mutation({
+      query: (updates: { id: string; order: number }[]) => ({
+        url: "/banner/reorder",
+        method: "PATCH",
+        body: { updates },
+      }),
+      invalidatesTags: ["banners"],
+    }),
+
     // In your baseApi.ts (or wherever the hook is defined)
     getStatistics: builder.query<
       {
@@ -285,4 +314,10 @@ export const {
   useUpdateUserMutation,
 
   useGetStatisticsQuery,
+
+  // Banners
+  useGetAllBannersQuery,
+  useAddBannerMutation,
+  useDeleteBannerMutation,
+  useReorderBannersMutation,
 } = baseApi;
