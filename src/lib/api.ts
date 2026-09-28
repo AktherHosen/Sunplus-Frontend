@@ -17,3 +17,5 @@ export const resetPassword = (payload: {
   oldPassword: string;
   newPassword: string;
 }) => api.post("/reset-password", payload);
+
+export const getCurrentUser = () => api.get("/me");

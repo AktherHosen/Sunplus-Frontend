@@ -4,6 +4,7 @@ import {
   logoutUser,
   refreshAccessToken,
   resetPassword,
+  getCurrentUser,
 } from "@/lib/api";
 import type { IUser } from "@/types/user";
 import {
@@ -11,6 +12,7 @@ import {
   type ReactNode,
   useContext,
   useState,
+  useEffect,
 } from "react";
 import { toast } from "sonner";
 
@@ -28,7 +30,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
-  const [loading] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const res = await getCurrentUser();
+        if (res.data?.data) {
+          setUser(res.data.data);
+        }
+      } catch (err) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    initAuth();
+  }, []);
   
   const login = async (email: string, password: string) => {
     try {
