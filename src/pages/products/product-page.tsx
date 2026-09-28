@@ -23,6 +23,7 @@ import {
   useGetAllProductsQuery,
   useUpdateProductMutation,
 } from "@/redux/api/baseApi";
+import type { IVariant } from "@/types/product";
 import { Edit, Image, Loader2, RefreshCcw, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -126,7 +127,7 @@ const ProductPage = () => {
               <TableHead className="w-16 text-center">Image</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
+              <TableHead>Price / Variants</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -154,8 +155,36 @@ const ProductPage = () => {
                   </TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.category_id?.name || "N/A"}</TableCell>
-                  <TableCell>৳{product.price}</TableCell>
-                  <TableCell>{product.quantity || 0}</TableCell>
+                  <TableCell>
+                    {product.variants && product.variants.length > 0 ? (
+                      <div className="space-y-1">
+                        <div className="text-xs text-muted-foreground">
+                          {product.variants.length} variant
+                          {product.variants.length > 1 ? "s" : ""}
+                        </div>
+                        <div className="text-xs">
+                          ৳
+                          {Math.min(
+                            ...product.variants.map((v: IVariant) => v.price)
+                          )}{" "}
+                          - ৳
+                          {Math.max(
+                            ...product.variants.map((v: IVariant) => v.price)
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div>৳{product.price || 0}</div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {product.variants && product.variants.length > 0
+                      ? product.variants.reduce(
+                          (sum: number, v: IVariant) => sum + (v.quantity || 0),
+                          0
+                        )
+                      : product.quantity || 0}
+                  </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button
                       variant="outline"
@@ -193,7 +222,7 @@ const ProductPage = () => {
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={handleCloseDialog}>
-        <DialogContent className="max-w-full sm:max-w-4xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-full sm:max-w-6xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto">
           <DialogHeader className="space-y-1">
             <DialogTitle className="text-xl md:text-2xl font-semibold">
               {editingProduct ? "Edit Product" : "Add Product"}
