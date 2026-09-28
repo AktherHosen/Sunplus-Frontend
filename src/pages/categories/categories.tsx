@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import CategoryForm from "@/components/categories/CategoryForm";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -36,7 +37,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 // Reusable Sortable Table Row Component
-function SortableTableRow({ id, children, ...props }: any) {
+function SortableTableRow({ id, disabled, children, ...props }: any) {
   const {
     attributes,
     listeners,
@@ -44,7 +45,7 @@ function SortableTableRow({ id, children, ...props }: any) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id, disabled });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -57,11 +58,11 @@ function SortableTableRow({ id, children, ...props }: any) {
   return (
     <TableRow ref={setNodeRef} style={style} {...props}>
       <TableCell
-        className="w-[40px] cursor-grab active:cursor-grabbing text-center"
-        {...attributes}
-        {...listeners}
+        className={`w-[40px] text-center ${disabled ? '' : 'cursor-grab active:cursor-grabbing'}`}
+        {...(disabled ? {} : attributes)}
+        {...(disabled ? {} : listeners)}
       >
-        <GripVertical className="h-5 w-5 text-gray-400 mx-auto hover:text-gray-700" />
+        {!disabled && <GripVertical className="h-5 w-5 text-gray-400 mx-auto hover:text-gray-700" />}
       </TableCell>
       {children}
     </TableRow>
@@ -69,12 +70,22 @@ function SortableTableRow({ id, children, ...props }: any) {
 }
 
 export default function Categories() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const { data, isLoading, isError, refetch } =
-    useGetAllCategoriesQuery(undefined);
+    useGetAllCategoriesQuery(debouncedSearch);
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
 
   const [categories, setCategories] = useState<any[]>([]);
+
+  const isSearching = debouncedSearch.trim().length > 0;
 
   // Update local state when API data changes
   useEffect(() => {
@@ -142,9 +153,17 @@ export default function Categories() {
   return (
     <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 lg:py-2.5">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
         <h1 className="text-2xl font-bold">Categories</h1>
-        <CategoryForm triggerText="+ Add Category" onSuccess={refetch} />
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Input 
+            placeholder="Search categories..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full md:w-[250px]"
+          />
+          <CategoryForm triggerText="+ Add Category" onSuccess={refetch} />
+        </div>
       </div>
 
       {/* Loading */}
@@ -179,7 +198,7 @@ export default function Categories() {
                   strategy={verticalListSortingStrategy}
                 >
                   {categories.map((cat: any, index: number) => (
-                    <SortableTableRow key={cat._id} id={cat._id}>
+                    <SortableTableRow key={cat._id} id={cat._id} disabled={isSearching}>
                       <TableCell className="text-center">{index + 1}</TableCell>
                       <TableCell>
                         <Avatar className="rounded size-8">

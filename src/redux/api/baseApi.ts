@@ -20,7 +20,7 @@ export const baseApi = createApi({
   endpoints: (builder) => ({
     // -------------------- Categories --------------------
     getAllCategories: builder.query({
-      query: () => "/category",
+      query: (searchTerm?: string) => searchTerm ? `/category?searchTerm=${searchTerm}` : "/category",
       providesTags: ["categories"],
     }),
 
@@ -65,7 +65,7 @@ export const baseApi = createApi({
     }),
 
     getAllSubCategories: builder.query({
-      query: () => "/category/sub-categories",
+      query: (searchTerm?: string) => searchTerm ? `/category/sub-categories?searchTerm=${searchTerm}` : "/category/sub-categories",
       providesTags: ["categories"],
     }),
 
@@ -77,9 +77,9 @@ export const baseApi = createApi({
         message: string;
         data: IProduct[];
       },
-      void
+      string | void
     >({
-      query: () => "/product",
+      query: (searchTerm) => searchTerm ? `/product?searchTerm=${searchTerm}` : "/product",
       providesTags: ["products"],
     }),
 

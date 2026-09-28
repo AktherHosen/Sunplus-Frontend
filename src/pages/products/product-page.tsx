@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -53,7 +54,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 // Reusable Sortable Table Row Component
-function SortableTableRow({ id, children, ...props }: any) {
+function SortableTableRow({ id, disabled, children, ...props }: any) {
   const {
     attributes,
     listeners,
@@ -61,7 +62,7 @@ function SortableTableRow({ id, children, ...props }: any) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id, disabled });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -74,11 +75,11 @@ function SortableTableRow({ id, children, ...props }: any) {
   return (
     <TableRow ref={setNodeRef} style={style} {...props}>
       <TableCell
-        className="w-[40px] cursor-grab active:cursor-grabbing text-center"
-        {...attributes}
-        {...listeners}
+        className={`w-[40px] text-center ${disabled ? '' : 'cursor-grab active:cursor-grabbing'}`}
+        {...(disabled ? {} : attributes)}
+        {...(disabled ? {} : listeners)}
       >
-        <GripVertical className="h-5 w-5 text-gray-400 mx-auto hover:text-gray-700" />
+        {!disabled && <GripVertical className="h-5 w-5 text-gray-400 mx-auto hover:text-gray-700" />}
       </TableCell>
       {children}
     </TableRow>
@@ -86,7 +87,15 @@ function SortableTableRow({ id, children, ...props }: any) {
 }
 
 const ProductPage = () => {
-  const { data: productsData, refetch } = useGetAllProductsQuery();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const { data: productsData, refetch } = useGetAllProductsQuery(debouncedSearch);
   const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
   const [deleteProduct] = useDeleteProductMutation();
   const [addProduct] = useAddProductMutation();
@@ -102,6 +111,8 @@ const ProductPage = () => {
   const [productsList, setProductsList] = useState<any[]>([]);
   
   const categories = categoriesData?.data || [];
+
+  const isSearching = debouncedSearch.trim().length > 0;
 
   // Filter products whenever data or selected category changes
   useEffect(() => {
@@ -212,6 +223,12 @@ const ProductPage = () => {
         <h1 className="text-2xl font-bold">Products</h1>
         
         <div className="flex flex-wrap items-center gap-2">
+          <Input 
+            placeholder="Search products..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full sm:w-[200px]"
+          />
           {/* Category Filter Dropdown */}
           <Select
             value={selectedCategory}
@@ -273,7 +290,7 @@ const ProductPage = () => {
                   strategy={verticalListSortingStrategy}
                 >
                   {productsList.map((product: any, index: number) => (
-                    <SortableTableRow key={product._id} id={product._id}>
+                    <SortableTableRow key={product._id} id={product._id} disabled={isSearching}>
                       <TableCell className="text-center">{index + 1}</TableCell>
                       <TableCell className="text-center">
                         <Avatar className="rounded size-8">
