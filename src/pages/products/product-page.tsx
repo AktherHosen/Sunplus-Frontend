@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ProductForm } from "@/components/product/ProductForm";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -22,11 +23,60 @@ import {
   useGetAllCategoriesQuery,
   useGetAllProductsQuery,
   useUpdateProductMutation,
+  useReorderProductsMutation,
 } from "@/redux/api/baseApi";
 import type { IVariant } from "@/types/product";
-import { Edit, Image, Loader2, RefreshCcw, Trash } from "lucide-react";
-import { useState } from "react";
+import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+// Reusable Sortable Table Row Component
+function SortableTableRow({ id, children, ...props }: any) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    position: "relative" as const,
+    zIndex: isDragging ? 1 : 0,
+  };
+
+  return (
+    <TableRow ref={setNodeRef} style={style} {...props}>
+      <TableCell
+        className="w-[40px] cursor-grab active:cursor-grabbing text-center"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="h-5 w-5 text-gray-400 mx-auto hover:text-gray-700" />
+      </TableCell>
+      {children}
+    </TableRow>
+  );
+}
 
 const ProductPage = () => {
   const { data: productsData, refetch } = useGetAllProductsQuery();
@@ -34,13 +84,53 @@ const ProductPage = () => {
   const [deleteProduct] = useDeleteProductMutation();
   const [addProduct] = useAddProductMutation();
   const [updateProduct] = useUpdateProductMutation();
+  const [reorderProducts] = useReorderProductsMutation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  const products = productsData?.data || [];
+  const [productsList, setProductsList] = useState<any[]>([]);
   const categories = categoriesData?.data || [];
+
+  useEffect(() => {
+    if (productsData?.data) {
+      setProductsList(productsData.data);
+    }
+  }, [productsData]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = async (event: any) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = productsList.findIndex((item) => item._id === active.id);
+      const newIndex = productsList.findIndex((item) => item._id === over.id);
+
+      const newItems = arrayMove(productsList, oldIndex, newIndex);
+      setProductsList(newItems); // Optimistic UI update
+
+      // Save to backend
+      const updates = newItems.map((item, index) => ({
+        id: item._id,
+        order: index,
+      }));
+
+      try {
+        await reorderProducts(updates).unwrap();
+        toast.success("Products reordered successfully!");
+      } catch (error: any) {
+        toast.error("Failed to reorder products");
+        refetch(); // Revert
+      }
+    }
+  };
 
   const handleRefresh = async () => {
     try {
@@ -120,104 +210,116 @@ const ProductPage = () => {
 
       {/* Product Table */}
       <div className="rounded-md border border-border shadow-none bg-card overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[60px] text-center">#</TableHead>
-              <TableHead className="w-16 text-center">Image</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price / Variants</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.length > 0 ? (
-              products.map((product: any, index: number) => (
-                <TableRow key={product._id}>
-                  <TableCell className="text-center">{index + 1}</TableCell>
-                  <TableCell className="text-center">
-                    <Avatar className="rounded size-8">
-                      <AvatarImage
-                        className="rounded"
-                        src={
-                          product.image
-                            ? `${import.meta.env.VITE_API_URL}${product.image}`
-                            : undefined
-                        }
-                        alt={product.name}
-                      />
-                      <AvatarFallback className="rounded">
-                        <Image className="size-6 text-muted-foreground" />
-                      </AvatarFallback>
-                    </Avatar>
-                  </TableCell>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.category_id?.name || "N/A"}</TableCell>
-                  <TableCell>
-                    {product.variants && product.variants.length > 0 ? (
-                      <div className="space-y-1">
-                        <div className="text-xs text-muted-foreground">
-                          {product.variants.length} variant
-                          {product.variants.length > 1 ? "s" : ""}
-                        </div>
-                        <div className="text-xs">
-                          ৳
-                          {Math.min(
-                            ...product.variants.map((v: IVariant) => v.price)
-                          )}{" "}
-                          - ৳
-                          {Math.max(
-                            ...product.variants.map((v: IVariant) => v.price)
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div>৳{product.price || 0}</div>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {product.variants && product.variants.length > 0
-                      ? product.variants.reduce(
-                          (sum: number, v: IVariant) => sum + (v.quantity || 0),
-                          0
-                        )
-                      : product.quantity || 0}
-                  </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="outline"
-                      size="xs"
-                      onClick={() => handleOpenDialog(product)}
-                    >
-                      <Edit />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="xs"
-                      onClick={() => handleDelete(product._id)}
-                    >
-                      <Trash />
-                    </Button>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[40px]"></TableHead>
+                <TableHead className="w-[60px] text-center">#</TableHead>
+                <TableHead className="w-16 text-center">Image</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Price / Variants</TableHead>
+                <TableHead>Stock</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {productsList.length > 0 ? (
+                <SortableContext
+                  items={productsList.map((p) => p._id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {productsList.map((product: any, index: number) => (
+                    <SortableTableRow key={product._id} id={product._id}>
+                      <TableCell className="text-center">{index + 1}</TableCell>
+                      <TableCell className="text-center">
+                        <Avatar className="rounded size-8">
+                          <AvatarImage
+                            className="rounded"
+                            src={
+                              product.image
+                                ? `${import.meta.env.VITE_API_URL}${product.image}`
+                                : undefined
+                            }
+                            alt={product.name}
+                          />
+                          <AvatarFallback className="rounded">
+                            <Image className="size-6 text-muted-foreground" />
+                          </AvatarFallback>
+                        </Avatar>
+                      </TableCell>
+                      <TableCell>{product.name}</TableCell>
+                      <TableCell>{product.category_id?.name || "N/A"}</TableCell>
+                      <TableCell>
+                        {product.variants && product.variants.length > 0 ? (
+                          <div className="space-y-1">
+                            <div className="text-xs text-muted-foreground">
+                              {product.variants.length} variant
+                              {product.variants.length > 1 ? "s" : ""}
+                            </div>
+                            <div className="text-xs">
+                              ৳
+                              {Math.min(
+                                ...product.variants.map((v: IVariant) => v.price)
+                              )}{" "}
+                              - ৳
+                              {Math.max(
+                                ...product.variants.map((v: IVariant) => v.price)
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div>৳{product.price || 0}</div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {product.variants && product.variants.length > 0
+                          ? product.variants.reduce(
+                              (sum: number, v: IVariant) => sum + (v.quantity || 0),
+                              0
+                            )
+                          : product.quantity || 0}
+                      </TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button
+                          variant="outline"
+                          size="xs"
+                          onClick={() => handleOpenDialog(product)}
+                        >
+                          <Edit />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="xs"
+                          onClick={() => handleDelete(product._id)}
+                        >
+                          <Trash />
+                        </Button>
+                      </TableCell>
+                    </SortableTableRow>
+                  ))}
+                </SortableContext>
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={8}
+                    className="text-center py-6 text-gray-500"
+                  >
+                    <div className="flex items-center gap-1 justify-center">
+                      <Loader2 className="w-4 h-4 text-primary animate-spin" />
+                      <p className="text-primary">Loading or No Products found...</p>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={7}
-                  className="text-center py-6 text-gray-500"
-                >
-                  <div className="flex items-center gap-1 justify-center">
-                    <Loader2 className="w-4 h-4 text-primary animate-spin" />
-                    <p className="text-primary">Loading...</p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </DndContext>
       </div>
 
       {/* Dialog */}

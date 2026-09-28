@@ -55,6 +55,15 @@ export const baseApi = createApi({
       invalidatesTags: ["categories"],
     }),
 
+    reorderCategories: builder.mutation({
+      query: (updates: { id: string; order: number }[]) => ({
+        url: "/category/reorder",
+        method: "PATCH",
+        body: { updates },
+      }),
+      invalidatesTags: ["categories"],
+    }),
+
     getAllSubCategories: builder.query({
       query: () => "/category/sub-categories",
       providesTags: ["categories"],
@@ -121,6 +130,15 @@ export const baseApi = createApi({
       query: (id) => ({
         url: `/product/delete/${id}`,
         method: "DELETE",
+      }),
+      invalidatesTags: ["products"],
+    }),
+
+    reorderProducts: builder.mutation({
+      query: (updates: { id: string; order: number }[]) => ({
+        url: "/product/reorder",
+        method: "PATCH",
+        body: { updates },
       }),
       invalidatesTags: ["products"],
     }),
@@ -240,6 +258,7 @@ export const {
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
   useGetAllSubCategoriesQuery,
+  useReorderCategoriesMutation,
 
   // Products
   useGetAllProductsQuery,
@@ -249,6 +268,7 @@ export const {
   useAddProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useReorderProductsMutation,
 
   // Orders
   useCreateOrderMutation,
