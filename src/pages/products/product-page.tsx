@@ -90,14 +90,26 @@ const ProductPage = () => {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  // New Category Filter State
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [productsList, setProductsList] = useState<any[]>([]);
+  
   const categories = categoriesData?.data || [];
 
+  // Filter products whenever data or selected category changes
   useEffect(() => {
     if (productsData?.data) {
-      setProductsList(productsData.data);
+      if (selectedCategory === "ALL") {
+        setProductsList(productsData.data);
+      } else {
+        setProductsList(
+          productsData.data.filter(
+            (p: any) => p.category_id?._id === selectedCategory
+          )
+        );
+      }
     }
-  }, [productsData]);
+  }, [productsData, selectedCategory]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -189,9 +201,24 @@ const ProductPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
         <h1 className="text-2xl font-bold">Products</h1>
-        <div className="flex gap-2">
+        
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Category Filter Dropdown */}
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="border border-input bg-background rounded-md px-3 py-1.5 text-sm h-9 focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="ALL">All Categories</option>
+            {categories.map((cat: any) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
           <Button size="sm" onClick={() => handleOpenDialog()}>
             + Add Product
           </Button>
@@ -311,8 +338,11 @@ const ProductPage = () => {
                     className="text-center py-6 text-gray-500"
                   >
                     <div className="flex items-center gap-1 justify-center">
-                      <Loader2 className="w-4 h-4 text-primary animate-spin" />
-                      <p className="text-primary">Loading or No Products found...</p>
+                      {productsData === undefined ? (
+                        <Loader2 className="w-4 h-4 text-primary animate-spin" />
+                      ) : (
+                        <p className="text-gray-500 text-sm">No Products found for this category.</p>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
