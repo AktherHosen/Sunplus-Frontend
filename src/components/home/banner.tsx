@@ -17,19 +17,24 @@ export default function Banner() {
   const { data, isLoading } = useGetAllBannersQuery(undefined);
 
   if (isLoading) {
-    return <div className="w-full h-[200px] md:h-[400px] flex items-center justify-center bg-muted rounded-lg">Loading banners...</div>;
+    return <div className="w-full h-[150px] sm:h-[200px] md:h-[300px] lg:h-[400px] bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg"></div>;
   }
 
   const banners = data?.data || [];
 
-  // Use uploaded banners or fallback to static images
-  const displayBanners = banners.length > 0
-    ? banners.map((b: any) => ({ _id: b._id, image: `${import.meta.env.VITE_API_URL}${b.image}` }))
-    : [
-      { _id: 'fallback-1', image: Car1 },
-      { _id: 'fallback-2', image: Car2 },
-      { _id: 'fallback-3', image: Car3 },
-    ];
+  // Always show static banners first, then append any uploaded banners
+  const staticBanners = [
+    { _id: 'static-1', image: Car1 },
+    { _id: 'static-2', image: Car2 },
+    { _id: 'static-3', image: Car3 },
+  ];
+
+  const uploadedBanners = banners.map((b: any) => ({
+    _id: b._id,
+    image: `${import.meta.env.VITE_API_URL}${b.image}`
+  }));
+
+  const displayBanners = [...staticBanners, ...uploadedBanners];
 
   return (
     <Carousel

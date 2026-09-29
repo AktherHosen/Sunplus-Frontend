@@ -1,5 +1,5 @@
 import logo from "@/assets/logo.svg";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -17,8 +17,10 @@ import { Headphones, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import ProductSearch from "./product-search";
+import { useAppSelector } from "@/redux/hooks";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const user = useAppSelector((state) => state.auth.user);
 
   type MenuItem = {
     title: string;
@@ -121,6 +123,18 @@ export default function Navbar() {
                 )}
               </NavigationMenuList>
             </NavigationMenu>
+            
+            {/* User Avatar linking to Dashboard */}
+            {user && (
+              <Link to="/dashboard" className="ml-6 flex items-center gap-2 hover:opacity-80 transition group">
+                <Avatar className="h-9 w-9 border-2 border-primary/20 group-hover:border-primary">
+                  {user.image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${user.image}`} />}
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                    {user.name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -145,7 +159,18 @@ export default function Navbar() {
           </div>
 
           {/* Menu Button - Right */}
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <div className="flex items-center gap-2">
+            {user && (
+              <Link to="/dashboard" className="hover:opacity-80 transition group">
+                <Avatar className="h-9 w-9 border-2 border-primary/20 group-hover:border-primary">
+                  {user.image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${user.image}`} />}
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                    {user.name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            )}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -206,11 +231,12 @@ export default function Navbar() {
                   )}
               </nav>
             </SheetContent>
-          </Sheet>
+            </Sheet>
+          </div>
         </div>
 
         {/* Mobile Navbar (sm and below) */}
-        <div className="flex lg:hidden items-center w-full gap-2 sm:gap-3 py-2.5">
+        <div className="flex md:hidden items-center w-full gap-2 sm:gap-3 py-2.5">
           {/* Logo - Left */}
           <div className="flex-shrink-0 flex items-center h-10 w-20">
             <Link to="/" aria-label="Go to homepage">
@@ -230,7 +256,18 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu - Right */}
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <div className="flex items-center gap-2">
+            {user && (
+              <Link to="/dashboard" className="hover:opacity-80 transition group">
+                <Avatar className="h-8 w-8 border-2 border-primary/20 group-hover:border-primary">
+                  {user.image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${user.image}`} />}
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
+                    {user.name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            )}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -291,7 +328,8 @@ export default function Navbar() {
                   )}
               </nav>
             </SheetContent>
-          </Sheet>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>
