@@ -17,10 +17,10 @@ import { Headphones, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import ProductSearch from "./product-search";
-import { useAppSelector } from "@/redux/hooks";
+import { useAuth } from "@/context/auth-context";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const user = useAppSelector((state) => state.auth.user);
+  const { user } = useAuth();
 
   type MenuItem = {
     title: string;
@@ -128,7 +128,7 @@ export default function Navbar() {
             {user && (
               <Link to="/dashboard" className="ml-6 flex items-center gap-2 hover:opacity-80 transition group">
                 <Avatar className="h-9 w-9 border-2 border-primary/20 group-hover:border-primary">
-                  {user.image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${user.image}`} />}
+                  {(user as any).image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${(user as any).image}`} />}
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                     {user.name?.charAt(0) || "U"}
                   </AvatarFallback>
@@ -163,7 +163,7 @@ export default function Navbar() {
             {user && (
               <Link to="/dashboard" className="hover:opacity-80 transition group">
                 <Avatar className="h-9 w-9 border-2 border-primary/20 group-hover:border-primary">
-                  {user.image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${user.image}`} />}
+                  {(user as any).image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${(user as any).image}`} />}
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                     {user.name?.charAt(0) || "U"}
                   </AvatarFallback>
@@ -260,7 +260,7 @@ export default function Navbar() {
             {user && (
               <Link to="/dashboard" className="hover:opacity-80 transition group">
                 <Avatar className="h-8 w-8 border-2 border-primary/20 group-hover:border-primary">
-                  {user.image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${user.image}`} />}
+                  {(user as any).image && <AvatarImage src={`${import.meta.env.VITE_API_URL}${(user as any).image}`} />}
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
                     {user.name?.charAt(0) || "U"}
                   </AvatarFallback>
