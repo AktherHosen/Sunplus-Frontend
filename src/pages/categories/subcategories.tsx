@@ -16,9 +16,17 @@ import {
   useDeleteCategoryMutation,
   useGetAllSubCategoriesQuery,
   useReorderCategoriesMutation,
+  useGetAllCategoriesQuery,
 } from "@/redux/api/baseApi";
 import { Image, Trash, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   DndContext,
   closestCenter,
@@ -79,18 +87,30 @@ export default function Subcategories() {
   }, [searchQuery]);
 
   const { data, isLoading, isError, refetch } = useGetAllSubCategoriesQuery(debouncedSearch);
+  const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
 
   const [subcategories, setSubcategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+
+  const categories = categoriesData?.data || [];
 
   const isSearching = debouncedSearch.trim().length > 0;
 
   useEffect(() => {
     if (data?.data) {
-      setSubcategories(data.data);
+      if (selectedCategory === "ALL") {
+        setSubcategories(data.data);
+      } else {
+        setSubcategories(
+          data.data.filter(
+            (sub: any) => sub.parent?._id === selectedCategory
+          )
+        );
+      }
     }
-  }, [data]);
+  }, [data, selectedCategory]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -155,13 +175,30 @@ export default function Subcategories() {
     <div className="p-6 space-y-6 container mx-auto px-4 lg:px-0 py-2.5">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
         <h1 className="text-2xl font-bold">Subcategories</h1>
-        <div className="flex items-center gap-2 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <Input 
             placeholder="Search subcategories..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full md:w-[250px]"
+            className="w-full md:w-[200px]"
           />
+          {/* Category Filter Dropdown */}
+          <Select
+            value={selectedCategory}
+            onValueChange={setSelectedCategory}
+          >
+            <SelectTrigger className="w-[180px] h-9">
+              <SelectValue placeholder="All Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Categories</SelectItem>
+              {categories.map((cat: any) => (
+                <SelectItem key={cat._id} value={cat._id}>
+                  {cat.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <CategoryForm triggerText="+ Add Subcategory" onSuccess={refetch} />
         </div>
       </div>
