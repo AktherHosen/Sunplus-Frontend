@@ -201,10 +201,7 @@ export const ProductForm = ({
   const handleSubmit = async () => {
     if (!name.trim() || !category) return;
 
-    // Validate: either price or variants must be provided
-    if (!useVariants && price === "") {
-      return;
-    }
+    // Price is optional, so we don't return early if it's empty
     if (
       useVariants &&
       (!variants.length || variants.some((v) => !v.name))
@@ -716,7 +713,6 @@ export const ProductForm = ({
             saving ||
             !name.trim() ||
             !category ||
-            (!useVariants && price === "") ||
             (useVariants &&
               (!variants.length || variants.some((v) => !v.name)))
           }
