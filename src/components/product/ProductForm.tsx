@@ -33,7 +33,7 @@ export const ProductForm = ({
 }: ProductFormProps) => {
   const [name, setName] = useState("");
   const [descriptions, setDescriptions] = useState("");
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<number | string>("");
   const [quantity, setQuantity] = useState<number>(0);
   const [category, setCategory] = useState<string | null>(null);
   const [subcategory, setSubcategory] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export const ProductForm = ({
     if (editingProduct) {
       setName(editingProduct.name || "");
       setDescriptions(editingProduct.descriptions || "");
-      setPrice(editingProduct.price || 0);
+      setPrice(editingProduct.price ?? "");
       setQuantity(editingProduct.quantity || 0);
       setCategory(editingProduct.category_id?._id || null);
 
@@ -101,7 +101,7 @@ export const ProductForm = ({
   const resetForm = () => {
     setName("");
     setDescriptions("");
-    setPrice(0);
+    setPrice("");
     setQuantity(0);
     setCategory(null);
     setSubcategory(null);
@@ -157,7 +157,7 @@ export const ProductForm = ({
   };
 
   const handleSubmit = async () => {
-    if (!name.trim() || !price || !category) return;
+    if (!name.trim() || !category) return;
 
     const metaObject = metaFields.reduce((acc, { key, value }) => {
       if (key.trim()) acc[key.trim()] = value.trim();
@@ -167,7 +167,7 @@ export const ProductForm = ({
     const formData = new FormData();
     formData.append("name", name);
     formData.append("descriptions", descriptions);
-    formData.append("price", price.toString());
+    if (price !== "") formData.append("price", price.toString());
     formData.append("quantity", quantity.toString());
     formData.append("category_id", category);
     if (subcategory) formData.append("subcategories", subcategory);
@@ -264,11 +264,11 @@ export const ProductForm = ({
             </div>
 
             <div className="space-y-2">
-              <Label>Price *</Label>
+              <Label>Price</Label>
               <Input
                 type="number"
-                value={price || ""}
-                onChange={(e) => setPrice(Number(e.target.value))}
+                value={price}
+                onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : "")}
               />
               <Label>Quantity</Label>
               <Input
@@ -407,7 +407,7 @@ export const ProductForm = ({
         </Button>
         <Button
           onClick={handleSubmit}
-          disabled={saving || !name.trim() || !price || !category}
+          disabled={saving || !name.trim() || !category}
         >
           {saving
             ? "Saving..."
