@@ -27,7 +27,7 @@ import {
   useReorderProductsMutation,
 } from "@/redux/api/baseApi";
 import type { IVariant } from "@/types/product";
-import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical } from "lucide-react";
+import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -173,7 +173,7 @@ const ProductPage = () => {
 
   const handleSave = async (formData: FormData) => {
     try {
-      if (editingProduct) {
+      if (editingProduct && !editingProduct.isDuplicate) {
         await updateProduct({ slug: editingProduct.slug, formData }).unwrap();
         toast.success("Product updated successfully!");
       } else {
@@ -208,6 +208,11 @@ const ProductPage = () => {
 
   const handleOpenDialog = (product?: any) => {
     setEditingProduct(product || null);
+    setDialogOpen(true);
+  };
+
+  const handleDuplicate = (product: any) => {
+    setEditingProduct({ ...product, isDuplicate: true });
     setDialogOpen(true);
   };
 
@@ -344,6 +349,13 @@ const ProductPage = () => {
                         <Button
                           variant="outline"
                           size="xs"
+                          onClick={() => handleDuplicate(product)}
+                        >
+                          <Copy />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="xs"
                           onClick={() => handleOpenDialog(product)}
                         >
                           <Edit />
@@ -385,10 +397,10 @@ const ProductPage = () => {
         <DialogContent className="max-w-full sm:max-w-6xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto">
           <DialogHeader className="space-y-1">
             <DialogTitle className="text-xl md:text-2xl font-semibold">
-              {editingProduct ? "Edit Product" : "Add Product"}
+              {editingProduct && !editingProduct.isDuplicate ? "Edit Product" : "Add Product"}
             </DialogTitle>
             <DialogDescription className="text-sm text-gray-500">
-              {editingProduct ? "Update product details" : "Add a new product"}
+              {editingProduct && !editingProduct.isDuplicate ? "Update product details" : "Add a new product"}
             </DialogDescription>
           </DialogHeader>
 

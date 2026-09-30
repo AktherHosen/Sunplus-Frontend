@@ -173,10 +173,19 @@ export const ProductForm = ({
     if (subcategory) formData.append("subcategories", subcategory);
 
     if (imageFile) formData.append("image", imageFile);
+    else if (editingProduct?.image && imagePreview) formData.append("existingImage", editingProduct.image);
+    
     if (imageFile2) formData.append("image2", imageFile2);
+    else if (editingProduct?.image2 && imagePreview2) formData.append("existingImage2", editingProduct.image2);
+
     if (imageFile3) formData.append("image3", imageFile3);
+    else if (editingProduct?.image3 && imagePreview3) formData.append("existingImage3", editingProduct.image3);
 
     formData.append("meta", JSON.stringify(metaObject));
+
+    if (editingProduct?.isDuplicate && editingProduct.variants) {
+      formData.append("variants", JSON.stringify(editingProduct.variants));
+    }
 
     try {
       setSaving(true);
@@ -411,7 +420,7 @@ export const ProductForm = ({
         >
           {saving
             ? "Saving..."
-            : editingProduct
+            : editingProduct && !editingProduct.isDuplicate
             ? "Update Product"
             : "Create Product"}
         </Button>
