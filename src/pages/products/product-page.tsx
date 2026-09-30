@@ -27,14 +27,16 @@ import {
   useReorderProductsMutation,
 } from "@/redux/api/baseApi";
 import type { IVariant } from "@/types/product";
-import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy } from "lucide-react";
+import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy, ChevronDown } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -246,48 +248,55 @@ const ProductPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[200px]"
           />
-          {/* Category Filter Dropdown */}
-          <Select
-            value={selectedCategory}
-            onValueChange={(val) => {
-              setSelectedCategory(val);
-              setSelectedSubcategory("ALL");
-            }}
-          >
-            <SelectTrigger className="w-[180px] h-9">
-              <SelectValue placeholder="All Categories" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">All Categories</SelectItem>
-              {categories.map((cat: any) => (
-                <SelectItem key={cat._id} value={cat._id}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Subcategory Filter Dropdown */}
-          {selectedCategory !== "ALL" && (
-            <Select
-              value={selectedSubcategory}
-              onValueChange={setSelectedSubcategory}
-            >
-              <SelectTrigger className="w-[180px] h-9">
-                <SelectValue placeholder="All Subcategories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">All Subcategories</SelectItem>
-                {categories
-                  .find((cat: any) => cat._id === selectedCategory)
-                  ?.subcategories?.map((sub: any) => (
-                    <SelectItem key={sub._id} value={sub._id}>
-                      {sub.name}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          )}
+          {/* Category/Subcategory Nested Dropdown Filter */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-[220px] justify-between text-left font-normal h-9">
+                <span className="truncate">
+                  {selectedCategory === "ALL" 
+                    ? "All Categories" 
+                    : categories.find((c:any) => c._id === selectedCategory)?.name || "Filtered"}
+                  {selectedCategory !== "ALL" && selectedSubcategory !== "ALL" 
+                    ? ` > ${categories.find((c:any) => c._id === selectedCategory)?.subcategories?.find((s:any) => s._id === selectedSubcategory)?.name || ""}` 
+                    : ""}
+                </span>
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[240px] max-h-[400px] overflow-y-auto scrollbar-hide">
+              <DropdownMenuLabel>Filter Products</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => { setSelectedCategory("ALL"); setSelectedSubcategory("ALL"); }}>
+                All Categories
+              </DropdownMenuItem>
+              {categories.map((cat: any) => {
+                const hasSub = cat.subcategories && cat.subcategories.length > 0;
+                if (hasSub) {
+                  return (
+                    <DropdownMenuGroup key={cat._id}>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel className="font-semibold text-primary">{cat.name}</DropdownMenuLabel>
+                      <DropdownMenuItem className="ml-2" onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory("ALL"); }}>
+                        All {cat.name}
+                      </DropdownMenuItem>
+                      {cat.subcategories.map((sub: any) => (
+                        <DropdownMenuItem className="ml-2 pl-4 text-muted-foreground border-l ml-4 rounded-none py-1" key={sub._id} onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory(sub._id); }}>
+                          {sub.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuGroup>
+                  );
+                }
+                return (
+                  <DropdownMenuGroup key={cat._id}>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="font-medium" onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory("ALL"); }}>
+                      {cat.name}
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Button size="sm" onClick={() => handleOpenDialog()}>
             + Add Product
