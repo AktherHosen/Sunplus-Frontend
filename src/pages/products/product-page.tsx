@@ -281,7 +281,7 @@ const ProductPage = () => {
                         {cat.name}
                       </DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
-                        <DropdownMenuSubContent>
+                        <DropdownMenuSubContent className="max-h-[300px] overflow-y-auto">
                           <DropdownMenuItem onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory("ALL"); }}>
                             All {cat.name}
                           </DropdownMenuItem>
