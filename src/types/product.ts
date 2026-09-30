@@ -11,7 +11,7 @@ export interface ICategory {
 export interface IVariant {
   _id?: string;
   name: string; // e.g., "Small - Red", "Large - Blue"
-  price: number;
+  price?: number | string;
   quantity?: number;
   sku?: string;
   attributes?: Record<string, any>; // e.g., { size: "S", color: "Red" }
@@ -32,6 +32,7 @@ export interface IProduct {
   category_id?: ICategory | null;
   subcategories?: ICategory | null;
   meta?: Record<string, any>;
+  isDuplicate?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
