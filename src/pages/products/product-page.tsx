@@ -27,14 +27,19 @@ import {
   useReorderProductsMutation,
 } from "@/redux/api/baseApi";
 import type { IVariant } from "@/types/product";
-import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy } from "lucide-react";
+import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy, ChevronDown } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -108,26 +113,38 @@ const ProductPage = () => {
 
   // New Category Filter State
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>("ALL");
   const [productsList, setProductsList] = useState<any[]>([]);
   
   const categories = categoriesData?.data || [];
 
   const isSearching = debouncedSearch.trim().length > 0;
 
-  // Filter products whenever data or selected category changes
+  // Filter products whenever data or selected category/subcategory changes
   useEffect(() => {
     if (productsData?.data) {
-      if (selectedCategory === "ALL") {
-        setProductsList(productsData.data);
-      } else {
-        setProductsList(
-          productsData.data.filter(
-            (p: any) => p.category_id?._id === selectedCategory
-          )
+      let filtered = productsData.data;
+
+      if (selectedCategory !== "ALL") {
+        filtered = filtered.filter(
+          (p: any) => p.category_id?._id === selectedCategory
         );
       }
+
+      if (selectedSubcategory !== "ALL") {
+        filtered = filtered.filter((p: any) => {
+          if (Array.isArray(p.subcategories)) {
+            return p.subcategories.some((sub: any) => sub._id === selectedSubcategory);
+          } else if (p.subcategories && typeof p.subcategories === "object") {
+            return p.subcategories._id === selectedSubcategory;
+          }
+          return p.subcategories === selectedSubcategory;
+        });
+      }
+
+      setProductsList(filtered);
     }
-  }, [productsData, selectedCategory]);
+  }, [productsData, selectedCategory, selectedSubcategory]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -234,23 +251,59 @@ const ProductPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[200px]"
           />
-          {/* Category Filter Dropdown */}
-          <Select
-            value={selectedCategory}
-            onValueChange={setSelectedCategory}
-          >
-            <SelectTrigger className="w-[180px] h-9">
-              <SelectValue placeholder="All Categories" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">All Categories</SelectItem>
-              {categories.map((cat: any) => (
-                <SelectItem key={cat._id} value={cat._id}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* Category/Subcategory Nested Dropdown Filter */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-[220px] justify-between text-left font-normal h-9">
+                <span className="truncate">
+                  {selectedCategory === "ALL" 
+                    ? "All Categories" 
+                    : categories.find((c:any) => c._id === selectedCategory)?.name || "Filtered"}
+                  {selectedCategory !== "ALL" && selectedSubcategory !== "ALL" 
+                    ? ` > ${categories.find((c:any) => c._id === selectedCategory)?.subcategories?.find((s:any) => s._id === selectedSubcategory)?.name || ""}` 
+                    : ""}
+                </span>
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[220px]">
+              <DropdownMenuLabel>Filter Products</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => { setSelectedCategory("ALL"); setSelectedSubcategory("ALL"); }}>
+                All Categories
+              </DropdownMenuItem>
+              {categories.map((cat: any) => {
+                const hasSub = cat.subcategories && cat.subcategories.length > 0;
+                if (hasSub) {
+                  return (
+                    <DropdownMenuSub key={cat._id}>
+                      <DropdownMenuSubTrigger>
+                        {cat.name}
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuItem onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory("ALL"); }}>
+                            All {cat.name}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {cat.subcategories.map((sub: any) => (
+                            <DropdownMenuItem key={sub._id} onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory(sub._id); }}>
+                              {sub.name}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
+                  );
+                }
+                return (
+                  <DropdownMenuItem key={cat._id} onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory("ALL"); }}>
+                    {cat.name}
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Button size="sm" onClick={() => handleOpenDialog()}>
             + Add Product
