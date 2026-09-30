@@ -13,7 +13,9 @@ import Loader from "../loader";
 
 export default function Categories() {
   const { data, isLoading, isError } = useGetAllCategoriesQuery(undefined);
-  const categories = data?.data || [];
+  const categories = [...(data?.data || [])].sort(
+    (a: any, b: any) => (a.order || 0) - (b.order || 0)
+  );
 
   if (isLoading)
     return <Loader fullscreen={true} message="Fetching categories..." />;

@@ -24,7 +24,9 @@ const AllSubcategoriesPage = () => {
     );
 
   const category = data?.data || {};
-  const subcategories = category.subcategories || [];
+  const subcategories = [...(category.subcategories || [])].sort(
+    (a: any, b: any) => (a.order || 0) - (b.order || 0)
+  );
   const banners = category.banners || [];
 
   return (

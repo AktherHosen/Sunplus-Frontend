@@ -21,7 +21,9 @@ const AllSubcategoryProductPage = () => {
       </div>
     );
   console.log(data, "check");
-  const products = data?.data?.products || [];
+  const products = [...(data?.data?.products || [])].sort(
+    (a: any, b: any) => (a.order || 0) - (b.order || 0)
+  );
   const subcategory = data?.data?.subcategory ?? null;
   const banners = data?.data?.subcategory.banners || [];
 
