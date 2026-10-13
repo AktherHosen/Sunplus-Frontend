@@ -31,15 +31,6 @@ import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
 import type { IVariant } from "@/types/product";
 import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy, ChevronDown, Check } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
