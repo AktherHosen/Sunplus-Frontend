@@ -19,7 +19,7 @@ import {
   XCircle,
   ArrowRight,
   Layers,
-  Sparkles,
+  Clock,
   BarChart3,
   RefreshCcw,
 } from "lucide-react";
@@ -299,7 +299,7 @@ export default function DashboardHome() {
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <div>
             <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
+              <Clock className="w-4 h-4 text-primary" />
               Recently Added Products
             </CardTitle>
             <CardDescription className="text-xs mt-0.5">
