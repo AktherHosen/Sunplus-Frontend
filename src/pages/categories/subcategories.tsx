@@ -17,7 +17,9 @@ import {
   useGetAllSubCategoriesQuery,
   useReorderCategoriesMutation,
   useGetAllCategoriesQuery,
+  useImportSubCategoriesMutation,
 } from "@/redux/api/baseApi";
+import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
 import { Image, Trash, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -90,6 +92,7 @@ export default function Subcategories() {
   const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
+  const [importSubCategories] = useImportSubCategoriesMutation();
 
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
@@ -199,6 +202,14 @@ export default function Subcategories() {
               ))}
             </SelectContent>
           </Select>
+          <ImportExportButtons
+            title="Subcategories"
+            exportEndpoint="/category/sub-categories/export"
+            importMutation={importSubCategories}
+            onSuccess={refetch}
+            sampleHeaders={["name", "category", "image", "banners", "order", "new_arrival"]}
+            sampleData={"name,category,image,banners,order,new_arrival\r\nLED Bulb,LED Lighting,/uploads/categories/bulb.png,/uploads/categories/b1.png,0,false\r\nLED Tube Light,LED Lighting,,,1,false\r\nGang Switch,Switch & Socket,,,0,false\r\n"}
+          />
           <CategoryForm triggerText="+ Add Subcategory" onSuccess={refetch} />
         </div>
       </div>

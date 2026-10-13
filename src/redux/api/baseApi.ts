@@ -143,6 +143,33 @@ export const baseApi = createApi({
       invalidatesTags: ["products"],
     }),
 
+    importCategories: builder.mutation<any, FormData>({
+      query: (formData) => ({
+        url: "/category/import",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["categories"],
+    }),
+
+    importSubCategories: builder.mutation<any, FormData>({
+      query: (formData) => ({
+        url: "/category/sub-categories/import",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["categories"],
+    }),
+
+    importProducts: builder.mutation<any, FormData>({
+      query: (formData) => ({
+        url: "/product/import",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["products", "categories"],
+    }),
+
     // -------------------- Orders --------------------
     // ✅ Create Order
     createOrder: builder.mutation<IOrder, Partial<IOrder>>({
@@ -288,6 +315,8 @@ export const {
   useDeleteCategoryMutation,
   useGetAllSubCategoriesQuery,
   useReorderCategoriesMutation,
+  useImportCategoriesMutation,
+  useImportSubCategoriesMutation,
 
   // Products
   useGetAllProductsQuery,
@@ -298,6 +327,7 @@ export const {
   useUpdateProductMutation,
   useDeleteProductMutation,
   useReorderProductsMutation,
+  useImportProductsMutation,
 
   // Orders
   useCreateOrderMutation,

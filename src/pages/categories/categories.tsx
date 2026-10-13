@@ -16,7 +16,9 @@ import {
   useDeleteCategoryMutation,
   useGetAllCategoriesQuery,
   useReorderCategoriesMutation,
+  useImportCategoriesMutation,
 } from "@/redux/api/baseApi";
+import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
 import { Image, Trash, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -82,6 +84,7 @@ export default function Categories() {
     useGetAllCategoriesQuery(debouncedSearch);
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
+  const [importCategories] = useImportCategoriesMutation();
 
   const [categories, setCategories] = useState<any[]>([]);
 
@@ -155,12 +158,20 @@ export default function Categories() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
         <h1 className="text-2xl font-bold">Categories</h1>
-        <div className="flex items-center gap-2 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <Input 
             placeholder="Search categories..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full md:w-[250px]"
+            className="w-full sm:w-[220px]"
+          />
+          <ImportExportButtons
+            title="Categories"
+            exportEndpoint="/category/export"
+            importMutation={importCategories}
+            onSuccess={refetch}
+            sampleHeaders={["name", "image", "banners", "order", "new_arrival"]}
+            sampleData={"name,image,banners,order,new_arrival\r\nLED Lighting,/uploads/categories/sample.png,/uploads/categories/b1.png,0,false\r\nSwitch & Socket,,,1,false\r\nFan,,,2,false\r\n"}
           />
           <CategoryForm triggerText="+ Add Category" onSuccess={refetch} />
         </div>

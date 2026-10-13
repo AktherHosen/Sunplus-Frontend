@@ -25,7 +25,9 @@ import {
   useGetAllProductsQuery,
   useUpdateProductMutation,
   useReorderProductsMutation,
+  useImportProductsMutation,
 } from "@/redux/api/baseApi";
+import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
 import type { IVariant } from "@/types/product";
 import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy, ChevronDown } from "lucide-react";
 import {
@@ -103,6 +105,7 @@ const ProductPage = () => {
   const [addProduct] = useAddProductMutation();
   const [updateProduct] = useUpdateProductMutation();
   const [reorderProducts] = useReorderProductsMutation();
+  const [importProducts] = useImportProductsMutation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -297,6 +300,28 @@ const ProductPage = () => {
               })}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <ImportExportButtons
+            title="Products"
+            exportEndpoint={`/product/export?category=${selectedCategory}&subcategory=${selectedSubcategory}`}
+            importMutation={importProducts}
+            onSuccess={refetch}
+            sampleHeaders={[
+              "name",
+              "category",
+              "subcategory",
+              "price",
+              "quantity",
+              "descriptions",
+              "order",
+              "image",
+              "image2",
+              "image3",
+              "variants",
+              "meta"
+            ]}
+            sampleData={`name,category,subcategory,price,quantity,descriptions,order,image,image2,image3,variants,meta\r\n"18W LED T-Bulb","LED Lighting","LED Bulb",350,100,"Energy efficient 18W bulb",0,"/uploads/categories/sample1.png","","",,"{""color"":""Daylight""}"\r\n"Direct LED Light","LED Lighting","",450,50,"Direct LED without subcategory",1,"","","",,""\r\n"Smart 2-Gang Switch","Switch & Socket","Gang Switch",650,20,"Wi-Fi smart dual switch",0,"","","",,""\r\n`}
+          />
 
           <Button size="sm" onClick={() => handleOpenDialog()}>
             + Add Product
