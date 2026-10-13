@@ -289,7 +289,7 @@ export default function Subcategories() {
                   <TableCell colSpan={7} className="text-center py-10">
                     <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
                       <p className="text-sm text-destructive font-medium">Could not load subcategories at this time.</p>
-                      <Button variant="outline" size="xs" onClick={() => refetch()} className="gap-1.5">
+                      <Button variant="outline" size="xs" onClick={handleRefresh} className="gap-1.5">
                         <RefreshCcw className="w-3.5 h-3.5" />
                         Retry
                       </Button>

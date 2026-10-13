@@ -83,8 +83,11 @@ export const baseApi = createApi({
       invalidatesTags: ["categories"],
     }),
 
-    getAllSubCategories: builder.query({
-      query: (arg?: string | { searchTerm?: string; includeInactive?: boolean }) => {
+    getAllSubCategories: builder.query<
+      any,
+      string | { searchTerm?: string; includeInactive?: boolean } | void
+    >({
+      query: (arg) => {
         const params = new URLSearchParams();
         if (typeof arg === "string") {
           if (arg) params.append("searchTerm", arg);

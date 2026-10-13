@@ -9,7 +9,6 @@ import { useGetAllCategoriesQuery } from "@/redux/api/baseApi";
 import { motion } from "framer-motion";
 import { Image } from "lucide-react";
 import { Link } from "react-router";
-import Loader from "../loader";
 
 export default function Categories() {
   const { data, isLoading, isError } = useGetAllCategoriesQuery(undefined);

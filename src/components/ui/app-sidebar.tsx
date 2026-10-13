@@ -5,7 +5,6 @@ import {
   SquareTerminal,
   Image,
   LayoutDashboard,
-  User,
 } from "lucide-react";
 import * as React from "react";
 

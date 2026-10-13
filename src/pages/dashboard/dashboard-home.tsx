@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -13,8 +12,6 @@ import {
   FolderTree,
   Tags,
   ShoppingCart,
-  Eye,
-  EyeOff,
   CheckCircle2,
   XCircle,
   ArrowRight,
@@ -27,7 +24,7 @@ import { useGetStatisticsQuery } from "@/redux/api/baseApi";
 import { Link } from "react-router";
 
 export default function DashboardHome() {
-  const { data, isLoading, isError, refetch } = useGetStatisticsQuery();
+  const { data, refetch } = useGetStatisticsQuery();
   const stats = data?.data;
 
   const totalProducts = stats?.totalProducts || 0;
