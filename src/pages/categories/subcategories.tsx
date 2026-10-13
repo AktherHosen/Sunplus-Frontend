@@ -227,8 +227,8 @@ export default function Subcategories() {
             exportEndpoint="/category/sub-categories/export"
             importMutation={importSubCategories}
             onSuccess={refetch}
-            sampleHeaders={["name", "category", "image", "banners", "order", "new_arrival"]}
-            sampleData={"name,category,image,banners,order,new_arrival\r\nLED Bulb,LED Lighting,/uploads/categories/bulb.png,/uploads/categories/b1.png,0,false\r\nLED Tube Light,LED Lighting,,,1,false\r\nGang Switch,Switch & Socket,,,0,false\r\n"}
+            sampleHeaders={["name", "category", "order", "new_arrival"]}
+            sampleData={"name,category,order,new_arrival\r\nLED Bulb,LED Lighting,0,false\r\nLED Tube Light,LED Lighting,1,false\r\nGang Switch,Switch & Socket,0,false\r\n"}
           />
           <CategoryForm triggerText="+ Add Subcategory" onSuccess={refetch} />
         </div>

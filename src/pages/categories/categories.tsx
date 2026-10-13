@@ -188,8 +188,8 @@ export default function Categories() {
             exportEndpoint="/category/export"
             importMutation={importCategories}
             onSuccess={refetch}
-            sampleHeaders={["name", "image", "banners", "order", "new_arrival"]}
-            sampleData={"name,image,banners,order,new_arrival\r\nLED Lighting,/uploads/categories/sample.png,/uploads/categories/b1.png,0,false\r\nSwitch & Socket,,,1,false\r\nFan,,,2,false\r\n"}
+            sampleHeaders={["name", "order", "new_arrival"]}
+            sampleData={"name,order,new_arrival\r\nLED Lighting,0,false\r\nSwitch & Socket,1,false\r\nFan,2,false\r\n"}
           />
           <CategoryForm triggerText="+ Add Category" onSuccess={refetch} />
         </div>

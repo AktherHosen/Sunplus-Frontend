@@ -419,14 +419,8 @@ const ProductPage = () => {
               "price",
               "quantity",
               "descriptions",
-              "order",
-              "image",
-              "image2",
-              "image3",
-              "variants",
-              "meta"
             ]}
-            sampleData={`name,category,subcategory,price,quantity,descriptions,order,image,image2,image3,variants,meta\r\n"18W LED T-Bulb","LED Lighting","LED Bulb",350,100,"Energy efficient 18W bulb",0,"/uploads/categories/sample1.png","","",,"{""color"":""Daylight""}"\r\n"Direct LED Light","LED Lighting","",450,50,"Direct LED without subcategory",1,"","","",,""\r\n"Smart 2-Gang Switch","Switch & Socket","Gang Switch",650,20,"Wi-Fi smart dual switch",0,"","","",,""\r\n`}
+            sampleData={`name,category,subcategory,price,quantity,descriptions\r\n"18W LED T-Bulb","LED Lighting","LED Bulb",350,100,"Energy efficient 18W bulb"\r\n"Direct LED Light","LED Lighting","",450,50,"Direct LED without subcategory"\r\n"Smart 2-Gang Switch","Switch & Socket","Gang Switch",650,20,"Wi-Fi smart dual switch"\r\n`}
           />
 
           <Button size="sm" onClick={() => handleOpenDialog()}>
