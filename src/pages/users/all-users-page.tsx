@@ -4,12 +4,21 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -24,7 +33,19 @@ import {
   useDeleteUserMutation,
   useGetAllUsersQuery,
 } from "@/redux/api/baseApi";
-import { Image, Loader2, Plus, RefreshCcw, Trash } from "lucide-react";
+import {
+  Image,
+  Loader2,
+  RefreshCcw,
+  Trash,
+  UserPlus,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Shield,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -40,14 +61,35 @@ export default function AllUsersPage() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"SUPER_ADMIN" | "ADMIN">("ADMIN");
   const [refreshing, setRefreshing] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleRefresh = async () => {
     try {
       setRefreshing(true);
-      await refetch(); // refetch returns a promise
+      await refetch();
     } finally {
       setRefreshing(false);
     }
   };
+
+  const handleDelete = async (userId: string, userRole: string) => {
+    if (userRole === "SUPER_ADMIN")
+      return toast.warning("You cannot delete a Super Admin.");
+    if (userId === currentUser?._id)
+      return toast.warning("You cannot delete your own account.");
+
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      await deleteUser(userId);
+      toast.success("User deleted successfully");
+      refetch();
+    } catch {
+      toast.error("Failed to delete user");
+    }
+  };
+
   // Loading and error
   if (isLoading)
     return (
@@ -67,42 +109,22 @@ export default function AllUsersPage() {
       </div>
     );
 
-  const handleDelete = async (userId: string, userRole: string) => {
-    if (userRole === "SUPER_ADMIN")
-      return toast.warning("You cannot delete a Super Admin.");
-    if (userId === currentUser?._id)
-      return toast.warning("You cannot delete your own account.");
-
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-
-    try {
-      await deleteUser(userId);
-      toast.success("User deleted successfully");
-      refetch();
-    } catch {
-      toast.error("Failed to delete user");
-    }
-  };
-
-  if (isLoading)
-    return (
-      <div className="flex items-center justify-center h-40">
-        <Loader2 className="animate-spin text-primary w-6 h-6 mr-2" />
-        <span>Loading users...</span>
-      </div>
-    );
-
   const handleAddUser = async () => {
+    if (!name.trim()) return toast.error("Name is required");
+    if (!email.trim()) return toast.error("Email is required");
+    if (!password.trim()) return toast.error("Password is required");
+
     try {
-      await addUser({ name, email, password, role });
-      toast.success("User added successfully!");
+      const res: any = await addUser({ name, email, password, role }).unwrap();
+      toast.success(res?.message || "User created successfully!");
       setName("");
       setEmail("");
       setPassword("");
       setRole("ADMIN");
+      setIsDialogOpen(false);
       refetch();
-    } catch (error) {
-      toast.error("Failed to add user.");
+    } catch (error: any) {
+      toast.error(error?.data?.message || error?.message || "Failed to add user.");
     }
   };
 
@@ -112,47 +134,111 @@ export default function AllUsersPage() {
         <h1 className="text-2xl font-bold">All Users</h1>
         <div className="flex gap-2">
           {currentUser?.role === "SUPER_ADMIN" && (
-            <Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="default" size="sm">
-                  <Plus className="w-4 h-4 mr-1" />
-                  Add User
+                <Button variant="default" size="sm" className="gap-1.5 shadow-sm">
+                  <UserPlus className="w-4 h-4" />
+                  <span>+ Add User</span>
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
+              <DialogContent className="sm:max-w-md w-[95vw]">
                 <DialogHeader>
-                  <DialogTitle>Create New User</DialogTitle>
+                  <DialogTitle className="flex items-center gap-2 text-lg font-bold">
+                    <UserPlus className="w-5 h-5 text-primary" />
+                    Create New User
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-muted-foreground">
+                    Add a new administrator to manage the dashboard and inventory.
+                  </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-3">
-                  <Input
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <Input
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <Input
-                    placeholder="Password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <select
-                    className="w-full border rounded px-2 py-1"
-                    value={role}
-                    onChange={(e) =>
-                      setRole(e.target.value as "SUPER_ADMIN" | "ADMIN")
-                    }>
-                    <option value="ADMIN">ADMIN</option>
-                    <option value="SUPER_ADMIN">SUPER ADMIN</option>
-                  </select>
+
+                <div className="space-y-4 py-2">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold text-foreground/90">Full Name</Label>
+                    <div className="relative">
+                      <User className="w-4 h-4 text-muted-foreground absolute left-3 top-3" />
+                      <Input
+                        placeholder="e.g. John Doe"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="pl-9 h-10 border-border/70 focus-visible:ring-primary/20"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold text-foreground/90">Email Address</Label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-muted-foreground absolute left-3 top-3" />
+                      <Input
+                        placeholder="e.g. admin@sunplus.com"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pl-9 h-10 border-border/70 focus-visible:ring-primary/20"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold text-foreground/90">Password</Label>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 text-muted-foreground absolute left-3 top-3" />
+                      <Input
+                        placeholder="••••••••"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pl-9 pr-9 h-10 border-border/70 focus-visible:ring-primary/20"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold text-foreground/90">Role & Permissions</Label>
+                    <div className="relative">
+                      <Shield className="w-4 h-4 text-muted-foreground absolute left-3 top-3 z-10 pointer-events-none" />
+                      <Select
+                        value={role}
+                        onValueChange={(val) => setRole(val as "SUPER_ADMIN" | "ADMIN")}
+                      >
+                        <SelectTrigger className="pl-9 h-10 w-full border-border/70 focus:ring-primary/20">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ADMIN">ADMIN (Store Management)</SelectItem>
+                          <SelectItem value="SUPER_ADMIN">SUPER ADMIN (Full Access)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </div>
-                <DialogFooter>
-                  <Button onClick={handleAddUser}>Create</Button>
-                </DialogFooter>
+
+                <div className="flex flex-col-reverse sm:flex-row justify-end items-center gap-3 pt-4 border-t border-border/80">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsDialogOpen(false)}
+                    className="w-full sm:w-auto h-10 px-5 text-sm"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleAddUser}
+                    className="w-full sm:w-auto h-10 px-6 gap-2 text-sm shadow-sm"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Create User
+                  </Button>
+                </div>
               </DialogContent>
             </Dialog>
           )}

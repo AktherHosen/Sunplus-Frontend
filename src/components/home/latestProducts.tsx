@@ -26,20 +26,8 @@ export default function LatestProducts() {
     (product) => product.meta?.new_arrival === "true",
   );
 
-  if (isLoading) {
-    return (
-      <div className="py-10 text-center text-muted-foreground">
-        Loading latest products...
-      </div>
-    );
-  }
-
-  if (!newArrivalProducts.length) {
-    return (
-      <div className="py-10 text-center text-muted-foreground">
-        Something new is on the way.
-      </div>
-    );
+  if (isLoading || !newArrivalProducts.length) {
+    return null;
   }
 
   function chunkArray<T>(array: T[], chunkSize: number): T[][] {

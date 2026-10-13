@@ -21,7 +21,7 @@ import {
 } from "@/redux/api/baseApi";
 import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
 import { Switch } from "@/components/ui/switch";
-import { Image, Trash, GripVertical } from "lucide-react";
+import { Image, Trash, GripVertical, Loader2, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -90,6 +90,16 @@ export default function Categories() {
   const [toggleCategoryStatus] = useToggleCategoryStatusMutation();
 
   const [categories, setCategories] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleToggleStatus = async (cat: any) => {
     const newStatus = cat.isActive !== false ? false : true;
@@ -183,6 +193,19 @@ export default function Categories() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[220px]"
           />
+          <CategoryForm triggerText="+ Add Category" onSuccess={refetch} />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="h-9 w-9 p-0"
+            title="Refresh"
+          >
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+            />
+          </Button>
           <ImportExportButtons
             title="Categories"
             exportEndpoint="/category/export"
@@ -191,37 +214,49 @@ export default function Categories() {
             sampleHeaders={["name", "order", "new_arrival"]}
             sampleData={"name,order,new_arrival\r\nLED Lighting,0,false\r\nSwitch & Socket,1,false\r\nFan,2,false\r\n"}
           />
-          <CategoryForm triggerText="+ Add Category" onSuccess={refetch} />
         </div>
       </div>
 
-      {/* Loading */}
-      {isLoading && <p className="text-center">Loading categories...</p>}
-
-      {/* Error */}
-      {isError && (
-        <p className="text-red-500 text-center">Failed to load categories.</p>
-      )}
-
       {/* Table View */}
-      {!isLoading && categories.length > 0 && (
-        <div className="overflow-x-auto border rounded-lg bg-background">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <Table>
-              <TableHeader>
+      <div className="overflow-x-auto border rounded-lg bg-background">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[40px]"></TableHead>
+                <TableHead className="w-[60px] text-center">#</TableHead>
+                <TableHead>Image</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead className="text-right w-[220px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
                 <TableRow>
-                  <TableHead className="w-[40px]"></TableHead>
-                  <TableHead className="w-[60px] text-center">#</TableHead>
-                  <TableHead>Image</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="text-right w-[220px]">Actions</TableHead>
+                  <TableCell colSpan={5} className="text-center py-12">
+                    <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <p className="text-sm font-medium">Loading categories...</p>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
+              ) : isError ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-10">
+                    <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                      <p className="text-sm text-destructive font-medium">Could not load categories at this time.</p>
+                      <Button variant="outline" size="xs" onClick={() => refetch()} className="gap-1.5">
+                        <RefreshCcw className="w-3.5 h-3.5" />
+                        Retry
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : categories.length > 0 ? (
                 <SortableContext
                   items={categories.map((c) => c._id)}
                   strategy={verticalListSortingStrategy}
@@ -290,16 +325,18 @@ export default function Categories() {
                     );
                   })}
                 </SortableContext>
-              </TableBody>
-            </Table>
-          </DndContext>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!isLoading && categories.length === 0 && (
-        <p className="text-center text-gray-500">No categories found.</p>
-      )}
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-12 text-muted-foreground">
+                    <p className="text-sm font-medium">No categories found.</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Click "+ Add Category" or "Import" to get started.</p>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </DndContext>
+      </div>
     </div>
   );
 }

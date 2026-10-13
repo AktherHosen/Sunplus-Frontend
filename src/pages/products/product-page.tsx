@@ -407,6 +407,22 @@ const ProductPage = () => {
             </PopoverContent>
           </Popover>
 
+          <Button size="sm" onClick={() => handleOpenDialog()}>
+            + Add Product
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="h-9 w-9 p-0"
+            title="Refresh"
+          >
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+            />
+          </Button>
+
           <ImportExportButtons
             title="Products"
             exportEndpoint={`/product/export?category=${selectedCategory}&subcategory=${selectedSubcategory}`}
@@ -422,20 +438,6 @@ const ProductPage = () => {
             ]}
             sampleData={`name,category,subcategory,price,quantity,descriptions\r\n"18W LED T-Bulb","LED Lighting","LED Bulb",350,100,"Energy efficient 18W bulb"\r\n"Direct LED Light","LED Lighting","",450,50,"Direct LED without subcategory"\r\n"Smart 2-Gang Switch","Switch & Socket","Gang Switch",650,20,"Wi-Fi smart dual switch"\r\n`}
           />
-
-          <Button size="sm" onClick={() => handleOpenDialog()}>
-            + Add Product
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={refreshing}
-          >
-            <RefreshCcw
-              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
-            />
-          </Button>
         </div>
       </div>
 

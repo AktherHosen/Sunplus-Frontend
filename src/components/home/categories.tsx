@@ -17,16 +17,8 @@ export default function Categories() {
     (a: any, b: any) => (a.order || 0) - (b.order || 0)
   );
 
-  if (isLoading)
-    return <Loader fullscreen={true} message="Fetching categories..." />;
-  if (isError)
-    return (
-      <div className="text-center py-10 text-red-500">
-        Failed to load categories.
-      </div>
-    );
-  if (!categories.length)
-    return <div className="text-center py-10">No categories found.</div>;
+  if (isLoading) return null;
+  if (isError || !categories.length) return null;
 
   return (
     <section>

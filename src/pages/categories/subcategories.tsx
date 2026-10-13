@@ -22,7 +22,7 @@ import {
 } from "@/redux/api/baseApi";
 import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
 import { Switch } from "@/components/ui/switch";
-import { Image, Trash, GripVertical } from "lucide-react";
+import { Image, Trash, GripVertical, Loader2, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import {
   Select,
@@ -102,6 +102,16 @@ export default function Subcategories() {
 
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleToggleStatus = async (sub: any) => {
     const newStatus = sub.isActive !== false ? false : true;
@@ -222,6 +232,19 @@ export default function Subcategories() {
               ))}
             </SelectContent>
           </Select>
+          <CategoryForm triggerText="+ Add Subcategory" onSuccess={refetch} />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="h-9 w-9 p-0"
+            title="Refresh"
+          >
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+            />
+          </Button>
           <ImportExportButtons
             title="Subcategories"
             exportEndpoint="/category/sub-categories/export"
@@ -230,30 +253,50 @@ export default function Subcategories() {
             sampleHeaders={["name", "category", "order", "new_arrival"]}
             sampleData={"name,category,order,new_arrival\r\nLED Bulb,LED Lighting,0,false\r\nLED Tube Light,LED Lighting,1,false\r\nGang Switch,Switch & Socket,0,false\r\n"}
           />
-          <CategoryForm triggerText="+ Add Subcategory" onSuccess={refetch} />
         </div>
       </div>
 
-      {subcategories.length > 0 ? (
-        <div className="overflow-x-auto border rounded-lg shadow-sm bg-background">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <Table>
-              <TableHeader>
+      <div className="overflow-x-auto border rounded-lg shadow-sm bg-background">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[40px]"></TableHead>
+                <TableHead className="w-[60px] text-center">#</TableHead>
+                <TableHead>Image</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Parent</TableHead>
+                <TableHead className="text-right w-[220px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
                 <TableRow>
-                  <TableHead className="w-[40px]"></TableHead>
-                  <TableHead className="w-[60px] text-center">#</TableHead>
-                  <TableHead>Image</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Parent</TableHead>
-                  <TableHead className="text-right w-[220px]">Actions</TableHead>
+                  <TableCell colSpan={7} className="text-center py-12">
+                    <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <p className="text-sm font-medium">Loading subcategories...</p>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
+              ) : isError ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-10">
+                    <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                      <p className="text-sm text-destructive font-medium">Could not load subcategories at this time.</p>
+                      <Button variant="outline" size="xs" onClick={() => refetch()} className="gap-1.5">
+                        <RefreshCcw className="w-3.5 h-3.5" />
+                        Retry
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : subcategories.length > 0 ? (
                 <SortableContext
                   items={subcategories.map((c) => c._id)}
                   strategy={verticalListSortingStrategy}
@@ -324,13 +367,18 @@ export default function Subcategories() {
                     );
                   })}
                 </SortableContext>
-              </TableBody>
-            </Table>
-          </DndContext>
-        </div>
-      ) : (
-        <p className="text-center text-gray-500">No subcategories found.</p>
-      )}
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">
+                    <p className="text-sm font-medium">No subcategories found.</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Click "+ Add Subcategory" or "Import" to get started.</p>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </DndContext>
+      </div>
     </div>
   );
 }

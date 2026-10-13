@@ -26,6 +26,7 @@ import {
   CheckCircle2,
   AlertCircle,
   HelpCircle,
+  MoreHorizontal,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -147,20 +148,31 @@ export const ImportExportButtons: React.FC<ImportExportProps> = ({
   return (
     <>
       <div className="flex items-center gap-1.5">
-        {/* Export Dropdown */}
+        {/* Dropdown Menu (rendered as MoreHorizontal "..." button) */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
               size="sm"
-              className="h-9 gap-1.5 text-xs sm:text-sm font-medium"
+              className="h-9 w-9 p-0 text-muted-foreground hover:text-foreground"
+              title="More actions"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export</span>
+              <MoreHorizontal className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuLabel>Export {title}</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuLabel className="text-xs text-muted-foreground">Manage {title}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                setSelectedFile(null);
+                setIsModalOpen(true);
+              }}
+              className="cursor-pointer gap-2"
+            >
+              <Upload className="w-4 h-4 text-primary" />
+              <span>Import {title}</span>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => handleExport("csv")}
@@ -176,22 +188,20 @@ export const ImportExportButtons: React.FC<ImportExportProps> = ({
               <FileJson className="w-4 h-4 text-amber-600" />
               <span>Export as JSON</span>
             </DropdownMenuItem>
+            {(sampleHeaders || sampleData) && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleDownloadSample}
+                  className="cursor-pointer gap-2 text-xs text-muted-foreground"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Sample</span>
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* Import Button -> Opens Modal */}
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-9 gap-1.5 text-xs sm:text-sm font-medium"
-          onClick={() => {
-            setSelectedFile(null);
-            setIsModalOpen(true);
-          }}
-        >
-          <Upload className="w-3.5 h-3.5" />
-          <span>Import</span>
-        </Button>
       </div>
 
       {/* Import Modal */}
