@@ -11,7 +11,20 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { ICategory, IProduct, IVariant } from "@/types/product";
-import { ImageIcon, Package, Plus, Upload, X } from "lucide-react";
+import {
+  ImageIcon,
+  Package,
+  Plus,
+  Upload,
+  X,
+  Layers,
+  Tag,
+  DollarSign,
+  Boxes,
+  Hash,
+  Sparkles,
+  Copy,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface MetaField {
@@ -162,6 +175,19 @@ export const ProductForm = ({
 
   const handleAddMetaField = () =>
     setMetaFields([...metaFields, { key: "", value: "" }]);
+
+  const handleApplySuggestedMeta = (tag: string) => {
+    // If there is an empty key field, fill it
+    const emptyIndex = metaFields.findIndex((f) => !f.key.trim());
+    if (emptyIndex !== -1) {
+      const updated = [...metaFields];
+      updated[emptyIndex].key = tag;
+      setMetaFields(updated);
+    } else {
+      // Otherwise append a new one
+      setMetaFields([...metaFields, { key: tag, value: "" }]);
+    }
+  };
 
   const handleRemoveMetaField = (index: number) =>
     setMetaFields(metaFields.filter((_, i) => i !== index));
@@ -427,166 +453,240 @@ export const ProductForm = ({
       </Card>
 
       {/* Card 3: Pricing & Variants */}
-      <Card className="border border-border/80 shadow-none bg-card">
+      <Card className="border border-border/80 shadow-none bg-card overflow-hidden">
         <CardContent className="p-6">
-          <div className="space-y-5">
-            <div className="flex items-center gap-3 p-4 rounded-lg border border-border/40 bg-muted/20">
-              <input
-                type="checkbox"
-                id="useVariants"
-                checked={useVariants}
-                onChange={(e) => {
-                  setUseVariants(e.target.checked);
-                  if (e.target.checked) {
-                    setPrice(0);
-                  }
-                }}
-                className="h-4 w-4 rounded border-border/60 text-primary focus:ring-2 focus:ring-primary/30 focus:ring-offset-0 cursor-pointer transition-all"
-              />
-              <Label
-                htmlFor="useVariants"
-                className="text-sm font-medium cursor-pointer flex-1 text-foreground/90"
-              >
-                Use Variants (Multiple Prices)
-              </Label>
+          <div className="space-y-6">
+            {/* Header toggle for variants */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-border/60 bg-gradient-to-r from-muted/30 to-muted/10 gap-3">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 text-primary mt-0.5 sm:mt-0">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Label
+                      htmlFor="useVariants"
+                      className="text-base font-semibold cursor-pointer text-foreground"
+                    >
+                      Product Variants
+                    </Label>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-muted text-muted-foreground border">
+                      Multiple Options & Pricing
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Enable if this product comes in multiple sizes, colors, wattages, or SKUs.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <input
+                  type="checkbox"
+                  id="useVariants"
+                  checked={useVariants}
+                  onChange={(e) => {
+                    setUseVariants(e.target.checked);
+                    if (e.target.checked) {
+                      setPrice(0);
+                      if (variants.length === 0) {
+                        handleAddVariant();
+                      }
+                    }
+                  }}
+                  className="h-5 w-5 rounded border-border/60 text-primary focus:ring-2 focus:ring-primary/30 cursor-pointer accent-primary transition-all"
+                />
+              </div>
             </div>
 
             {useVariants ? (
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <Label className="text-sm font-medium text-foreground/90">
-                    Product Variants <span className="text-destructive">*</span>
-                  </Label>
+                {/* Variant actions toolbar */}
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 pb-1">
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                      Configured Variants
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
+                        {variants.length}
+                      </span>
+                    </h4>
+                    <p className="text-xs text-muted-foreground">
+                      Each variant has its own price, stock, and SKU.
+                    </p>
+                  </div>
                   <Button
                     type="button"
-                    variant="outline"
                     size="sm"
                     onClick={handleAddVariant}
-                    className="gap-2 border-border/60 hover:bg-muted/30 transition-colors"
+                    className="gap-1.5 shadow-sm h-9"
                   >
                     <Plus className="w-4 h-4" />
-                    Add Variant
+                    <span>Add New Variant</span>
                   </Button>
                 </div>
+
                 {variants.length === 0 ? (
-                  <div className="text-sm text-muted-foreground p-6 border-2 border-dashed border-border/40 rounded-lg text-center bg-muted/10">
-                    <Package className="w-7 h-7 mx-auto mb-2 text-muted-foreground/50" />
-                    <p className="font-medium">
-                      No variants added. Click "Add Variant" to create one.
+                  <div className="text-sm p-8 border-2 border-dashed border-border/60 rounded-xl text-center bg-muted/5 flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-muted/30 flex items-center justify-center mb-3 text-muted-foreground">
+                      <Boxes className="w-6 h-6" />
+                    </div>
+                    <p className="font-semibold text-foreground">No variants added yet</p>
+                    <p className="text-xs text-muted-foreground mt-1 max-w-sm">
+                      Create variations like "12W - Warm White", "18W - Daylight", or different sizes with custom prices.
                     </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddVariant}
+                      className="mt-4 gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add First Variant
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {variants.map((variant, index) => (
-                      <Card
+                      <div
                         key={index}
-                        className="border border-border/80 shadow-none bg-card"
+                        className="group relative rounded-xl border border-border/70 bg-card hover:border-primary/50 hover:shadow-xs transition-all duration-200 overflow-hidden"
                       >
-                        <CardContent className="p-4">
-                          <div className="space-y-4">
-                            <div className="flex justify-between items-center pb-3 border-b border-border/40">
-                              <Label className="text-sm font-medium text-foreground/90">
-                                Variant {index + 1}
-                              </Label>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                                onClick={() => handleRemoveVariant(index)}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div className="space-y-1.5">
-                                <Label className="text-xs font-medium text-foreground/80">
-                                  Name{" "}
-                                  <span className="text-destructive">*</span>
-                                </Label>
-                                <Input
-                                  placeholder="e.g., Small - Red"
-                                  value={variant.name}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "name",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="h-10 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all"
-                                />
-                              </div>
-                              <div className="space-y-1.5">
-                                <Label className="text-xs font-medium text-foreground/80">
-                                  Price
-                                </Label>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  placeholder="0.00"
-                                  value={variant.price || ""}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "price",
-                                      Number(e.target.value)
-                                    )
-                                  }
-                                  className="h-10 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all"
-                                />
-                              </div>
-                              <div className="space-y-1.5">
-                                <Label className="text-xs font-medium text-foreground/80">
-                                  Quantity
-                                </Label>
-                                <Input
-                                  type="number"
-                                  placeholder="0"
-                                  value={variant.quantity || ""}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "quantity",
-                                      Number(e.target.value)
-                                    )
-                                  }
-                                  className="h-10 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all"
-                                />
-                              </div>
-                              <div className="space-y-1.5">
-                                <Label className="text-xs font-medium text-foreground/80">
-                                  SKU
-                                </Label>
-                                <Input
-                                  placeholder="SKU-001"
-                                  value={variant.sku || ""}
-                                  onChange={(e) =>
-                                    handleVariantChange(
-                                      index,
-                                      "sku",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="h-10 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all"
-                                />
-                              </div>
-                            </div>
+                        {/* Variant Card Header */}
+                        <div className="flex items-center justify-between px-4 py-2.5 bg-muted/20 border-b border-border/40">
+                          <div className="flex items-center gap-2">
+                            <span className="flex items-center justify-center w-6 h-6 rounded-md bg-primary/10 text-primary text-xs font-bold">
+                              #{index + 1}
+                            </span>
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {variant.name || "Untitled Variant"}
+                            </span>
+                            {Number(variant.price) > 0 && (
+                              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                                Tk. {Number(variant.price).toLocaleString()}
+                              </span>
+                            )}
                           </div>
-                        </CardContent>
-                      </Card>
+
+                          <div className="flex items-center gap-1">
+                            {/* Duplicate variant button */}
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              title="Duplicate variant"
+                              className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                              onClick={() => {
+                                const dup = { ...variant, name: `${variant.name} (Copy)` };
+                                setVariants([...variants, dup]);
+                              }}
+                            >
+                              <Copy className="h-3.5 w-3.5" />
+                            </Button>
+                            {/* Remove button */}
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                              onClick={() => handleRemoveVariant(index)}
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Variant Inputs Grid */}
+                        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                          {/* Name Input */}
+                          <div className="space-y-1.5 lg:col-span-2">
+                            <Label className="text-xs font-medium text-foreground/80 flex items-center gap-1">
+                              <Tag className="w-3 h-3 text-muted-foreground" />
+                              Variant Name <span className="text-destructive">*</span>
+                            </Label>
+                            <Input
+                              placeholder="e.g. 18W Daylight / Large Red"
+                              value={variant.name}
+                              onChange={(e) =>
+                                handleVariantChange(index, "name", e.target.value)
+                              }
+                              className="h-9.5 text-sm border-border/60 focus-visible:ring-1 focus-visible:ring-primary/40"
+                            />
+                          </div>
+
+                          {/* Price Input */}
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium text-foreground/80 flex items-center gap-1">
+                              <DollarSign className="w-3 h-3 text-muted-foreground" />
+                              Price (Tk.)
+                            </Label>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              placeholder="0.00"
+                              value={variant.price || ""}
+                              onChange={(e) =>
+                                handleVariantChange(
+                                  index,
+                                  "price",
+                                  Number(e.target.value)
+                                )
+                              }
+                              className="h-9.5 text-sm border-border/60 focus-visible:ring-1 focus-visible:ring-primary/40 font-medium"
+                            />
+                          </div>
+
+                          {/* Quantity Input */}
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium text-foreground/80 flex items-center gap-1">
+                              <Boxes className="w-3 h-3 text-muted-foreground" />
+                              Stock Quantity
+                            </Label>
+                            <Input
+                              type="number"
+                              placeholder="0"
+                              value={variant.quantity || ""}
+                              onChange={(e) =>
+                                handleVariantChange(
+                                  index,
+                                  "quantity",
+                                  Number(e.target.value)
+                                )
+                              }
+                              className="h-9.5 text-sm border-border/60 focus-visible:ring-1 focus-visible:ring-primary/40"
+                            />
+                          </div>
+
+                          {/* SKU Input */}
+                          <div className="space-y-1.5 lg:col-span-4">
+                            <Label className="text-xs font-medium text-foreground/80 flex items-center gap-1">
+                              <Hash className="w-3 h-3 text-muted-foreground" />
+                              SKU / Model Number (Optional)
+                            </Label>
+                            <Input
+                              placeholder="e.g. LED-18W-DL-001"
+                              value={variant.sku || ""}
+                              onChange={(e) =>
+                                handleVariantChange(index, "sku", e.target.value)
+                              }
+                              className="h-9 text-xs border-border/60 focus-visible:ring-1 focus-visible:ring-primary/40"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 p-4 rounded-xl border border-border/40 bg-muted/5">
                 <div className="space-y-2">
                   <Label
                     htmlFor="price"
-                    className="text-sm font-medium text-foreground/90"
+                    className="text-sm font-medium text-foreground/90 flex items-center gap-1.5"
                   >
-                    Price
+                    <DollarSign className="w-4 h-4 text-muted-foreground" />
+                    Base Price (Tk.)
                   </Label>
                   <Input
                     id="price"
@@ -595,15 +695,16 @@ export const ProductForm = ({
                     value={price || ""}
                     onChange={(e) => setPrice(Number(e.target.value))}
                     placeholder="0.00"
-                    className="h-11 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all"
+                    className="h-11 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all font-medium"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label
                     htmlFor="quantity"
-                    className="text-sm font-medium text-foreground/90"
+                    className="text-sm font-medium text-foreground/90 flex items-center gap-1.5"
                   >
-                    Quantity
+                    <Boxes className="w-4 h-4 text-muted-foreground" />
+                    Available Quantity
                   </Label>
                   <Input
                     id="quantity"
@@ -625,21 +726,29 @@ export const ProductForm = ({
         <CardContent className="p-6">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <Label className="text-sm font-medium text-foreground/90">
-                Additional Attributes
-              </Label>
+              <div>
+                <Label className="text-sm font-semibold text-foreground">
+                  Additional Specifications & Attributes
+                </Label>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Click any suggested attribute below to add it instantly.
+                </p>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleAddMetaField}
-                className="gap-2 border-border/60 hover:bg-muted/30 transition-colors"
+                className="gap-2 border-border/60 hover:bg-muted/30 transition-colors h-9"
               >
                 <Plus className="w-4 h-4" />
                 Add Field
               </Button>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-medium text-muted-foreground">
+
+            {/* Clickable suggested attribute tags */}
+            <div className="flex flex-wrap items-center gap-2 pt-1 pb-2">
+              <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-primary" />
                 Suggested:
               </span>
               {[
@@ -651,14 +760,18 @@ export const ProductForm = ({
                 "size",
                 "color",
               ].map((tag) => (
-                <span
+                <button
+                  type="button"
                   key={tag}
-                  className="px-2.5 py-1 text-xs font-medium rounded-md bg-primary/8 text-primary border border-primary/15 hover:bg-primary/12 transition-colors"
+                  onClick={() => handleApplySuggestedMeta(tag)}
+                  className="px-2.5 py-1 text-xs font-medium rounded-lg bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-2xs"
                 >
+                  <Plus className="w-3 h-3 opacity-70" />
                   {tag}
-                </span>
+                </button>
               ))}
             </div>
+
             <div className="space-y-3">
               {metaFields.map((f, i) => (
                 <div
