@@ -97,8 +97,11 @@ const ProductPage = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const { data: productsData, refetch } = useGetAllProductsQuery(debouncedSearch);
-  const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
+  const { data: productsData, refetch } = useGetAllProductsQuery({
+    searchTerm: debouncedSearch,
+    includeInactive: true,
+  });
+  const { data: categoriesData } = useGetAllCategoriesQuery({ includeInactive: true });
   const [deleteProduct] = useDeleteProductMutation();
   const [addProduct] = useAddProductMutation();
   const [updateProduct] = useUpdateProductMutation();
@@ -216,9 +219,12 @@ const ProductPage = () => {
       }
       setDialogOpen(false);
       setEditingProduct(null);
-      refetch();
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to save product");
+      let errorMsg = err?.data?.message || err?.message || "Failed to save product";
+      if (typeof errorMsg === "string" && (errorMsg.includes("E11000") || errorMsg.includes("dup key"))) {
+        errorMsg = "A product with this name already exists. Please choose a different name.";
+      }
+      toast.error(errorMsg);
       throw err;
     }
   };

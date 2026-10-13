@@ -90,8 +90,11 @@ export default function Subcategories() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const { data, isLoading, isError, refetch } = useGetAllSubCategoriesQuery(debouncedSearch);
-  const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
+  const { data, isLoading, isError, refetch } = useGetAllSubCategoriesQuery({
+    searchTerm: debouncedSearch,
+    includeInactive: true,
+  });
+  const { data: categoriesData } = useGetAllCategoriesQuery({ includeInactive: true });
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
   const [importSubCategories] = useImportSubCategoriesMutation();

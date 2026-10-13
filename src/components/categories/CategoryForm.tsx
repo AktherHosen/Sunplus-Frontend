@@ -143,7 +143,11 @@ export default function CategoryForm({
       resetForm();
       onSuccess?.();
     } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to save category");
+      let errorMsg = error?.data?.message || error?.message || "Failed to save category";
+      if (typeof errorMsg === "string" && (errorMsg.includes("E11000") || errorMsg.includes("dup key"))) {
+        errorMsg = "A category with this name already exists. Please choose a different name.";
+      }
+      toast.error(errorMsg);
     }
   };
 

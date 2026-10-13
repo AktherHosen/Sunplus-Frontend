@@ -83,7 +83,7 @@ export default function Categories() {
   }, [searchQuery]);
 
   const { data, isLoading, isError, refetch } =
-    useGetAllCategoriesQuery(debouncedSearch);
+    useGetAllCategoriesQuery({ searchTerm: debouncedSearch, includeInactive: true });
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
   const [importCategories] = useImportCategoriesMutation();

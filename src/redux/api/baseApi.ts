@@ -20,7 +20,17 @@ export const baseApi = createApi({
   endpoints: (builder) => ({
     // -------------------- Categories --------------------
     getAllCategories: builder.query({
-      query: (searchTerm?: string) => searchTerm ? `/category?searchTerm=${searchTerm}` : "/category",
+      query: (arg?: string | { searchTerm?: string; includeInactive?: boolean }) => {
+        const params = new URLSearchParams();
+        if (typeof arg === "string") {
+          if (arg) params.append("searchTerm", arg);
+        } else if (arg) {
+          if (arg.searchTerm) params.append("searchTerm", arg.searchTerm);
+          if (arg.includeInactive) params.append("includeInactive", "true");
+        }
+        const qs = params.toString();
+        return qs ? `/category?${qs}` : "/category";
+      },
       providesTags: ["categories"],
     }),
 
@@ -74,7 +84,17 @@ export const baseApi = createApi({
     }),
 
     getAllSubCategories: builder.query({
-      query: (searchTerm?: string) => searchTerm ? `/category/sub-categories?searchTerm=${searchTerm}` : "/category/sub-categories",
+      query: (arg?: string | { searchTerm?: string; includeInactive?: boolean }) => {
+        const params = new URLSearchParams();
+        if (typeof arg === "string") {
+          if (arg) params.append("searchTerm", arg);
+        } else if (arg) {
+          if (arg.searchTerm) params.append("searchTerm", arg.searchTerm);
+          if (arg.includeInactive) params.append("includeInactive", "true");
+        }
+        const qs = params.toString();
+        return qs ? `/category/sub-categories?${qs}` : "/category/sub-categories";
+      },
       providesTags: ["categories"],
     }),
 
@@ -86,9 +106,19 @@ export const baseApi = createApi({
         message: string;
         data: IProduct[];
       },
-      string | void
+      string | { searchTerm?: string; includeInactive?: boolean } | void
     >({
-      query: (searchTerm) => searchTerm ? `/product?searchTerm=${searchTerm}` : "/product",
+      query: (arg) => {
+        const params = new URLSearchParams();
+        if (typeof arg === "string") {
+          if (arg) params.append("searchTerm", arg);
+        } else if (arg) {
+          if (arg.searchTerm) params.append("searchTerm", arg.searchTerm);
+          if (arg.includeInactive) params.append("includeInactive", "true");
+        }
+        const qs = params.toString();
+        return qs ? `/product?${qs}` : "/product";
+      },
       providesTags: ["products"],
     }),
 
