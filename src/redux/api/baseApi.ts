@@ -64,6 +64,15 @@ export const baseApi = createApi({
       invalidatesTags: ["categories"],
     }),
 
+    toggleCategoryStatus: builder.mutation<any, { id: string; isActive: boolean }>({
+      query: ({ id, isActive }) => ({
+        url: `/category/toggle-status/${id}`,
+        method: "PATCH",
+        body: { isActive },
+      }),
+      invalidatesTags: ["categories"],
+    }),
+
     getAllSubCategories: builder.query({
       query: (searchTerm?: string) => searchTerm ? `/category/sub-categories?searchTerm=${searchTerm}` : "/category/sub-categories",
       providesTags: ["categories"],
@@ -139,6 +148,15 @@ export const baseApi = createApi({
         url: "/product/reorder",
         method: "PATCH",
         body: { updates },
+      }),
+      invalidatesTags: ["products"],
+    }),
+
+    toggleProductStatus: builder.mutation<any, { id: string; isActive: boolean }>({
+      query: ({ id, isActive }) => ({
+        url: `/product/toggle-status/${id}`,
+        method: "PATCH",
+        body: { isActive },
       }),
       invalidatesTags: ["products"],
     }),
@@ -315,6 +333,7 @@ export const {
   useDeleteCategoryMutation,
   useGetAllSubCategoriesQuery,
   useReorderCategoriesMutation,
+  useToggleCategoryStatusMutation,
   useImportCategoriesMutation,
   useImportSubCategoriesMutation,
 
@@ -327,6 +346,7 @@ export const {
   useUpdateProductMutation,
   useDeleteProductMutation,
   useReorderProductsMutation,
+  useToggleProductStatusMutation,
   useImportProductsMutation,
 
   // Orders

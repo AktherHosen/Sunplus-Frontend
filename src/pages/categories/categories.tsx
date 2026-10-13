@@ -17,8 +17,10 @@ import {
   useGetAllCategoriesQuery,
   useReorderCategoriesMutation,
   useImportCategoriesMutation,
+  useToggleCategoryStatusMutation,
 } from "@/redux/api/baseApi";
 import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
+import { Switch } from "@/components/ui/switch";
 import { Image, Trash, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -85,8 +87,24 @@ export default function Categories() {
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
   const [importCategories] = useImportCategoriesMutation();
+  const [toggleCategoryStatus] = useToggleCategoryStatusMutation();
 
   const [categories, setCategories] = useState<any[]>([]);
+
+  const handleToggleStatus = async (cat: any) => {
+    const newStatus = cat.isActive !== false ? false : true;
+    // Optimistic UI update
+    setCategories((prev) =>
+      prev.map((c) => (c._id === cat._id ? { ...c, isActive: newStatus } : c))
+    );
+    try {
+      await toggleCategoryStatus({ id: cat._id, isActive: newStatus }).unwrap();
+      toast.success(`Category "${cat.name}" ${newStatus ? "enabled" : "disabled"}`);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update category status");
+      refetch();
+    }
+  };
 
   const isSearching = debouncedSearch.trim().length > 0;
 
@@ -159,8 +177,8 @@ export default function Categories() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
         <h1 className="text-2xl font-bold">Categories</h1>
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <Input 
-            placeholder="Search categories..." 
+          <Input
+            placeholder="Search categories..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[220px]"
@@ -200,7 +218,7 @@ export default function Categories() {
                   <TableHead className="w-[60px] text-center">#</TableHead>
                   <TableHead>Image</TableHead>
                   <TableHead>Name</TableHead>
-                  <TableHead className="text-center w-[150px]">Actions</TableHead>
+                  <TableHead className="text-right w-[220px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -208,43 +226,69 @@ export default function Categories() {
                   items={categories.map((c) => c._id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  {categories.map((cat: any, index: number) => (
-                    <SortableTableRow key={cat._id} id={cat._id} disabled={isSearching}>
-                      <TableCell className="text-center">{index + 1}</TableCell>
-                      <TableCell>
-                        <Avatar className="rounded size-8">
-                          <AvatarImage
-                            className="rounded"
-                            src={
-                              cat.image
-                                ? `${import.meta.env.VITE_API_URL}${cat.image}`
-                                : undefined
-                            }
-                            alt={cat.name}
-                          />
-                          <AvatarFallback className="rounded">
-                            <Image className="size-6 text-muted-foreground" />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-medium">{cat.name}</TableCell>
+                  {categories.map((cat: any, index: number) => {
+                    const isCatActive = cat.isActive !== false;
+                    return (
+                      <SortableTableRow
+                        key={cat._id}
+                        id={cat._id}
+                        disabled={isSearching}
+                        className={!isCatActive ? "opacity-60 bg-muted/20" : ""}
+                      >
+                        <TableCell className="text-center">{index + 1}</TableCell>
+                        <TableCell>
+                          <Avatar className="rounded size-8">
+                            <AvatarImage
+                              className="rounded"
+                              src={
+                                cat.image
+                                  ? `${import.meta.env.VITE_API_URL}${cat.image}`
+                                  : undefined
+                              }
+                              alt={cat.name}
+                            />
+                            <AvatarFallback className="rounded">
+                              <Image className="size-6 text-muted-foreground" />
+                            </AvatarFallback>
+                          </Avatar>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{cat.name}</span>
+                            {!isCatActive && (
+                              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground border">
+                                Hidden
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
 
-                      <TableCell className="text-center space-x-2">
-                        <CategoryForm
-                          category={cat}
-                          triggerText="Edit"
-                          onSuccess={refetch}
-                        />
-                        <Button
-                          variant="destructive"
-                          size="xs"
-                          onClick={() => handleDelete(cat._id)}
-                        >
-                          <Trash />
-                        </Button>
-                      </TableCell>
-                    </SortableTableRow>
-                  ))}
+                        <TableCell className="text-right">
+                          <div className="inline-flex items-center justify-end gap-3">
+                            <div className="flex items-center gap-1.5 mr-1" title={isCatActive ? "Visible in store" : "Hidden from store"}>
+                              <Switch
+                                checked={isCatActive}
+                                onCheckedChange={() => handleToggleStatus(cat)}
+                              />
+                            </div>
+                            <CategoryForm
+                              category={cat}
+                              triggerText="Edit"
+                              onSuccess={refetch}
+                            />
+                            <Button
+                              variant="destructive"
+                              size="xs"
+                              onClick={() => handleDelete(cat._id)}
+                              title="Delete Category"
+                            >
+                              <Trash />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </SortableTableRow>
+                    );
+                  })}
                 </SortableContext>
               </TableBody>
             </Table>

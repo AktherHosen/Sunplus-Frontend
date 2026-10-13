@@ -18,8 +18,10 @@ import {
   useReorderCategoriesMutation,
   useGetAllCategoriesQuery,
   useImportSubCategoriesMutation,
+  useToggleCategoryStatusMutation,
 } from "@/redux/api/baseApi";
 import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
+import { Switch } from "@/components/ui/switch";
 import { Image, Trash, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -93,9 +95,24 @@ export default function Subcategories() {
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
   const [importSubCategories] = useImportSubCategoriesMutation();
+  const [toggleCategoryStatus] = useToggleCategoryStatusMutation();
 
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+
+  const handleToggleStatus = async (sub: any) => {
+    const newStatus = sub.isActive !== false ? false : true;
+    setSubcategories((prev) =>
+      prev.map((s) => (s._id === sub._id ? { ...s, isActive: newStatus } : s))
+    );
+    try {
+      await toggleCategoryStatus({ id: sub._id, isActive: newStatus }).unwrap();
+      toast.success(`Subcategory "${sub.name}" ${newStatus ? "enabled" : "disabled"}`);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update subcategory status");
+      refetch();
+    }
+  };
 
   const categories = categoriesData?.data || [];
 
@@ -179,8 +196,8 @@ export default function Subcategories() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
         <h1 className="text-2xl font-bold">Subcategories</h1>
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <Input 
-            placeholder="Search subcategories..." 
+          <Input
+            placeholder="Search subcategories..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full md:w-[200px]"
@@ -230,7 +247,7 @@ export default function Subcategories() {
                   <TableHead>Name</TableHead>
                   <TableHead>Slug</TableHead>
                   <TableHead>Parent</TableHead>
-                  <TableHead className="text-center w-[150px]">Actions</TableHead>
+                  <TableHead className="text-right w-[220px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -238,45 +255,71 @@ export default function Subcategories() {
                   items={subcategories.map((c) => c._id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  {subcategories.map((sub: any, index: number) => (
-                    <SortableTableRow key={sub._id} id={sub._id} disabled={isSearching}>
-                      <TableCell className="text-center">{index + 1}</TableCell>
-                      <TableCell>
-                        <Avatar className="rounded size-8">
-                          <AvatarImage
-                            className="rounded"
-                            src={
-                              sub.image
-                                ? `${import.meta.env.VITE_API_URL}${sub.image}`
-                                : undefined
-                            }
-                            alt={sub.name}
-                          />
-                          <AvatarFallback className="rounded">
-                            <Image className="size-6 text-muted-foreground" />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-medium">{sub.name}</TableCell>
-                      <TableCell className="text-gray-600">{sub.slug}</TableCell>
-                      <TableCell>{sub.parent?.name || "—"}</TableCell>
-                      <TableCell className="text-center space-x-2">
-                        {/* Edit using CategoryForm */}
-                        <CategoryForm
-                          category={sub}
-                          triggerText="Edit"
-                          onSuccess={refetch}
-                        />
-                        <Button
-                          variant="destructive"
-                          size="xs"
-                          onClick={() => handleDelete(sub)}
-                        >
-                          <Trash className="w-4 h-4" />
-                        </Button>
-                      </TableCell>
-                    </SortableTableRow>
-                  ))}
+                  {subcategories.map((sub: any, index: number) => {
+                    const isSubActive = sub.isActive !== false;
+                    return (
+                      <SortableTableRow
+                        key={sub._id}
+                        id={sub._id}
+                        disabled={isSearching}
+                        className={!isSubActive ? "opacity-60 bg-muted/20" : ""}
+                      >
+                        <TableCell className="text-center">{index + 1}</TableCell>
+                        <TableCell>
+                          <Avatar className="rounded size-8">
+                            <AvatarImage
+                              className="rounded"
+                              src={
+                                sub.image
+                                  ? `${import.meta.env.VITE_API_URL}${sub.image}`
+                                  : undefined
+                              }
+                              alt={sub.name}
+                            />
+                            <AvatarFallback className="rounded">
+                              <Image className="size-6 text-muted-foreground" />
+                            </AvatarFallback>
+                          </Avatar>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{sub.name}</span>
+                            {!isSubActive && (
+                              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground border">
+                                Hidden
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-gray-600">{sub.slug}</TableCell>
+                        <TableCell>{sub.parent?.name || "—"}</TableCell>
+
+                        <TableCell className="text-right">
+                          <div className="inline-flex items-center justify-end gap-3">
+                            <div className="flex items-center gap-1.5 mr-1" title={isSubActive ? "Visible in store" : "Hidden from store"}>
+                              <Switch
+                                checked={isSubActive}
+                                onCheckedChange={() => handleToggleStatus(sub)}
+                              />
+                            </div>
+                            <CategoryForm
+                              category={sub}
+                              triggerText="Edit"
+                              onSuccess={refetch}
+                            />
+                            <Button
+                              variant="destructive"
+                              size="xs"
+                              onClick={() => handleDelete(sub)}
+                              title="Delete Subcategory"
+                            >
+                              <Trash className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </SortableTableRow>
+                    );
+                  })}
                 </SortableContext>
               </TableBody>
             </Table>

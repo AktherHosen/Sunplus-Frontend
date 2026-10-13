@@ -25,9 +25,11 @@ import {
   useGetAllProductsQuery,
   useUpdateProductMutation,
   useReorderProductsMutation,
+  useToggleProductStatusMutation,
   useImportProductsMutation,
 } from "@/redux/api/baseApi";
 import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
+import { Switch } from "@/components/ui/switch";
 import type { IVariant } from "@/types/product";
 import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy, ChevronDown, Check } from "lucide-react";
 import {
@@ -102,6 +104,7 @@ const ProductPage = () => {
   const [updateProduct] = useUpdateProductMutation();
   const [reorderProducts] = useReorderProductsMutation();
   const [importProducts] = useImportProductsMutation();
+  const [toggleProductStatus] = useToggleProductStatusMutation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -111,6 +114,20 @@ const ProductPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>("ALL");
   const [productsList, setProductsList] = useState<any[]>([]);
+
+  const handleToggleStatus = async (product: any) => {
+    const newStatus = product.isActive !== false ? false : true;
+    setProductsList((prev) =>
+      prev.map((p) => (p._id === product._id ? { ...p, isActive: newStatus } : p))
+    );
+    try {
+      await toggleProductStatus({ id: product._id, isActive: newStatus }).unwrap();
+      toast.success(`Product "${product.name}" ${newStatus ? "enabled" : "disabled"}`);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update product status");
+      refetch();
+    }
+  };
   
   const categories = categoriesData?.data || [];
 
@@ -437,7 +454,7 @@ const ProductPage = () => {
                 <TableHead className="w-16 text-center">Image</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Price / Variants</TableHead>
+                <TableHead>Subcategory</TableHead>
                 <TableHead>Stock</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -448,82 +465,108 @@ const ProductPage = () => {
                   items={productsList.map((p) => p._id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  {productsList.map((product: any, index: number) => (
-                    <SortableTableRow key={product._id} id={product._id} disabled={isSearching}>
-                      <TableCell className="text-center">{index + 1}</TableCell>
-                      <TableCell className="text-center">
-                        <Avatar className="rounded size-8">
-                          <AvatarImage
-                            className="rounded"
-                            src={
-                              product.image
-                                ? `${import.meta.env.VITE_API_URL}${product.image}`
-                                : undefined
-                            }
-                            alt={product.name}
-                          />
-                          <AvatarFallback className="rounded">
-                            <Image className="size-6 text-muted-foreground" />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell>{product.name}</TableCell>
-                      <TableCell>{product.category_id?.name || "N/A"}</TableCell>
-                      <TableCell>
-                        {product.variants && product.variants.length > 0 ? (
-                          <div className="space-y-1">
-                            <div className="text-xs text-muted-foreground">
-                              {product.variants.length} variant
-                              {product.variants.length > 1 ? "s" : ""}
-                            </div>
-                            <div className="text-xs">
-                              ৳
-                              {Math.min(
-                                ...product.variants.map((v: IVariant) => v.price)
-                              )}{" "}
-                              - ৳
-                              {Math.max(
-                                ...product.variants.map((v: IVariant) => v.price)
-                              )}
-                            </div>
+                  {productsList.map((product: any, index: number) => {
+                    const isProdActive = product.isActive !== false;
+                    return (
+                      <SortableTableRow
+                        key={product._id}
+                        id={product._id}
+                        disabled={isSearching}
+                        className={!isProdActive ? "opacity-60 bg-muted/20" : ""}
+                      >
+                        <TableCell className="text-center">{index + 1}</TableCell>
+                        <TableCell className="text-center">
+                          <Avatar className="rounded size-8">
+                            <AvatarImage
+                              className="rounded"
+                              src={
+                                product.image
+                                  ? `${import.meta.env.VITE_API_URL}${product.image}`
+                                  : undefined
+                              }
+                              alt={product.name}
+                            />
+                            <AvatarFallback className="rounded">
+                              <Image className="size-6 text-muted-foreground" />
+                            </AvatarFallback>
+                          </Avatar>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{product.name}</span>
+                            {!isProdActive && (
+                              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground border">
+                                Hidden
+                              </span>
+                            )}
                           </div>
-                        ) : (
-                          <div>৳{product.price || 0}</div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {product.variants && product.variants.length > 0
-                          ? product.variants.reduce(
-                              (sum: number, v: IVariant) => sum + (v.quantity || 0),
-                              0
-                            )
-                          : product.quantity || 0}
-                      </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button
-                          variant="outline"
-                          size="xs"
-                          onClick={() => handleDuplicate(product)}
-                        >
-                          <Copy />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="xs"
-                          onClick={() => handleOpenDialog(product)}
-                        >
-                          <Edit />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="xs"
-                          onClick={() => handleDelete(product._id)}
-                        >
-                          <Trash />
-                        </Button>
-                      </TableCell>
-                    </SortableTableRow>
-                  ))}
+                        </TableCell>
+                        <TableCell>{product.category_id?.name || "N/A"}</TableCell>
+                        <TableCell>
+                          {product.subcategories && product.subcategories.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {product.subcategories.map((sub: any, idx: number) => {
+                                const subName = typeof sub === "object" ? sub?.name : sub;
+                                return (
+                                  <span
+                                    key={sub?._id || idx}
+                                    className="inline-flex items-center text-xs px-2 py-0.5 rounded-md font-medium bg-secondary text-secondary-foreground border border-border/50"
+                                  >
+                                    {subName || "Unnamed Subcategory"}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-muted-foreground italic">None</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {product.variants && product.variants.length > 0
+                            ? product.variants.reduce(
+                                (sum: number, v: IVariant) => sum + (v.quantity || 0),
+                                0
+                              )
+                            : product.quantity || 0}
+                        </TableCell>
+
+                        <TableCell className="text-right">
+                          <div className="inline-flex items-center justify-end gap-3">
+                            <div className="flex items-center gap-1.5 mr-1" title={isProdActive ? "Visible in store" : "Hidden from store"}>
+                              <Switch
+                                checked={isProdActive}
+                                onCheckedChange={() => handleToggleStatus(product)}
+                              />
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="xs"
+                              onClick={() => handleDuplicate(product)}
+                              title="Duplicate Product"
+                            >
+                              <Copy />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="xs"
+                              onClick={() => handleOpenDialog(product)}
+                              title="Edit Product"
+                            >
+                              <Edit />
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="xs"
+                              onClick={() => handleDelete(product._id)}
+                              title="Delete Product"
+                            >
+                              <Trash />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </SortableTableRow>
+                    );
+                  })}
                 </SortableContext>
               ) : (
                 <TableRow>
