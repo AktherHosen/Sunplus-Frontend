@@ -29,7 +29,7 @@ import {
 } from "@/redux/api/baseApi";
 import { ImportExportButtons } from "@/components/shared/ImportExportButtons";
 import type { IVariant } from "@/types/product";
-import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy, ChevronDown } from "lucide-react";
+import { Edit, Image, Loader2, RefreshCcw, Trash, GripVertical, Copy, ChevronDown, Check } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,6 +39,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -126,19 +131,23 @@ const ProductPage = () => {
       let filtered = productsData.data;
 
       if (selectedCategory !== "ALL") {
-        filtered = filtered.filter(
-          (p: any) => p.category_id?._id === selectedCategory
-        );
+        filtered = filtered.filter((p: any) => {
+          const catId = p.category_id?._id || p.category_id;
+          return String(catId) === String(selectedCategory);
+        });
       }
 
       if (selectedSubcategory !== "ALL") {
         filtered = filtered.filter((p: any) => {
+          if (!p.subcategories) return false;
           if (Array.isArray(p.subcategories)) {
-            return p.subcategories.some((sub: any) => sub._id === selectedSubcategory);
-          } else if (p.subcategories && typeof p.subcategories === "object") {
-            return p.subcategories._id === selectedSubcategory;
+            return p.subcategories.some((sub: any) => {
+              const subId = sub?._id || sub;
+              return String(subId) === String(selectedSubcategory);
+            });
           }
-          return p.subcategories === selectedSubcategory;
+          const subId = p.subcategories?._id || p.subcategories;
+          return String(subId) === String(selectedSubcategory);
         });
       }
 
@@ -251,55 +260,138 @@ const ProductPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full sm:w-[200px]"
           />
-          {/* Category/Subcategory Nested Dropdown Filter */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-[220px] justify-between text-left font-normal h-9">
-                <span className="truncate">
+          {/* Category/Subcategory Nested Popover Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={`w-[230px] justify-between text-left font-normal h-9 border ${
+                  selectedCategory !== "ALL"
+                    ? "border-primary/50 bg-primary/5 font-medium text-foreground"
+                    : "border-border/60"
+                }`}
+              >
+                <span className="truncate text-xs sm:text-sm">
                   {selectedCategory === "ALL" 
                     ? "All Categories" 
-                    : categories.find((c:any) => c._id === selectedCategory)?.name || "Filtered"}
+                    : categories.find((c:any) => String(c._id) === String(selectedCategory))?.name || "Category"}
                   {selectedCategory !== "ALL" && selectedSubcategory !== "ALL" 
-                    ? ` > ${categories.find((c:any) => c._id === selectedCategory)?.subcategories?.find((s:any) => s._id === selectedSubcategory)?.name || ""}` 
+                    ? ` > ${categories.find((c:any) => String(c._id) === String(selectedCategory))?.subcategories?.find((s:any) => String(s._id) === String(selectedSubcategory))?.name || ""}` 
                     : ""}
                 </span>
-                <ChevronDown className="h-4 w-4 opacity-50" />
+                <ChevronDown className="h-4 w-4 opacity-50 shrink-0 ml-1" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[240px] max-h-[400px] overflow-y-auto scrollbar-hide">
-              <DropdownMenuLabel>Filter Products</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => { setSelectedCategory("ALL"); setSelectedSubcategory("ALL"); }}>
-                All Categories
-              </DropdownMenuItem>
-              {categories.map((cat: any) => {
-                const hasSub = cat.subcategories && cat.subcategories.length > 0;
-                if (hasSub) {
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-[260px] p-2 max-h-[380px] overflow-y-auto">
+              <div className="text-xs font-semibold text-muted-foreground px-2 py-1.5 mb-1">
+                Filter Products
+              </div>
+
+              {/* All Categories Option */}
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory("ALL");
+                  setSelectedSubcategory("ALL");
+                }}
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-sm text-left transition-colors cursor-pointer ${
+                  selectedCategory === "ALL" && selectedSubcategory === "ALL"
+                    ? "bg-primary text-primary-foreground font-semibold"
+                    : "hover:bg-muted text-foreground"
+                }`}
+              >
+                <span>All Categories</span>
+                {selectedCategory === "ALL" && selectedSubcategory === "ALL" && (
+                  <Check className="h-4 w-4 shrink-0" />
+                )}
+              </button>
+
+              <div className="h-px bg-border my-1.5" />
+
+              {/* Category & Subcategory List */}
+              <div className="space-y-1">
+                {categories.map((cat: any) => {
+                  const catIdStr = String(cat._id);
+                  const hasSub = cat.subcategories && cat.subcategories.length > 0;
+                  const isCatAllActive = String(selectedCategory) === catIdStr && selectedSubcategory === "ALL";
+
+                  if (hasSub) {
+                    return (
+                      <div key={catIdStr} className="space-y-1 pt-1">
+                        <div className="text-xs font-bold text-primary px-2.5 pt-1 uppercase tracking-wider">
+                          {cat.name}
+                        </div>
+                        
+                        {/* Option to select All of this category */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategory(catIdStr);
+                            setSelectedSubcategory("ALL");
+                          }}
+                          className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs sm:text-sm text-left transition-colors cursor-pointer pl-4 ${
+                            isCatAllActive
+                              ? "bg-primary text-primary-foreground font-semibold"
+                              : "hover:bg-muted text-foreground"
+                          }`}
+                        >
+                          <span>All {cat.name}</span>
+                          {isCatAllActive && <Check className="h-3.5 w-3.5 shrink-0" />}
+                        </button>
+
+                        {/* Subcategory items */}
+                        {cat.subcategories.map((sub: any) => {
+                          const subIdStr = String(sub._id);
+                          const isSubActive =
+                            String(selectedCategory) === catIdStr &&
+                            String(selectedSubcategory) === subIdStr;
+
+                          return (
+                            <button
+                              type="button"
+                              key={subIdStr}
+                              onClick={() => {
+                                setSelectedCategory(catIdStr);
+                                setSelectedSubcategory(subIdStr);
+                              }}
+                              className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs sm:text-sm text-left transition-colors cursor-pointer pl-6 ${
+                                isSubActive
+                                  ? "bg-primary text-primary-foreground font-semibold"
+                                  : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              <span>{sub.name}</span>
+                              {isSubActive && <Check className="h-3.5 w-3.5 shrink-0" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    );
+                  }
+
+                  const isDirectCatActive = String(selectedCategory) === catIdStr;
                   return (
-                    <DropdownMenuGroup key={cat._id}>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuLabel className="font-semibold text-primary">{cat.name}</DropdownMenuLabel>
-                      <DropdownMenuItem className="ml-2" onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory("ALL"); }}>
-                        All {cat.name}
-                      </DropdownMenuItem>
-                      {cat.subcategories.map((sub: any) => (
-                        <DropdownMenuItem className="ml-2 pl-4 text-muted-foreground border-l ml-4 rounded-none py-1" key={sub._id} onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory(sub._id); }}>
-                          {sub.name}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuGroup>
+                    <button
+                      type="button"
+                      key={catIdStr}
+                      onClick={() => {
+                        setSelectedCategory(catIdStr);
+                        setSelectedSubcategory("ALL");
+                      }}
+                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs sm:text-sm text-left transition-colors cursor-pointer ${
+                        isDirectCatActive
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : "hover:bg-muted text-foreground"
+                      }`}
+                    >
+                      <span className="font-medium">{cat.name}</span>
+                      {isDirectCatActive && <Check className="h-3.5 w-3.5 shrink-0" />}
+                    </button>
                   );
-                }
-                return (
-                  <DropdownMenuGroup key={cat._id}>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="font-medium" onClick={() => { setSelectedCategory(cat._id); setSelectedSubcategory("ALL"); }}>
-                      {cat.name}
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                })}
+              </div>
+            </PopoverContent>
+          </Popover>
 
           <ImportExportButtons
             title="Products"

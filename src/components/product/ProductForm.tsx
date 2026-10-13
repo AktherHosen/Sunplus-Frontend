@@ -13,7 +13,6 @@ import { Textarea } from "@/components/ui/textarea";
 import type { ICategory, IProduct, IVariant } from "@/types/product";
 import {
   ImageIcon,
-  Package,
   Plus,
   Upload,
   X,
