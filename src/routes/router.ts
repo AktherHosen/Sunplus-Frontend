@@ -17,6 +17,7 @@ import MediaEventsPage from "@/pages/mediaevents-page";
 import NotFound from "@/pages/notFound/not-found";
 import PrivacyPolicyPage from "@/pages/privacy-policy-page";
 import ProductPage from "@/pages/products/product-page";
+import DashboardHome from "@/pages/dashboard/dashboard-home";
 import Profile from "@/pages/profile/profile";
 import SubcatProductDetailsPage from "@/pages/subcat-product-details-page";
 import TermsAndConditionsPage from "@/pages/terms-and-conditions-page";
@@ -55,7 +56,8 @@ export const router = createBrowserRouter([
           {
             Component: SidebarLayout,
             children: [
-              { index: true, Component: Profile },
+              { index: true, Component: DashboardHome },
+              { path: "profile", Component: Profile },
               { path: "products", Component: ProductPage },
               { path: "categories", Component: Categories },
               { path: "sub-categories", Component: Subcategories },

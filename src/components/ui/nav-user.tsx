@@ -19,6 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/auth-context";
+import { useNavigate } from "react-router";
 
 export function NavUser({
   user,
@@ -30,7 +31,8 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
- const {  logout } = useAuth();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -72,13 +74,16 @@ export function NavUser({
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => navigate("/dashboard/profile")}
+                className="cursor-pointer"
+              >
                 <BadgeCheck />
-                Account
+                Account & Profile
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
+            <DropdownMenuItem onClick={logout} className="cursor-pointer">
               <LogOut />
               Log out
             </DropdownMenuItem>

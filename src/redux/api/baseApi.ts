@@ -337,7 +337,19 @@ export const baseApi = createApi({
         success: boolean;
         data: {
           totalProducts: number;
+          activeProducts: number;
+          hiddenProducts: number;
           totalCategories: number;
+          activeCategories: number;
+          totalSubcategories: number;
+          activeSubcategories: number;
+          productsByCategory: {
+            _id: string;
+            name: string;
+            count: number;
+            totalStock: number;
+          }[];
+          recentProducts: any[];
           orders: {
             total: number;
             pending: number;
